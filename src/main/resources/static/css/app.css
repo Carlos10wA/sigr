@@ -31,7 +31,8 @@ th { background: #eee; }
 .admin-actions { margin: 16px 0; padding: 12px; background: #f1f8e9; border-radius: 6px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
 .card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; }
-.card img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+.card img { width: 100%; height: 180px; aspect-ratio: 4/3; object-fit: cover; object-position: center; display: block; background: #eee; }
+.plato-foto-detalle { width: 100%; max-height: 420px; aspect-ratio: 4/3; object-fit: cover; object-position: center; display: block; border-radius: 8px; background: #eee; }
 .card-body { padding: 12px; }
 .card-body h3 { margin: 4px 0; }
 .cat { color: #555; font-size: .9rem; }

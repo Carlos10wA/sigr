@@ -138,6 +138,28 @@ class MenuIntegrationTest {
     }
 
     @Test
+    void fotografiasRealesCarganEnCatalogoYDetalle() throws Exception {
+        demo.cargarDemo();
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var session = (org.springframework.mock.web.MockHttpSession) sAdmin;
+
+        String[] fotos = {"empanadas.jpg", "ceviche.jpg", "arepas.jpg", "bandeja-paisa.jpg",
+                "pollo-plancha.jpg", "pasta-alfredo.jpg", "jugo-mango.jpg", "cafe.jpg",
+                "limonada.jpg", "torta-chocolate.jpg", "flan.jpg", "helado.jpg"};
+        for (String f : fotos) {
+            mockMvc.perform(get("/images/platos/{foto}", f))
+                    .andExpect(status().isOk());
+        }
+        // Catálogo referencia las fotos reales, detalle también.
+        mockMvc.perform(get("/platos").session(session))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/images/platos/limonada.jpg")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/images/platos/cafe.jpg")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("loading=\"lazy\"")));
+    }
+
+    @Test
     void errorGenericoEnEspanolSinWhitelabel() throws Exception {
         crearUsuario("cliente-error", Rol.CLIENTE);
         var sCliente = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-error").param("password", PW))

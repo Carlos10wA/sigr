@@ -10,7 +10,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <main>
   <h1 th:text="${plato.nombre}"></h1>
-  <img th:src="${plato.foto}" th:alt="${plato.nombre}" style="max-width:100%;border-radius:8px" onerror="this.onerror=null;this.src='/images/platos/placeholder.jpg';"/>
+  <img class="plato-foto-detalle" th:src="${plato.foto}" th:alt="${plato.nombre}" onerror="this.onerror=null;this.src='/images/platos/placeholder.jpg';"/>
   <p th:text="${plato.descripcion}"></p>
   <p>Categoría: <span th:text="${plato.categoria.nombre}"></span></p>
   <p class="price" th:text="${'$' + #numbers.formatDecimal(plato.precio, 1, 'POINT', 2, 'COMMA') + ' COP'}"></p>

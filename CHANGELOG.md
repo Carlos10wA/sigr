@@ -38,6 +38,17 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Fotografías reales del catálogo (2026-11-06)
+### Cambiado
+- Las 12 ilustraciones generadas fueron reemplazadas por fotografías reales con permiso de reutilización (CC BY / CC BY-SA / CC0), guardadas en `src/main/resources/static/images/platos/` (miniaturas 800 px, 83–268 KB, funcionamiento sin conexión). Sin ilustraciones presentadas como fotografías.
+- Proporción uniforme: `.card img` y `.plato-foto-detalle` con `object-fit: cover`, `aspect-ratio: 4/3`; `alt` con nombre del plato y respaldo `onerror` a `placeholder.jpg` en catálogo y detalle.
+- Atribución documentada en `docs/creditos-imagenes.md` (título, autor, licencia y fuente por foto). Nombres, precios, categorías, usuarios y datos conservados; no se duplicó ni se sobrescribió lógica.
+- Tests: `fotografiasRealesCarganEnCatalogoYDetalle` (GET `/images/platos/*.jpg` 200 ×12 + catálogo con `limonada.jpg`/`cafe.jpg`). Total 23.
+
+### Pendiente
+- Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Ajuste catálogo 500 (2026-11-06)
 ### Corregido
 - Se conserva LAZY en `Plato.categoria` y se carga con `@EntityGraph(attributePaths="categoria")` en las consultas del catálogo/detalle (`PlatoRepository`), evitando `LazyInitializationException`.

@@ -1,4 +1,6 @@
-# Procedencia y licencia de fotografías del catálogo (Etapa 3)
+# Procedencia y licencia de fotografías del catálogo (Etapa 3) — HISTÓRICO, REEMPLAZADO
+
+> **2026-11-06:** Las 12 ilustraciones generadas listadas abajo fueron **reemplazadas por fotografías reales con licencia Creative Commons** (ver `docs/creditos-imagenes.md`, documento vigente). Este archivo se conserva solo como historial de la Etapa 3; no presenta las ilustraciones como fotografías.
 
 Las 13 imágenes están en `src/main/resources/static/images/platos/` y se sirven localmente (`/images/**`), sin enlaces externos.
 

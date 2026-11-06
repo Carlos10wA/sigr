@@ -58,6 +58,13 @@ Resumen: `Tests run: 20, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 22, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Diagnóstico verificado: con catálogo vacío no se ejecutaba la expresión de precio (por eso pasaba antes); al cargar la demo, Thymeleaf fallaba al parsearla y además la categoría LAZY podía fallar fuera de transacción. Corrección: `${...}` en precio + `@EntityGraph` en `PlatoRepository`.
 
+## Fotografías reales (2026-11-06)
+| Prueba (`MenuIntegrationTest`) | Resultado real |
+|---|---|
+| `fotografiasRealesCarganEnCatalogoYDetalle` — GET `/images/platos/*.jpg` 200 ×12 (empanadas, ceviche, arepas, bandeja-paisa, pollo-plancha, pasta-alfredo, jugo-mango, cafe, limonada, torta-chocolate, flan, helado) + catálogo con `limonada.jpg`/`cafe.jpg` y `loading="lazy"` | OK |
+
+Resumen: `Tests run: 23, Failures: 0, Errors: 0 — BUILD SUCCESS`. Fotografías CC locales 800 px (83–268 KB); ver `docs/creditos-imagenes.md`. Wikimedia devolvió 429 en una descarga (limonada); se tomó vía Openverse/Flickr (CC BY) y se documentó.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).
