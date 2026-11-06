@@ -108,6 +108,61 @@ class MenuIntegrationTest {
     }
 
     @Test
+    void catalogoRenderizaDatosDemoConNombresCategoriasPreciosYFotos() throws Exception {
+        demo.cargarDemo();
+
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var session = (org.springframework.mock.web.MockHttpSession) sAdmin;
+
+        mockMvc.perform(get("/platos").session(session))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Empanadas")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Entradas")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("$12.000,00 COP")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/images/platos/empanadas.jpg")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Bandeja paisa")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Platos principales")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("$28.000,00 COP")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/images/platos/bandeja-paisa.jpg")));
+
+        // El detalle también debe renderizar la categoría cargada con @EntityGraph.
+        Long idEmpanada = platoRepo.findAll().stream()
+                .filter(p -> "Empanadas".equals(p.getNombre()))
+                .map(co.edu.tecnologicaoriente.sigr.model.Plato::getId)
+                .findFirst().orElseThrow();
+        mockMvc.perform(get("/platos/{id}", idEmpanada).session(session))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Entradas")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/images/platos/empanadas.jpg")));
+    }
+
+    @Test
+    void errorGenericoEnEspanolSinWhitelabel() throws Exception {
+        crearUsuario("cliente-error", Rol.CLIENTE);
+        var sCliente = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-error").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var session = (org.springframework.mock.web.MockHttpSession) sCliente;
+
+        // 404 conserva el estado HTTP (sin Whitelabel).
+        mockMvc.perform(get("/ruta-que-no-existe-sigr").session(session))
+                .andExpect(status().isNotFound());
+
+        // La plantilla genérica /error responde en español, sin detalles técnicos,
+        // conservando el 404 original. MockMvc necesita Accept: text/html y los
+        // atributos de error para seleccionar la vista HTML (no JSON).
+        mockMvc.perform(get("/error")
+                        .accept("text/html")
+                        .requestAttr("jakarta.servlet.error.status_code", 404)
+                        .requestAttr("jakarta.servlet.error.request_uri", "/ruta-que-no-existe-sigr")
+                        .requestAttr("jakarta.servlet.error.message", "Not Found")
+                        .session(session))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Ocurri")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Whitelabel"))));
+    }
+
+    @Test
     void permisosTresRolesEnCatalogoYGestion() throws Exception {
         crearUsuario("mesero-test", Rol.MESERO);
         crearUsuario("cliente-test", Rol.CLIENTE);

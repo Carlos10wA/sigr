@@ -38,6 +38,17 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Ajuste catálogo 500 (2026-11-06)
+### Corregido
+- Se conserva LAZY en `Plato.categoria` y se carga con `@EntityGraph(attributePaths="categoria")` en las consultas del catálogo/detalle (`PlatoRepository`), evitando `LazyInitializationException`.
+- Se corrige la expresión de precio Thymeleaf en `platos/catalogo.html` y `platos/detalle.html` (`${'$' + #numbers.formatDecimal(...) + ' COP'}`, antes fallaba con datos reales y el catálogo vacío lo enmascaraba).
+- Se crea la plantilla general `templates/error.html` en español («Ocurrió un error…») sin detalles técnicos, conservando el estado HTTP; `error/403.html` sigue para 403.
+- Tests: `catalogoRenderizaDatosDemoConNombresCategoriasPreciosYFotos` (verifica 200, Empanadas/Entradas, $12.000,00 COP, /images/platos/empanadas.jpg, Bandeja paisa y detalle) y `errorGenericoEnEspanolSinWhitelabel` (404 conservado + plantilla ES sin Whitelabel). Total 22.
+
+### Pendiente
+- Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Ajuste 403 (2026-11-06)
 ### Cambiado
 - Página personalizada 403 en español («Acceso denegado…») con enlace al panel, vía `error/403.html` + `/error/403` (estado HTTP 403, sin Whitelabel ni detalles técnicos). Restricción conservada.

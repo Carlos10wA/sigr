@@ -57,7 +57,7 @@ Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió 
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20` (catálogo, permisos 3 roles, validaciones, filtros, demo idempotente, persistencia). Ver `docs/plan-pruebas.md`.
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22` (render con datos demo: nombres, categorías, precios COP y fotos; error genérico ES). Ver `docs/plan-pruebas.md`.
 
 ## Estructura
 ```

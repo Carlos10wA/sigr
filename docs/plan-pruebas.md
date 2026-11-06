@@ -49,6 +49,15 @@ Resumen: `Tests run: 14, Failures: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 20, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Ajuste catálogo 500 (2026-11-06)
+| Prueba (`MenuIntegrationTest`) | Resultado real |
+|---|---|
+| `catalogoRenderizaDatosDemoConNombresCategoriasPreciosYFotos` — demo + `GET /platos` 200 con Empanadas/Entradas/$12.000,00 COP//images/platos/empanadas.jpg + Bandeja paisa y detalle | OK |
+| `errorGenericoEnEspanolSinWhitelabel` — ruta inexistente 404 + `GET /error` (Accept HTML + attrs) 404 con «Ocurrió un error», sin Whitelabel | OK |
+| 6 pruebas previas de Menús | OK |
+
+Resumen: `Tests run: 22, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Diagnóstico verificado: con catálogo vacío no se ejecutaba la expresión de precio (por eso pasaba antes); al cargar la demo, Thymeleaf fallaba al parsearla y además la categoría LAZY podía fallar fuera de transacción. Corrección: `${...}` en precio + `@EntityGraph` en `PlatoRepository`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

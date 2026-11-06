@@ -15,5 +15,6 @@
 | E-11 | Catálogo `/platos` tras Cargar demo (12 platos) | RQ-Menús | Tarjetas con foto, precio COP, búsqueda/filtro | Módulos / menús |
 | E-12 | Detalle `/platos/{id}` y formulario admin | RQ-Menús | Editar/desactivar/no disponible diferenciados | Módulos / menús |
 | E-13 | `/categorias` como ADMINISTRADOR | RQ-Menús | 4 categorías activas | Módulos / menús |
+| E-14 | Error genérico (ruta inexistente) | RQ-Error | «Ocurrió un error…» con estado HTTP, sin Whitelabel | Errores |
 
 Todas deben tomarse de ejecución real en Windows.

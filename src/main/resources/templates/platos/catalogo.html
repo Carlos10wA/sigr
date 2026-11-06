@@ -46,7 +46,7 @@
         <h3 th:text="${p.nombre}"></h3>
         <p class="cat" th:text="${p.categoria.nombre}"></p>
         <p th:text="${p.descripcion}"></p>
-        <p class="price" th:text="'$' + #numbers.formatDecimal(p.precio, 1, 'POINT', 2, 'COMMA') + ' COP'"></p>
+        <p class="price" th:text="${'$' + #numbers.formatDecimal(p.precio, 1, 'POINT', 2, 'COMMA') + ' COP'}"></p>
         <span th:if="${p.disponible}" class="badge ok">Disponible</span>
         <span th:if="${!p.disponible}" class="badge off">No disponible temporalmente</span>
         <p><a th:href="@{/platos/{id}(id=${p.id})}">Ver detalle</a></p>

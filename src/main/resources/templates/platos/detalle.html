@@ -13,7 +13,7 @@
   <img th:src="${plato.foto}" th:alt="${plato.nombre}" style="max-width:100%;border-radius:8px" onerror="this.onerror=null;this.src='/images/platos/placeholder.jpg';"/>
   <p th:text="${plato.descripcion}"></p>
   <p>Categoría: <span th:text="${plato.categoria.nombre}"></span></p>
-  <p class="price" th:text="'$' + #numbers.formatDecimal(plato.precio, 1, 'POINT', 2, 'COMMA') + ' COP'"></p>
+  <p class="price" th:text="${'$' + #numbers.formatDecimal(plato.precio, 1, 'POINT', 2, 'COMMA') + ' COP'}"></p>
   <span th:if="${plato.disponible}" class="badge ok">Disponible</span>
   <span th:if="${!plato.disponible}" class="badge off">No disponible temporalmente</span>
   <span th:if="${!plato.activo}" class="badge off">Desactivado</span>
