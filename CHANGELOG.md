@@ -25,3 +25,12 @@
 ### Pendiente
 - Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata).
+
+## [0.0.1-SNAPSHOT] — Ajuste 403 (2026-11-06)
+### Cambiado
+- Página personalizada 403 en español («Acceso denegado…») con enlace al panel, vía `error/403.html` + `/error/403` (estado HTTP 403, sin Whitelabel ni detalles técnicos). Restricción conservada.
+- Tests: CLIENTE y MESERO → 403 con `forwardedUrl`, página `/error/403` verificada (14 totales).
+
+### Pendiente
+- Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata).

@@ -79,7 +79,34 @@ class UsuarioIntegrationTest {
                 .andExpect(status().is3xxRedirection())
                 .andReturn();
         mockMvc.perform(get("/usuarios").session((org.springframework.mock.web.MockHttpSession) result.getRequest().getSession()))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(forwardedUrl("/error/403"));
+    }
+
+    @Test
+    void meseroRecibe403ConPaginaPersonalizada() throws Exception {
+        UsuarioCrearForm f = new UsuarioCrearForm();
+        f.setNombreCompleto("Mesero Demo"); f.setUsuario("mesero1-test");
+        f.setContrasena(PW); f.setRol(Rol.MESERO); f.setActivo(true);
+        service.crear(f);
+        var result = mockMvc.perform(post("/login").with(csrf())
+                        .param("username", "mesero1-test").param("password", PW))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+        mockMvc.perform(get("/usuarios").session((org.springframework.mock.web.MockHttpSession) result.getRequest().getSession()))
+                .andExpect(status().isForbidden())
+                .andExpect(forwardedUrl("/error/403"));
+    }
+
+    @Test
+    void pagina403PersonalizadaEnEspanolSinDetallesTecnicos() throws Exception {
+        mockMvc.perform(get("/error/403"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Acceso denegado")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Tu usuario no tiene permisos para acceder a esta sección")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Volver al panel")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Whitelabel"))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("stacktrace"))));
     }
 
     @Test

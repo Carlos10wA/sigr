@@ -28,6 +28,15 @@ Resumen: `Tests run: 4, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`.
 
 Resumen final: `Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS` (2026-11-05). Persistencia tras reinicio real: verificada por `persistenciaTrasLimpiarContexto` + revisión manual pendiente de captura tras reiniciar la app.
 
+## Ajuste 403 (2026-11-06)
+| Prueba | Resultado real |
+|---|---|
+| `meseroRecibe403ConPaginaPersonalizada` — MESERO `/usuarios` → 403 + `forwardedUrl` | OK |
+| `noAdminNoPuedeAccederUsuarios` — CLIENTE `/usuarios` → 403 + página ES | OK |
+| `pagina403PersonalizadaEnEspanolSinDetallesTecnicos` — `GET /error/403` 403, texto «Acceso denegado…», sin Whitelabel/stacktrace | OK |
+| `adminPuedeAccederUsuarios` — ADMINISTRADOR `/usuarios` → 200 | OK |
+Resumen: `Tests run: 14, Failures: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Autenticación/roles, platos, pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

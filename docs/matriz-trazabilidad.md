@@ -6,6 +6,6 @@
 | RQ-02 | MVC/Thymeleaf/Security/JPA/Validation/H2 | starters en pom.xml | contexto carga | log Spring Boot 3.5.16 | ✅ |
 | RQ-03 | Maven Wrapper Windows | mvnw.cmd 3.9.11 | `.\mvnw.cmd -v` Java 21 | salida wrapper | ✅ |
 | RQ-04 | Página inicial y login | HomeController + index/login | HomeControllerTest 4 tests | GET / 200, /login 200 | ✅ |
-| RQ-05 | Usuarios JPA + roles + permisos + último admin | Usuario/DbUserDetailsService/SecurityConfig | UsuarioIntegrationTest 9 casos | `Tests run: 12` | ✅ Etapa 2 |
+| RQ-05 | Usuarios JPA + roles + permisos + último admin + 403 personalizada | Usuario/DbUserDetailsService/SecurityConfig/error/403 | UsuarioIntegrationTest 11 casos | `Tests run: 14` | ✅ Etapa 2 + ajuste 403 |
 | RQ-06 | Menús/Pedidos/Reservas/Facturación/Caja | — | — | — | ⏳ Pendiente |
 | RQ-07 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` | ⏳ Pendiente aprobación |

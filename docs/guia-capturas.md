@@ -10,7 +10,7 @@
 | E-06 | `git status`, `git log --oneline` | RQ-06 | Rama main, commit inicial | Repositorio / versión |
 | E-07 | Explorador proyecto `docs/` | RQ-06 | Documentos LB-SIGR-1.0 | Documentación |
 | E-08 | Navegador /usuarios como ADMINISTRADOR | RQ-Usuario | Listado, crear/editar/activar-desactivar | Módulos / usuarios |
-| E-09 | Navegador /usuarios como CLIENTE (403) | RQ-Permisos | Acceso denegado | Permisos |
+| E-09 | Navegador /usuarios como MESERO/CLIENTE (403) | RQ-Permisos | «Acceso denegado. Tu usuario no tiene permisos…» + Volver al panel, sin Whitelabel | Permisos |
 | E-10 | Navegador desactivar último administrador | RQ-Permisos | Mensaje de protección | Permisos |
 
 Todas deben tomarse de ejecución real en Windows.
