@@ -1,0 +1,9 @@
+PENDIENTE DE DECISIÓN DEL AUTOR
+-----------------------------------
+El autor aún no ha confirmado la licencia definitiva para este proyecto académico.
+Mientras tanto, este archivo registra la decisión como pendiente y no otorga
+derechos de uso o redistribución sobre el código más allá del alcance académico
+definido por la institución.
+
+Estudiante: Carlos Alberto Ayala Larrahondo
+Asignatura: Gestión del Software — Tecnológica del Oriente

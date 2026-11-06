@@ -1,0 +1,15 @@
+/* SIGR - estilos base (Etapa 1) */
+* { box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
+header { background: #1f3a2d; color: #fff; padding: 16px 24px; }
+header a { color: #fff; margin-right: 16px; }
+main { max-width: 960px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; }
+footer { text-align: center; padding: 16px; color: #666; }
+label { display: block; margin: 12px 0 4px; }
+input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+button { margin-top: 16px; padding: 10px 18px; background: #1f3a2d; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+.alert { padding: 10px; border-radius: 4px; margin: 12px 0; background: #e8f5e9; }
+.alert.error { background: #ffebee; }
+table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background: #eee; }

@@ -1,0 +1,40 @@
+# Build generados
+target/
+build/
+out/
+*.class
+
+# Maven Wrapper no incluye internos
+!.mvn/wrapper/maven-wrapper.jar
+
+# Bases de datos locales
+data/
+*.mv.db
+*.trace.db
+*.h2.db
+
+# Configuracion sensible / local
+.env
+application-local.properties
+application-local.yml
+*.pem
+*.key
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Logs / temp
+logs/
+*.log
+tmp/
+# OS
+.DS_Store
+Thumbs.db
+
+# Jenkins futuro (no versionar credenciales)
+*.jenkins
