@@ -38,6 +38,16 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Claridad Reservas y Mesas (2026-11-06)
+### Cambiado
+- Horarios con selección explícita 24 h (hora 00–23 + minutos 00–59 en listas identificadas, sin `type=time` del navegador); ayuda «12:00 = mediodía; 00:00 = medianoche»; sin precarga arbitraria (listas vacías). El servidor sigue validando fin>inicio y anti-superposición.
+- Fechas en listado/detalle como `dd/MM/yyyy` y horarios `HH:mm`; encabezado «#» → «N.º de reserva» (columna «Mesa» independiente, IDs sin renumerar); selector «Mesa 1 — 4 personas». Carga demo de mesas repetible sin duplicar.
+- Tests `claridadHorariosNumeracionYFechas` + `mesasDemoRepetibleSinDuplicarPorHttp`. Total 35.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Reservas (2026-11-06)
 ### Agregado
 - Entidades `Mesa` (nombre único, capacidad 1–50, activa) y `Reserva` (dueño, mesa, titular, fecha, horarios, personas, `CONFIRMADA/CANCELADA`).

@@ -17,11 +17,27 @@ public class ReservaForm {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fecha;
 
-    @NotNull(message = "La hora de inicio es obligatoria.")
+    // Selección explícita 24 h (hora + minutos) sin depender del formato del navegador.
+    // El controlador convierte estos campos a horaInicio/horaFin (LocalTime).
+    @Min(value = 0, message = "La hora debe estar entre 00 y 23.")
+    @Max(value = 23, message = "La hora debe estar entre 00 y 23.")
+    private Integer horaInicioHora;
+
+    @Min(value = 0, message = "Los minutos deben estar entre 00 y 59.")
+    @Max(value = 59, message = "Los minutos deben estar entre 00 y 59.")
+    private Integer horaInicioMinuto;
+
+    @Min(value = 0, message = "La hora debe estar entre 00 y 23.")
+    @Max(value = 23, message = "La hora debe estar entre 00 y 23.")
+    private Integer horaFinHora;
+
+    @Min(value = 0, message = "Los minutos deben estar entre 00 y 59.")
+    @Max(value = 59, message = "Los minutos deben estar entre 00 y 59.")
+    private Integer horaFinMinuto;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime horaInicio;
 
-    @NotNull(message = "La hora de fin es obligatoria.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime horaFin;
 
@@ -36,6 +52,14 @@ public class ReservaForm {
     public void setClienteNombre(String v) { this.clienteNombre = v; }
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate v) { this.fecha = v; }
+    public Integer getHoraInicioHora() { return horaInicioHora; }
+    public void setHoraInicioHora(Integer v) { this.horaInicioHora = v; }
+    public Integer getHoraInicioMinuto() { return horaInicioMinuto; }
+    public void setHoraInicioMinuto(Integer v) { this.horaInicioMinuto = v; }
+    public Integer getHoraFinHora() { return horaFinHora; }
+    public void setHoraFinHora(Integer v) { this.horaFinHora = v; }
+    public Integer getHoraFinMinuto() { return horaFinMinuto; }
+    public void setHoraFinMinuto(Integer v) { this.horaFinMinuto = v; }
     public LocalTime getHoraInicio() { return horaInicio; }
     public void setHoraInicio(LocalTime v) { this.horaInicio = v; }
     public LocalTime getHoraFin() { return horaFin; }

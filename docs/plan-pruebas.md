@@ -87,6 +87,14 @@ Resumen: `Tests run: 28, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verificació
 
 Resumen: `Tests run: 33, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Pedidos y catálogo siguen pasando.
 
+## Claridad Reservas y Mesas (2026-11-06)
+| Prueba (`ReservaIntegrationTest`) | Resultado real |
+|---|---|
+| `claridadHorariosNumeracionYFechas` — formulario con listas 24 h + ayuda, sin `type=time`, selector «Mesa — N personas»; listado con «N.º de reserva»+dd/MM/yyyy+HH:mm; detalle idéntico; POST con hora/minutos crea y fin≤inicio se rechaza | OK |
+| `mesasDemoRepetibleSinDuplicarPorHttp` — doble POST `/mesas/cargar-demo` no duplica | OK |
+
+Resumen: `Tests run: 35, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

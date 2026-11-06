@@ -17,7 +17,7 @@
       <label for="mesaId">Mesa</label>
       <select id="mesaId" th:field="*{mesaId}">
         <option value="">-- Seleccione --</option>
-        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre + ' (capacidad ' + m.capacidad + ')'}"></option>
+        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre + ' — ' + m.capacidad + ' personas'}"></option>
       </select>
       <span class="field-error" th:if="${#fields.hasErrors('mesaId')}" th:errors="*{mesaId}"></span>
     </div>
@@ -31,15 +31,40 @@
       <span class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
     </div>
     <div>
-      <label for="horaInicio">Hora de inicio</label>
-      <input id="horaInicio" type="time" th:field="*{horaInicio}"/>
-      <span class="field-error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
+      <label for="horaInicioHora">Hora de inicio — hora (24 horas)</label>
+      <select id="horaInicioHora" th:field="*{horaInicioHora}">
+        <option value="">-- Hora --</option>
+        <option th:each="h : ${#numbers.sequence(0, 23)}" th:value="${h}" th:text="${(h &lt; 10 ? '0' : '') + h}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('horaInicioHora')}" th:errors="*{horaInicioHora}"></span>
     </div>
     <div>
-      <label for="horaFin">Hora de fin</label>
-      <input id="horaFin" type="time" th:field="*{horaFin}"/>
-      <span class="field-error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
+      <label for="horaInicioMinuto">Hora de inicio — minutos</label>
+      <select id="horaInicioMinuto" th:field="*{horaInicioMinuto}">
+        <option value="">-- Minutos --</option>
+        <option th:each="m : ${#numbers.sequence(0, 59)}" th:value="${m}" th:text="${(m &lt; 10 ? '0' : '') + m}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('horaInicioMinuto')}" th:errors="*{horaInicioMinuto}"></span>
     </div>
+    <div>
+      <label for="horaFinHora">Hora de fin — hora (24 horas)</label>
+      <select id="horaFinHora" th:field="*{horaFinHora}">
+        <option value="">-- Hora --</option>
+        <option th:each="h : ${#numbers.sequence(0, 23)}" th:value="${h}" th:text="${(h &lt; 10 ? '0' : '') + h}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('horaFinHora')}" th:errors="*{horaFinHora}"></span>
+    </div>
+    <div>
+      <label for="horaFinMinuto">Hora de fin — minutos</label>
+      <select id="horaFinMinuto" th:field="*{horaFinMinuto}">
+        <option value="">-- Minutos --</option>
+        <option th:each="m : ${#numbers.sequence(0, 59)}" th:value="${m}" th:text="${(m &lt; 10 ? '0' : '') + m}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('horaFinMinuto')}" th:errors="*{horaFinMinuto}"></span>
+    </div>
+    <p><small>Formato de 24 horas: 12:00 = mediodía; 00:00 = medianoche.</small></p>
+    <span class="field-error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
+    <span class="field-error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
     <div>
       <label for="cantidadPersonas">Cantidad de personas</label>
       <input id="cantidadPersonas" type="number" min="1" max="50" th:field="*{cantidadPersonas}"/>

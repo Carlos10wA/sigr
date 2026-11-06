@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.LocalTime;
 
 @Controller
 @RequestMapping("/reservas")
@@ -42,10 +43,27 @@ public class ReservaController {
     @PostMapping("/nueva")
     public String crear(Principal principal, @Valid @ModelAttribute("form") ReservaForm form,
                         BindingResult result, Model model, RedirectAttributes flash) {
+        // Convertir la selección explícita (hora + minutos 24 h) a LocalTime.
+        if (form.getHoraInicioHora() != null && form.getHoraInicioMinuto() != null
+                && form.getHoraInicioHora() >= 0 && form.getHoraInicioHora() <= 23
+                && form.getHoraInicioMinuto() >= 0 && form.getHoraInicioMinuto() <= 59) {
+            form.setHoraInicio(LocalTime.of(form.getHoraInicioHora(), form.getHoraInicioMinuto()));
+        }
+        if (form.getHoraFinHora() != null && form.getHoraFinMinuto() != null
+                && form.getHoraFinHora() >= 0 && form.getHoraFinHora() <= 23
+                && form.getHoraFinMinuto() >= 0 && form.getHoraFinMinuto() <= 59) {
+            form.setHoraFin(LocalTime.of(form.getHoraFinHora(), form.getHoraFinMinuto()));
+        }
+        if (form.getHoraInicio() == null || form.getHoraFin() == null) {
+            result.rejectValue("horaInicio", "horaInicio",
+                    "Seleccione la hora de inicio (hora y minutos) en formato 24 horas.");
+            result.rejectValue("horaFin", "horaFin",
+                    "Seleccione la hora de fin (hora y minutos) en formato 24 horas.");
+        }
         if (result.hasErrors()) {
             model.addAttribute("mesas", reservas.listarMesasActivas());
             model.addAttribute("titulo", "Nueva reserva");
-            model.addAttribute("error", "Revise fecha, horarios y cantidad de personas.");
+            model.addAttribute("error", "Revise fecha, horarios (24 horas) y cantidad de personas.");
             return "reservas/formulario";
         }
         try {

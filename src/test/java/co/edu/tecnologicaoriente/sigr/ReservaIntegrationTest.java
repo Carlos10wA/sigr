@@ -157,6 +157,82 @@ class ReservaIntegrationTest {
     }
 
     @Test
+    void claridadHorariosNumeracionYFechas() throws Exception {
+        var m = mesa("Mesa claridad", 4);
+        crearUsuario("cliente-claridad", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-claridad");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(5);
+        var creada = reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:30", 2));
+        String fechaFmt = dia.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-claridad").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+
+        // Formulario: selección explícita 24 h, ayuda, sin precarga arbitraria, selector con capacidad.
+        mockMvc.perform(get("/reservas/nueva").session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("12:00 = mediodía; 00:00 = medianoche")))
+                .andExpect(content().string(containsString("Hora de inicio — hora (24 horas)")))
+                .andExpect(content().string(containsString("Hora de inicio — minutos")))
+                .andExpect(content().string(containsString("Hora de fin — hora (24 horas)")))
+                .andExpect(content().string(containsString("Hora de fin — minutos")))
+                .andExpect(content().string(not(containsString("type=\"time\""))))
+                .andExpect(content().string(containsString("Mesa claridad — 4 personas")))
+                .andExpect(content().string(containsString("-- Hora --")))
+                .andExpect(content().string(containsString("-- Minutos --")));
+
+        // Listado: encabezado N.º, columna Mesa independiente, fecha dd/MM/yyyy y HH:mm.
+        mockMvc.perform(get("/reservas").session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("N.º de reserva")))
+                .andExpect(content().string(not(containsString("<th>#</th>"))))
+                .andExpect(content().string(containsString("Mesa")))
+                .andExpect(content().string(containsString(fechaFmt)))
+                .andExpect(content().string(containsString("12:00")))
+                .andExpect(content().string(containsString("13:30")));
+
+        // Detalle: misma presentación, sin renumerar el ID.
+        mockMvc.perform(get("/reservas/{id}", creada.getId()).session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(fechaFmt)))
+                .andExpect(content().string(containsString("12:00")))
+                .andExpect(content().string(containsString("13:30")));
+
+        // Creación vía formulario con hora/minutos 24 h (fin> inicio, sin superposición).
+        mockMvc.perform(post("/reservas/nueva").with(csrf()).session(ses)
+                        .param("mesaId", m.getId().toString())
+                        .param("fecha", dia.plusDays(1).toString())
+                        .param("horaInicioHora", "12").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "13").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "2"))
+                .andExpect(status().is3xxRedirection());
+        // Fin anterior al inicio por formulario se rechaza (400 de negocio en el formulario, sin crear).
+        mockMvc.perform(post("/reservas/nueva").with(csrf()).session(ses)
+                        .param("mesaId", m.getId().toString())
+                        .param("fecha", dia.plusDays(2).toString())
+                        .param("horaInicioHora", "14").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "12").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "2"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Nueva reserva")));
+    }
+
+    @Test
+    void mesasDemoRepetibleSinDuplicarPorHttp() throws Exception {
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var sesAdmin = (org.springframework.mock.web.MockHttpSession) sAdmin;
+        reservas.cargarMesasDemo();
+        long antes = reservas.listarMesas().size();
+        mockMvc.perform(post("/mesas/cargar-demo").with(csrf()).session(sesAdmin))
+                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(post("/mesas/cargar-demo").with(csrf()).session(sesAdmin))
+                .andExpect(status().is3xxRedirection());
+        assertThat(reservas.listarMesas()).hasSize((int) antes);
+    }
+
+    @Test
     void mesasDemoIdempotente() {
         int n1 = reservas.cargarMesasDemo();
         assertThat(n1).isGreaterThanOrEqualTo(0);

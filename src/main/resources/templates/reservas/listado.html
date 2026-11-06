@@ -22,13 +22,13 @@
   <p th:if="${#lists.isEmpty(reservas)}">No hay reservas registradas.</p>
   <div class="table-wrap" th:if="${!#lists.isEmpty(reservas)}">
     <table>
-      <thead><tr><th>#</th><th>Titular</th><th>Mesa</th><th>Fecha</th><th>Horario</th><th>Personas</th><th>Estado</th><th></th></tr></thead>
+      <thead><tr><th>N.º de reserva</th><th>Titular</th><th>Mesa</th><th>Fecha</th><th>Horario</th><th>Personas</th><th>Estado</th><th></th></tr></thead>
       <tbody>
         <tr th:each="r : ${reservas}">
           <td th:text="${r.id}"></td>
           <td th:text="${r.clienteNombre}"></td>
           <td th:text="${r.mesa.nombre}"></td>
-          <td th:text="${r.fecha}"></td>
+          <td th:text="${#temporals.format(r.fecha, 'dd/MM/yyyy')}"></td>
           <td><span th:text="${#temporals.format(r.horaInicio, 'HH:mm')}"></span> - <span th:text="${#temporals.format(r.horaFin, 'HH:mm')}"></span></td>
           <td th:text="${r.cantidadPersonas}"></td>
           <td th:text="${r.estado.nombreES()}"></td>

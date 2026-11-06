@@ -14,7 +14,7 @@
   <div th:if="${error}" class="alert error" th:text="${error}"></div>
   <p>Titular: <span th:text="${reserva.clienteNombre}"></span></p>
   <p>Mesa: <span th:text="${reserva.mesa.nombre}"></span> (capacidad <span th:text="${reserva.mesa.capacidad}"></span>)</p>
-  <p>Fecha: <span th:text="${reserva.fecha}"></span></p>
+  <p>Fecha: <span th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}"></span></p>
   <p>Horario: <span th:text="${#temporals.format(reserva.horaInicio, 'HH:mm')}"></span> - <span th:text="${#temporals.format(reserva.horaFin, 'HH:mm')}"></span></p>
   <p>Personas: <span th:text="${reserva.cantidadPersonas}"></span></p>
   <p>Estado: <b th:text="${reserva.estado.nombreES()}"></b></p>
