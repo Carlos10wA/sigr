@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reservas - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Reservas</h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p><a th:href="@{/reservas/nueva}"><button type="button">Nueva reserva</button></a></p>
+  <div sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')">
+    <form th:action="@{/mesas/cargar-demo}" method="post" style="display:inline">
+      <button type="submit">Cargar mesas de demostración</button>
+    </form>
+    <a th:href="@{/mesas}"><button type="button">Gestionar mesas</button></a>
+  </div>
+  <p th:if="${#lists.isEmpty(reservas)}">No hay reservas registradas.</p>
+  <div class="table-wrap" th:if="${!#lists.isEmpty(reservas)}">
+    <table>
+      <thead><tr><th>#</th><th>Titular</th><th>Mesa</th><th>Fecha</th><th>Horario</th><th>Personas</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="r : ${reservas}">
+          <td th:text="${r.id}"></td>
+          <td th:text="${r.clienteNombre}"></td>
+          <td th:text="${r.mesa.nombre}"></td>
+          <td th:text="${r.fecha}"></td>
+          <td><span th:text="${#temporals.format(r.horaInicio, 'HH:mm')}"></span> - <span th:text="${#temporals.format(r.horaFin, 'HH:mm')}"></span></td>
+          <td th:text="${r.cantidadPersonas}"></td>
+          <td th:text="${r.estado.nombreES()}"></td>
+          <td><a th:href="@{/reservas/{id}(id=${r.id})}">Ver detalle</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

@@ -13,7 +13,7 @@
   <p>Sistema Integral de Gestión de Restaurante — Etapa 3: menú y platos.</p>
   <div sec:authorize="isAuthenticated()">
     <p>Panel principal para <b sec:authentication="name">usuario</b>.</p>
-    <p><a th:href="@{/platos}">Ver catálogo</a> · <a th:href="@{/pedidos}">Ver pedidos</a></p>
+    <p><a th:href="@{/platos}">Ver catálogo</a> · <a th:href="@{/pedidos}">Ver pedidos</a> · <a th:href="@{/reservas}">Ver reservas</a></p>
     <p sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')">
       <a th:href="@{/usuarios}">Administrar usuarios</a> ·
       <a th:href="@{/categorias}">Gestionar categorías</a>
@@ -26,7 +26,8 @@
     <li>Usuarios: disponible (Etapa 2).</li>
     <li>Menús y platos: disponible (Etapa 3).</li>
     <li>Pedidos: disponible.</li>
-    <li>Reservas, Facturación, Caja y Reportes: pendientes.</li>
+    <li>Reservas: disponible.</li>
+    <li>Facturación, Caja y Reportes: pendientes.</li>
   </ul>
 </main>
 <footer><small>SIGR — Proyecto académico. Zona horaria: America/Bogota. Valores en COP.</small></footer>

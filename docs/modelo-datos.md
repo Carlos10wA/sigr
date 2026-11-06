@@ -61,6 +61,33 @@ H2 en archivo `data/sigrdb` (`spring.jpa.hibernate.ddl-auto=update`). Esquema cr
 
 Reglas Pedidos: solo `ACTIVO+DISPONIBLE`; misma plato en dos líneas se fusiona sumando cantidades; transiciones `PENDIENTE→EN_PREPARACION→LISTO→ENTREGADO`, `CANCELADO` solo desde pendiente/en preparación (CLIENTE solo cancela lo suyo); CLIENTE con ID ajeno recibe 404.
 
+## Tablas Reservas
+
+### `mesas`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| nombre | VARCHAR(60) único | `Mesa 1`…, `Terraza 1`. |
+| capacidad | INT | 1–50. |
+| activa | BOOLEAN | `false` bloquea nuevas reservas. |
+| fecha_creacion | TIMESTAMP | Creación. |
+
+### `reservas`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| usuario_id | BIGINT FK → usuarios | Creador (dueño para CLIENTE). |
+| mesa_id | BIGINT FK → mesas | Mesa reservada. |
+| cliente_nombre | VARCHAR(100) | Titular (CLIENTE: forzado a su nombre). |
+| fecha | DATE | Fecha (no pasada, America/Bogota). |
+| hora_inicio | TIME | Inicio. |
+| hora_fin | TIME | Fin (`> inicio`). |
+| cantidad_personas | INT | 1 ≤ … ≤ mesa.capacidad. |
+| estado | VARCHAR(20) | `CONFIRMADA`, `CANCELADA`. |
+| fecha_creacion | TIMESTAMP | Creación. |
+
+Reglas Reservas: superposición = misma mesa + misma fecha + `CONFIRMADA` con `inicio_nuevo < fin_existente && fin_nuevo > inicio_existente`; cancelada no bloquea. CLIENTE con ID ajeno recibe 404. Solo ADMINISTRADOR gestiona mesas.
+
 ## Relaciones y reglas (Etapa 3)
 - `platos.categoria_id` → `categorias.id` (N:1). Desactivar categoría/plato conserva referencias (no se elimina).
 - Desactivado (`activo=false`) ≠ no disponible (`disponible=false`): el primero oculta; el segundo avisa pero no se puede pedir.

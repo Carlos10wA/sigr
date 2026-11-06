@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${titulo}">Reserva - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1 th:text="${titulo}">Nueva reserva</h1>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <div th:if="${#lists.isEmpty(mesas)}" class="alert error">No hay mesas activas. Pida al administrador que cree mesas.</div>
+  <form th:action="@{/reservas/nueva}" th:object="${form}" method="post">
+    <div>
+      <label for="mesaId">Mesa</label>
+      <select id="mesaId" th:field="*{mesaId}">
+        <option value="">-- Seleccione --</option>
+        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre + ' (capacidad ' + m.capacidad + ')'}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('mesaId')}" th:errors="*{mesaId}"></span>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMINISTRADOR','ROLE_MESERO')">
+      <label for="clienteNombre">Nombre del titular</label>
+      <input id="clienteNombre" type="text" placeholder="Nombre del cliente" th:field="*{clienteNombre}"/>
+    </div>
+    <div>
+      <label for="fecha">Fecha</label>
+      <input id="fecha" type="date" th:field="*{fecha}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+    </div>
+    <div>
+      <label for="horaInicio">Hora de inicio</label>
+      <input id="horaInicio" type="time" th:field="*{horaInicio}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('horaInicio')}" th:errors="*{horaInicio}"></span>
+    </div>
+    <div>
+      <label for="horaFin">Hora de fin</label>
+      <input id="horaFin" type="time" th:field="*{horaFin}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('horaFin')}" th:errors="*{horaFin}"></span>
+    </div>
+    <div>
+      <label for="cantidadPersonas">Cantidad de personas</label>
+      <input id="cantidadPersonas" type="number" min="1" max="50" th:field="*{cantidadPersonas}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('cantidadPersonas')}" th:errors="*{cantidadPersonas}"></span>
+    </div>
+    <button type="submit">Crear reserva</button>
+    <a th:href="@{/reservas}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>

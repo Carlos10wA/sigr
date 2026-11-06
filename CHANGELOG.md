@@ -38,6 +38,18 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Reservas (2026-11-06)
+### Agregado
+- Entidades `Mesa` (nombre único, capacidad 1–50, activa) y `Reserva` (dueño, mesa, titular, fecha, horarios, personas, `CONFIRMADA/CANCELADA`).
+- Reglas: mesa activa, fecha no pasada (America/Bogota), fin después de inicio, personas ≤ capacidad, y **anti-superposición por mesa**: misma mesa + fecha + horarios solapados en `CONFIRMADA` se rechaza; cancelada libera el hueco.
+- Permisos servidor: ADMINISTRADOR gestiona mesas y todas las reservas; MESERO ve/crea/cancela la operación (todas); CLIENTE solo crea/consulta/cancela las suyas — ID ajeno devuelve 404. Titular de CLIENTE forzado a su nombre.
+- Mesas demo idempotentes (botón ADMINISTRADOR): Mesa 1–4 + Terraza 1. Pantallas ES `/mesas`, `/reservas`, `/reservas/nueva`, `/reservas/{id}` con render de datos.
+- Tests `ReservaIntegrationTest` 5 casos: capacidad/fecha/horario, superposición + hueco libre tras cancelar, IDOR 404 + cancelar propia, roles (mesas solo ADMIN), mesas demo. Total 33.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Pedidos (2026-11-06)
 ### Agregado
 - Entidades `Pedido` + `DetallePedido` con precio histórico por línea (nombre/precio al momento del pedido), total BigDecimal calculado en el servidor (nunca confiado al cliente), cantidades 1–100 y solo platos activos+disponibles.

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${titulo}">Mesa - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1 th:text="${titulo}">Mesa</h1>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:action="${mesaId != null} ? @{/mesas/{id}/editar(id=${mesaId})} : @{/mesas/nueva}" th:object="${form}" method="post">
+    <div>
+      <label for="nombre">Nombre de la mesa</label>
+      <input id="nombre" type="text" placeholder="Mesa 1" th:field="*{nombre}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+    </div>
+    <div>
+      <label for="capacidad">Capacidad (personas)</label>
+      <input id="capacidad" type="number" min="1" max="50" th:field="*{capacidad}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('capacidad')}" th:errors="*{capacidad}"></span>
+    </div>
+    <div>
+      <label><input type="checkbox" th:field="*{activa}"/> Activa</label>
+    </div>
+    <button type="submit">Guardar</button>
+    <a th:href="@{/mesas}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>

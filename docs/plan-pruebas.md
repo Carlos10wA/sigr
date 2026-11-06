@@ -76,6 +76,17 @@ Resumen: `Tests run: 23, Failures: 0, Errors: 0 — BUILD SUCCESS`. Fotografías
 
 Resumen: `Tests run: 28, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verificación de catálogo previa: búsqueda, filtros y detalle siguen pasando (23 previos).
 
+## Reservas (2026-11-06)
+| Prueba (`ReservaIntegrationTest`) | Resultado real |
+|---|---|
+| `crearValidaCapacidadFechaYHorario` — capacidad excedida, fin≤inicio y fecha pasada rechazados; titular CLIENTE forzado | OK |
+| `previeneSuperposicionYPermiteCancelada` — solapamiento rechazado, colindante permitido, hueco libre tras cancelar | OK |
+| `cancelarYClienteSoloLoSuyoIdor404` — detalle propio 200, ajeno 404, cancelar propia → CANCELADA, lista solo propia | OK |
+| `meseroYAdminVeTodasYMesasSoloAdmin` — mesero crea/ve, mesas 403 para mesero, admin 200, anónimo redirige | OK |
+| `mesasDemoIdempotente` — 2ª carga 0 nuevas, contiene Mesa 1–4 + Terraza 1 | OK |
+
+Resumen: `Tests run: 33, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Pedidos y catálogo siguen pasando.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

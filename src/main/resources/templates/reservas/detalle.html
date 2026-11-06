@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Detalle de reserva - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Reserva <span th:text="${reserva.id}"></span></h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p>Titular: <span th:text="${reserva.clienteNombre}"></span></p>
+  <p>Mesa: <span th:text="${reserva.mesa.nombre}"></span> (capacidad <span th:text="${reserva.mesa.capacidad}"></span>)</p>
+  <p>Fecha: <span th:text="${reserva.fecha}"></span></p>
+  <p>Horario: <span th:text="${#temporals.format(reserva.horaInicio, 'HH:mm')}"></span> - <span th:text="${#temporals.format(reserva.horaFin, 'HH:mm')}"></span></p>
+  <p>Personas: <span th:text="${reserva.cantidadPersonas}"></span></p>
+  <p>Estado: <b th:text="${reserva.estado.nombreES()}"></b></p>
+  <form th:if="${reserva.estado.name() == 'CONFIRMADA'}" th:action="@{/reservas/{id}/cancelar(id=${reserva.id})}" method="post">
+    <button type="submit" th:onsubmit="return confirm('¿Cancelar esta reserva?')">Cancelar reserva</button>
+  </form>
+  <p><a th:href="@{/reservas}">Volver a reservas</a></p>
+</main>
+</body>
+</html>

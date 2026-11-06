@@ -57,7 +57,7 @@ Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió 
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28` (totales servidor, precio histórico, estados, IDOR 404, render con datos). Ver `docs/plan-pruebas.md`.
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28`, Reservas `33/33` (mesas, capacidad, anti-superposición, cancelación, IDOR 404, render con datos). Ver `docs/plan-pruebas.md` y `docs/estado-avance.md`.
 
 ## Estructura
 ```
@@ -70,7 +70,7 @@ data/ (H2 local, no versionar)
 ```
 
 ## Alcance (6 módulos)
-Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas, Facturación, Caja/Reportes pendientes.
+Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas ✅ — Facturación, Caja/Reportes pendientes (no implementados).
 
 ## Catálogo de demostración (Etapa 3)
 - Tras iniciar sesión como ADMINISTRADOR, abra `/platos` y pulse **Cargar datos de demostración**. Crea si faltan las 4 categorías y los 12 platos (3 por categoría), con fotografías reales locales CC (`docs/creditos-imagenes.md`); si ya existen, no duplica ni sobrescribe. Para revisar en vivo, reinicie con su `SIGR_ADMIN_PASSWORD` habitual y repita el botón; luego anote la captura.
