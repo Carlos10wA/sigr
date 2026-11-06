@@ -87,6 +87,12 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<Plato> listarPlatosAdmin() { return platos.findAll(); }
 
+    /** Platos que se pueden pedir: activos y disponibles. */
+    @Transactional(readOnly = true)
+    public List<Plato> listarDisponibles() {
+        return platos.findByActivoTrueAndDisponibleTrueOrderByNombreAsc();
+    }
+
     @Transactional(readOnly = true)
     public Plato buscarPlato(Long id) {
         return platos.findById(id)

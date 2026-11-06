@@ -32,5 +32,7 @@ public interface PlatoRepository extends JpaRepository<Plato, Long> {
     @EntityGraph(attributePaths = "categoria")
     List<Plato> findByCategoria_IdInAndActivoTrue(Collection<Long> categoriaIds);
 
+    List<Plato> findByActivoTrueAndDisponibleTrueOrderByNombreAsc();
+
     boolean existsByNombre(String nombre);
 }

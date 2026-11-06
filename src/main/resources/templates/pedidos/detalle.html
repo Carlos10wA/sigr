@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Detalle de pedido - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Pedido <span th:text="${pedido.id}"></span></h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p>Cliente: <span th:text="${pedido.usuario.nombreCompleto}"></span>
+     (<span th:text="${pedido.usuario.usuario}"></span>)</p>
+  <p>Estado: <b th:text="${pedido.estado.nombreES()}"></b></p>
+  <p>Creado: <span th:text="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd HH:mm')}"></span></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Plato</th><th>Precio unitario</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+      <tbody>
+        <tr th:each="d : ${pedido.detalles}">
+          <td th:text="${d.nombrePlato}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(d.precioUnitario, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          <td th:text="${d.cantidad}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(d.subtotal, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>Total: <span th:text="${'$' + #numbers.formatDecimal(pedido.total, 1, 'POINT', 2, 'COMMA') + ' COP'}"></span></b></p>
+
+  <h2>Cambiar estado</h2>
+  <form th:action="@{/pedidos/{id}/cambiar-estado(id=${pedido.id})}" method="post">
+    <label for="estado">Nuevo estado</label>
+    <select id="estado" name="estado">
+      <option th:each="e : ${estados}" th:value="${e}" th:text="${e.nombreES()}"></option>
+    </select>
+    <button type="submit">Actualizar estado</button>
+  </form>
+  <p sec:authorize="hasAuthority('ROLE_CLIENTE')"><small>Solo el personal del restaurante puede avanzar el estado; usted puede cancelar su pedido pendiente o en preparación.</small></p>
+  <p><a th:href="@{/pedidos}">Volver a pedidos</a></p>
+</main>
+</body>
+</html>

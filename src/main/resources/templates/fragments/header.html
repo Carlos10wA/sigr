@@ -7,6 +7,7 @@
     <nav>
       <a th:href="@{/}">Inicio</a>
       <a sec:authorize="isAuthenticated()" th:href="@{/platos}">Catálogo</a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/pedidos}">Pedidos</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/usuarios}">Usuarios</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/categorias}">Categorías</a>
     </nav>

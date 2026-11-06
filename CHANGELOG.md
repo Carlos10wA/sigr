@@ -38,6 +38,18 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Pedidos (2026-11-06)
+### Agregado
+- Entidades `Pedido` + `DetallePedido` con precio histórico por línea (nombre/precio al momento del pedido), total BigDecimal calculado en el servidor (nunca confiado al cliente), cantidades 1–100 y solo platos activos+disponibles.
+- Estados `PENDIENTE → EN_PREPARACION → LISTO → ENTREGADO` y `CANCELADO` desde pendiente/en preparación; transiciones validadas en el servidor.
+- Permisos servidor: ADMINISTRADOR ve/gestiona todos; MESERO crea y gestiona la operación (todos); CLIENTE solo crea/consulta/cancela los suyos — ID ajeno devuelve 404 (sin revelar existencia). El pedido queda asociado al creador autenticado.
+- Pantallas ES `/pedidos`, `/pedidos/nuevo`, `/pedidos/{id}` con render de líneas, subtotales y total COP; navegación y panel principal actualizados.
+- Tests `PedidoIntegrationTest` 5 casos: total servidor + snapshot, rechazo no disponible/desactivado/cantidad, transiciones, IDOR 404 + render detalle/lista, roles. Total 28.
+
+### Pendiente
+- Módulos Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Fotografías reales del catálogo (2026-11-06)
 ### Cambiado
 - Las 12 ilustraciones generadas fueron reemplazadas por fotografías reales con permiso de reutilización (CC BY / CC BY-SA / CC0), guardadas en `src/main/resources/static/images/platos/` (miniaturas 800 px, 83–268 KB, funcionamiento sin conexión). Sin ilustraciones presentadas como fotografías.

@@ -65,6 +65,17 @@ Resumen: `Tests run: 22, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06).
 
 Resumen: `Tests run: 23, Failures: 0, Errors: 0 — BUILD SUCCESS`. Fotografías CC locales 800 px (83–268 KB); ver `docs/creditos-imagenes.md`. Wikimedia devolvió 429 en una descarga (limonada); se tomó vía Openverse/Flickr (CC BY) y se documentó.
 
+## Pedidos (2026-11-06)
+| Prueba (`PedidoIntegrationTest`) | Resultado real |
+|---|---|
+| `crearCalculaTotalEnServidorConSnapshot` — 2 × $12.000 = $24.000,00; cambio posterior de precio no altera total histórico | OK |
+| `rechazaNoDisponibleDesactivadoYCantidadInvalida` — no disponible, desactivado, cantidad 0/negativa/inexistente rechazados | OK |
+| `transicionesValidasEInvalidas` — PENDIENTE→EN_PREPARACION→LISTO→ENTREGADO; saltos y cancelar tras listo rechazados | OK |
+| `clienteSoloVeYCancelarLosSuyosEIdorDevuelve404` — detalle propio 200 con datos, detalle ajeno 404, lista solo propia, cliente no avanza | OK |
+| `meseroVeTodosYAdminGestionaTodos` — mesero ve todos y crea, admin ve todos, anónimo redirige a login | OK |
+
+Resumen: `Tests run: 28, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verificación de catálogo previa: búsqueda, filtros y detalle siguen pasando (23 previos).
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

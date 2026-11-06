@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${titulo}">Nuevo pedido - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1 th:text="${titulo}">Nuevo pedido</h1>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p>Seleccione los platos disponibles y las cantidades. Las filas sin plato se ignoran.</p>
+  <div th:if="${#lists.isEmpty(platos)}" class="alert error">No hay platos disponibles para pedir en este momento.</div>
+  <form th:action="@{/pedidos/nuevo}" th:object="${form}" method="post">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Plato disponible</th><th>Cantidad</th></tr></thead>
+        <tbody>
+          <tr th:each="linea, iter : *{lineas}">
+            <td>
+              <select th:id="'plato-' + ${iter.index}" th:field="*{lineas[__${iter.index}__].platoId}">
+                <option value="">-- Sin plato --</option>
+                <option th:each="plato : ${platos}" th:value="${plato.id}"
+                        th:text="${plato.nombre + ' — ' + '$' + #numbers.formatDecimal(plato.precio, 1, 'POINT', 2, 'COMMA') + ' COP'}"></option>
+              </select>
+            </td>
+            <td>
+              <input type="number" min="1" max="100" th:id="'cantidad-' + ${iter.index}"
+                     th:field="*{lineas[__${iter.index}__].cantidad}"/>
+              <span class="field-error" th:if="${#fields.hasErrors('lineas[' + iter.index + '].cantidad')}"
+                    th:errors="*{lineas[__${iter.index}__].cantidad}"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="submit">Crear pedido</button>
+    <a th:href="@{/pedidos}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>
