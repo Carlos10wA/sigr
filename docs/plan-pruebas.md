@@ -37,6 +37,18 @@ Resumen final: `Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCC
 | `adminPuedeAccederUsuarios` — ADMINISTRADOR `/usuarios` → 200 | OK |
 Resumen: `Tests run: 14, Failures: 0 — BUILD SUCCESS`.
 
+## Etapa 3 — Menús (2026-11-06)
+| Prueba (`MenuIntegrationTest`) | Resultado real |
+|---|---|
+| `crearEditarDesactivarPlato` | OK (CRUD + desactivado oculta del catálogo) |
+| `validacionPrecioYCategoria` | OK (categoría desactivada rechazada) |
+| `filtroCatalogoPorNombreYCategoria` | OK (búsqueda + filtro) |
+| `demoIdempotenteNoDuplica` | OK (2ª carga 0 nuevos, ≥12 platos) |
+| `persistenciaTrasLimpiarContexto` | OK (reload tras `clear`, BigDecimal COP) |
+| `permisosTresRolesEnCatalogoYGestion` | OK (MESERO/CLIENTE leen 200, gestión 403; ADMIN 200; precio 0 → errores form) |
+
+Resumen: `Tests run: 20, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
-Autenticación/roles, platos, pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
+Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

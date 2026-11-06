@@ -13,3 +13,7 @@
 | CFG-09 | Módulo usuarios (Etapa 2) | `model/`, `repository/`, `service/`, `controller/UsuarioController`, `security/DbUserDetailsService`, `config/DataInitializer` | ídem | 0.0.1-SNAPSHOT | Revisado Etapa 2 |
 | CFG-10 | Vistas usuarios | `templates/usuarios/`, `templates/fragments/` | ídem | Etapa 2 | Revisado |
 | CFG-11 | Clave admin inicial | variable de entorno `SIGR_ADMIN_PASSWORD` (no versionada) | ídem | — | Configurado vía PowerShell, no en Git |
+| CFG-12 | Módulo menús (Etapa 3) | `model/Categoria,Plato`, `MenuService`, `DemoDataService`, `CategoriaController`, `PlatoController` | ídem | 0.0.1-SNAPSHOT | Revisado Etapa 3 |
+| CFG-13 | Vistas menús | `templates/platos/`, `templates/categorias/`, `templates/error/403.html` | ídem | Etapa 3 | Revisado |
+| CFG-14 | Fotografías catálogo | `static/images/platos/*.jpg` (12 + `placeholder.jpg`), CC0 original (ver `docs/fotos-catalogo.md`) | ídem | — | Revisado Etapa 3 |
+| CFG-15 | Pruebas menú | `src/test/java/.../MenuIntegrationTest.java` | ídem | JUnit 5 | Revisado |

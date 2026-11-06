@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Catálogo - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Catálogo del restaurante</h1>
+  <p>Descubra nuestros platos, bebidas y postres preparados al momento.</p>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+  <form th:action="@{/platos}" method="get" class="filters">
+    <div>
+      <label for="q">Buscar por nombre</label>
+      <input id="q" name="q" type="search" th:value="${q}" placeholder="Ej. bandeja"/>
+    </div>
+    <div>
+      <label for="categoriaId">Categoría</label>
+      <select id="categoriaId" name="categoriaId">
+        <option value="">Todas</option>
+        <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}" th:selected="${c.id == categoriaId}"></option>
+      </select>
+    </div>
+    <button type="submit">Buscar</button>
+  </form>
+
+  <div sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" class="admin-actions">
+    <a th:href="@{/platos/nuevo}"><button type="button">Nuevo plato</button></a>
+    <a th:href="@{/categorias}"><button type="button">Gestionar categorías</button></a>
+    <form th:action="@{/platos/cargar-demo}" method="post" style="display:inline">
+      <button type="submit">Cargar datos de demostración</button>
+    </form>
+    <small>La carga es idempotente: no duplica ni sobrescribe platos existentes.</small>
+  </div>
+
+  <p th:if="${#lists.isEmpty(platos)}">No se encontraron platos con esos criterios.</p>
+  <div class="cards">
+    <article class="card" th:each="p : ${platos}">
+      <img th:src="${p.foto}" th:alt="${p.nombre}" loading="lazy" onerror="this.onerror=null;this.src='/images/platos/placeholder.jpg';"/>
+      <div class="card-body">
+        <h3 th:text="${p.nombre}"></h3>
+        <p class="cat" th:text="${p.categoria.nombre}"></p>
+        <p th:text="${p.descripcion}"></p>
+        <p class="price" th:text="'$' + #numbers.formatDecimal(p.precio, 1, 'POINT', 2, 'COMMA') + ' COP'"></p>
+        <span th:if="${p.disponible}" class="badge ok">Disponible</span>
+        <span th:if="${!p.disponible}" class="badge off">No disponible temporalmente</span>
+        <p><a th:href="@{/platos/{id}(id=${p.id})}">Ver detalle</a></p>
+        <div sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')">
+          <a th:href="@{/platos/{id}/editar(id=${p.id})}"><button type="button">Editar</button></a>
+          <form th:action="@{/platos/{id}/cambiar-estado(id=${p.id})}" method="post" style="display:inline"
+                th:onsubmit="${p.activo} ? 'return confirm(\'¿Desactivar este plato? Se conservará en el historial.\');' : ''">
+            <input type="hidden" name="activo" th:value="${!p.activo}"/>
+            <button type="submit" th:text="${p.activo ? 'Desactivar' : 'Activar'}"></button>
+          </form>
+          <form th:action="@{/platos/{id}/disponibilidad(id=${p.id})}" method="post" style="display:inline">
+            <input type="hidden" name="disponible" th:value="${!p.disponible}"/>
+            <button type="submit" th:text="${p.disponible ? 'Marcar no disponible' : 'Marcar disponible'}"></button>
+          </form>
+        </div>
+      </div>
+    </article>
+  </div>
+</main>
+</body>
+</html>

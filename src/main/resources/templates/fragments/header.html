@@ -6,7 +6,9 @@
     <a class="brand" th:href="@{/}">SIGR</a>
     <nav>
       <a th:href="@{/}">Inicio</a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/platos}">Catálogo</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/usuarios}">Usuarios</a>
+      <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/categorias}">Categorías</a>
     </nav>
     <div class="nav-user" sec:authorize="isAuthenticated()">
       <span sec:authentication="name">usuario</span>

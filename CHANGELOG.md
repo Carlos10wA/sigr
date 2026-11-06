@@ -26,6 +26,18 @@
 - Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata).
 
+## [0.0.1-SNAPSHOT] — Etapa 3 (2026-11-06)
+### Agregado
+- Categorías (Entradas, Platos principales, Bebidas, Postres) y platos JPA con BigDecimal COP, fotografía local, disponible/activo (desactivado ≠ no disponible).
+- Catálogo responsive `/platos` (búsqueda + filtro categoría, tarjetas), detalle, formularios ES con validación (precio > 0, categoría activa).
+- Permisos: solo ADMINISTRADOR crea/edita/desactiva (procedimiento en servidor vía @PreAuthorize); MESERO/CLIENTE consultan catálogo.
+- Datos demo explícitos e idempotentes: botón `Cargar datos de demostración` (POST `/platos/cargar-demo`), 12 platos + respaldo, fotos CC0 en `static/images/platos/` (ver `docs/fotos-catalogo.md`).
+- Tests `MenuIntegrationTest` 6 casos: CRUD/desactivación, validación, filtros, demo idempotente, persistencia, permisos 3 roles. Total 20.
+
+### Pendiente
+- Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Ajuste 403 (2026-11-06)
 ### Cambiado
 - Página personalizada 403 en español («Acceso denegado…») con enlace al panel, vía `error/403.html` + `/error/403` (estado HTTP 403, sin Whitelabel ni detalles técnicos). Restricción conservada.

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Categorías - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Categorías</h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p><a th:href="@{/categorias/nueva}"><button type="button">Nueva categoría</button></a></p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr th:each="c : ${categorias}">
+        <td th:text="${c.nombre}"></td>
+        <td th:text="${c.activa ? 'Activa' : 'Desactivada'}"></td>
+        <td>
+          <a th:href="@{/categorias/{id}/editar(id=${c.id})}"><button type="button">Editar</button></a>
+          <form th:action="@{/categorias/{id}/cambiar-estado(id=${c.id})}" method="post" style="display:inline"
+                th:onsubmit="${c.activa} ? 'return confirm(\'¿Desactivar esta categoría? No aparecerá en el catálogo.\');' : ''">
+            <input type="hidden" name="activa" th:value="${!c.activa}"/>
+            <button type="submit" th:text="${c.activa ? 'Desactivar' : 'Activar'}"></button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p><a th:href="@{/platos}">Volver al catálogo</a></p>
+</main>
+</body>
+</html>

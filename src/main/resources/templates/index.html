@@ -10,17 +10,22 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <main>
   <h2>SIGR</h2>
-  <p>Sistema Integral de Gestión de Restaurante — Etapa 2: usuarios y permisos.</p>
+  <p>Sistema Integral de Gestión de Restaurante — Etapa 3: menú y platos.</p>
   <div sec:authorize="isAuthenticated()">
     <p>Panel principal para <b sec:authentication="name">usuario</b>.</p>
-    <p sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')"><a th:href="@{/usuarios}">Administrar usuarios</a></p>
+    <p><a th:href="@{/platos}">Ver catálogo</a></p>
+    <p sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')">
+      <a th:href="@{/usuarios}">Administrar usuarios</a> ·
+      <a th:href="@{/categorias}">Gestionar categorías</a>
+    </p>
   </div>
   <div sec:authorize="!isAuthenticated()">
     <p>Para continuar, <a th:href="@{/login}">inicie sesión</a>.</p>
   </div>
   <ul>
     <li>Usuarios: disponible (Etapa 2).</li>
-    <li>Menús, Pedidos, Reservas, Facturación, Caja y Reportes: pendientes.</li>
+    <li>Menús y platos: disponible (Etapa 3).</li>
+    <li>Pedidos, Reservas, Facturación, Caja y Reportes: pendientes.</li>
   </ul>
 </main>
 <footer><small>SIGR — Proyecto académico. Zona horaria: America/Bogota. Valores en COP.</small></footer>

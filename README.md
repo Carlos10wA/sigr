@@ -5,7 +5,7 @@ Institución: Tecnológica del Oriente. Estudiante: Carlos Alberto Ayala Larraho
 Docente: Carlos Carrascal Avendaño.
 
 ## Estado
-Línea base candidata **LB-SIGR-1.0** — Etapa 1 verificada (estructura inicial) y Etapa 2 implementada (usuarios persistentes, autenticación DB, permisos). **Línea base completa pendiente de validación y aprobación.** Sin etiqueta `v1.0.0`.
+Línea base candidata **LB-SIGR-1.0** — Etapa 1 verificada, Etapa 2 (usuarios) y Etapa 3 (menús/platos) implementadas. **Línea base completa pendiente de validación y aprobación.** Sin etiqueta `v1.0.0`.
 
 ## Tecnologías y versiones
 - Java **21.0.2 LTS** (`C:\Program Files\Java\jdk-21`), proyecto configurado para Java 21.
@@ -57,20 +57,24 @@ Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió 
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados: Etapa 1 `4/4`, Etapa 2 `12/12` (login OK/incorrecto, desactivado, duplicado, permisos por rol, último administrador, persistencia). Ver `docs/plan-pruebas.md`.
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20` (catálogo, permisos 3 roles, validaciones, filtros, demo idempotente, persistencia). Ver `docs/plan-pruebas.md`.
 
 ## Estructura
 ```
 pom.xml, mvnw, mvnw.cmd, .mvn/wrapper/
 src/main/java/.../model, repository, service, controller, dto, security, config
-src/main/resources/templates (usuarios, fragments), static/css, application.properties
-src/test/java/... (UsuarioIntegrationTest), src/test/resources/application.properties (H2 memoria + clave de test)
+src/main/resources/templates (usuarios, platos, categorias, fragments, error), static/css + static/images/platos, application.properties
+src/test/java/... (UsuarioIntegrationTest, MenuIntegrationTest), src/test/resources/application.properties
 docs/
 data/ (H2 local, no versionar)
 ```
 
 ## Alcance (6 módulos)
-Usuarios ✅ (Etapa 2) — Menús, Pedidos, Reservas, Facturación, Caja/Reportes pendientes.
+Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos, Reservas, Facturación, Caja/Reportes pendientes.
+
+## Catálogo de demostración (Etapa 3)
+- Tras iniciar sesión como ADMINISTRADOR, abra `/platos` y pulse **Cargar datos de demostración**. Crea si faltan las 4 categorías y los 12 platos (3 por categoría), con fotos locales CC0 (`docs/fotos-catalogo.md`); si ya existen, no duplica ni sobrescribe. Para revisar en vivo, reinicie con su `SIGR_ADMIN_PASSWORD` habitual y repita el botón; luego anote la captura.
+- Desactivado ≠ no disponible: desactivar oculta del catálogo (conserva historial futuro); no disponible deja ver el plato con aviso.
 
 ## Limitaciones
 - Panel principal aún sin datos de negocio (etapas siguientes).
