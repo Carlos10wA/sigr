@@ -5,13 +5,12 @@ Institución: Tecnológica del Oriente. Estudiante: Carlos Alberto Ayala Larraho
 Docente: Carlos Carrascal Avendaño.
 
 ## Estado
-Línea base candidata **LB-SIGR-1.0** — Etapa 1 completada (estructura inicial verificada).
-Pendiente de revisión/aprobación. No se creó etiqueta `v1.0.0` todavía.
+Línea base candidata **LB-SIGR-1.0** — Etapa 1 verificada (estructura inicial) y Etapa 2 implementada (usuarios persistentes, autenticación DB, permisos). **Línea base completa pendiente de validación y aprobación.** Sin etiqueta `v1.0.0`.
 
 ## Tecnologías y versiones
 - Java **21.0.2 LTS** (`C:\Program Files\Java\jdk-21`), proyecto configurado para Java 21.
 - Spring Boot **3.5.16** (última estable 3.5.x verificada en Maven Central, sin SNAPSHOT/RC).
-- Spring MVC + Thymeleaf (HTML5, CSS3), Spring Security, Spring Data JPA, Validation.
+- Spring MVC + Thymeleaf (HTML5, CSS3 responsive), Spring Security + BCrypt/CSRF, Spring Data JPA, Validation.
 - H2 **2.3.232** en archivo: `jdbc:h2:file:./data/sigrdb`.
 - Maven **3.9.11** + Maven Wrapper (`mvnw.cmd`) para Windows.
 - JUnit 5 / Spring Boot Test / Spring Security Test.
@@ -31,35 +30,48 @@ javac -version
 ```
 > Nota: sin esto, `java` puede resolver a 17 y `javac`/Maven a 23/25 según PATH.
 
+## Crear el administrador inicial (Etapa 2)
+La contraseña inicial del administrador **no está en el código, docs, logs ni Git**. En PowerShell, **en la misma terminal** donde ejecutará la app, defínala usted mismo (no la comparta en el chat):
+```powershell
+$env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
+.\mvnw.cmd spring-boot:run
+```
+- Al arrancar con la tabla `usuarios` vacía, se crea el usuario `admin` (rol ADMINISTRADOR, activo) con la contraseña cifrada BCrypt.
+- Si la variable no está definida, no se crea ningún usuario y el registro indica que la defina y reinicie.
+- La variable vive solo en la sesión PowerShell; al cerrar la terminal desaparece. Para cambiarla entre reinicios, vuelva a definirla antes de `spring-boot:run`.
+- Usuario demo de Etapa 1 eliminado: ya no existe en memoria ni en pantallas.
+
+Permisos (servidor): solo `ADMINISTRADOR` accede a `/usuarios/**` (listar/crear/editar/activar-desactivar). `MESERO` y `CLIENTE` reciben 403 en esas rutas. No se puede desactivar ni quitar el rol al único administrador activo.
+
 ## Instalación y ejecución local
 ```powershell
 $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
 $env:PATH="$env:JAVA_HOME\bin;$env:PATH"
+$env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
 .\mvnw.cmd test
 .\mvnw.cmd spring-boot:run
 ```
-Abrir http://localhost:8080 — usuario demo Etapa 1: `admin` / `admin123` (temporal, se reemplazará por usuarios JPA).
+Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió la variable alguna vez; si no, defínala en esta terminal y reinicie. Plaza de persistencia: `data/sigrdb.mv.db`.
 
 ## Pruebas
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados Etapa 1: `Tests run: 4, Failures: 0, Errors: 0` (ver `docs/plan-pruebas.md`).
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12` (login OK/incorrecto, desactivado, duplicado, permisos por rol, último administrador, persistencia). Ver `docs/plan-pruebas.md`.
 
 ## Estructura
 ```
 pom.xml, mvnw, mvnw.cmd, .mvn/wrapper/
-src/main/java/.../config, controller
-src/main/resources/templates, static/css, application.properties
-src/test/java/...
+src/main/java/.../model, repository, service, controller, dto, security, config
+src/main/resources/templates (usuarios, fragments), static/css, application.properties
+src/test/java/... (UsuarioIntegrationTest), src/test/resources/application.properties (H2 memoria + clave de test)
 docs/
 data/ (H2 local, no versionar)
 ```
 
-## Alcance planificado (6 módulos)
-Usuarios, Menús, Pedidos, Reservas, Facturación, Caja y Reportes. Solo la base de la Etapa 1 está implementada; los demás módulos están pendientes.
+## Alcance (6 módulos)
+Usuarios ✅ (Etapa 2) — Menús, Pedidos, Reservas, Facturación, Caja/Reportes pendientes.
 
-## Limitaciones de la Etapa 1
-- Usuario en memoria (no JPA), sin entidades de negocio todavía.
-- Sin datos reales en el panel (se implementa en etapas siguientes).
-- El resto de los documentos están en `docs/`; la aprobación de la línea base sigue pendiente.
+## Limitaciones
+- Panel principal aún sin datos de negocio (etapas siguientes).
+- El commit histórico de Etapa 1 contenía una clave demo obsoleta; desde Etapa 2 está eliminada del working tree y de las pantallas y ningún usuario depende de ella.

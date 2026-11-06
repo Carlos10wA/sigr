@@ -7,31 +7,20 @@
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
-<header>
-  <h1>SIGR</h1>
-  <p>Sistema Integral de Gestión de Restaurante</p>
-  <div sec:authorize="isAuthenticated()">
-    <span>Usuario: <b sec:authentication="name">usuario</b></span>
-    <form th:action="@{/logout}" method="post">
-      <button type="submit">Cerrar sesión</button>
-    </form>
-  </div>
-  <nav>
-    <a href="/">Inicio</a>
-    <span sec:authorize="hasAnyRole('ADMIN','MESERO','CLIENTE')">Panel</span>
-  </nav>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <main>
-  <h2>Etapa 1 — Estructura inicial verificada</h2>
-  <p>Esta es la página inicial de la línea base candidata <b>LB-SIGR-1.0</b>.</p>
-  <p>Los módulos (Usuarios, Menús, Pedidos, Reservas, Facturación, Caja y Reportes) se construirán en etapas siguientes.</p>
+  <h2>SIGR</h2>
+  <p>Sistema Integral de Gestión de Restaurante — Etapa 2: usuarios y permisos.</p>
+  <div sec:authorize="isAuthenticated()">
+    <p>Panel principal para <b sec:authentication="name">usuario</b>.</p>
+    <p sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')"><a th:href="@{/usuarios}">Administrar usuarios</a></p>
+  </div>
+  <div sec:authorize="!isAuthenticated()">
+    <p>Para continuar, <a th:href="@{/login}">inicie sesión</a>.</p>
+  </div>
   <ul>
-    <li>Panel principal (pendiente: datos reales desde la base de datos).</li>
-    <li>Menús: pendiente.</li>
-    <li>Pedidos: pendiente.</li>
-    <li>Reservas: pendiente.</li>
-    <li>Facturación: pendiente.</li>
-    <li>Caja y Reportes: pendiente.</li>
+    <li>Usuarios: disponible (Etapa 2).</li>
+    <li>Menús, Pedidos, Reservas, Facturación, Caja y Reportes: pendientes.</li>
   </ul>
 </main>
 <footer><small>SIGR — Proyecto académico. Zona horaria: America/Bogota. Valores en COP.</small></footer>

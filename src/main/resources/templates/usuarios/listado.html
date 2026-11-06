@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Usuarios - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Usuarios</h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p><a th:href="@{/usuarios/nuevo}"><button type="button">Nuevo usuario</button></a></p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr th:each="u : ${usuarios}">
+        <td th:text="${u.usuario}"></td>
+        <td th:text="${u.nombreCompleto}"></td>
+        <td th:text="${u.rol}"></td>
+        <td th:text="${u.activo ? 'Activo' : 'Inactivo'}"></td>
+        <td>
+          <a th:href="@{/usuarios/{id}/editar(id=${u.id})}"><button type="button">Editar</button></a>
+          <form th:action="@{/usuarios/{id}/cambiar-estado(id=${u.id})}" method="post" style="display:inline"
+                th:onsubmit="${u.activo} ? 'return confirm(\'¿Desactivar este usuario? No podrá iniciar sesión.\');' : ''">
+            <input type="hidden" name="activo" th:value="${!u.activo}"/>
+            <button type="submit" th:text="${u.activo ? 'Desactivar' : 'Activar'}"></button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</main>
+</body>
+</html>

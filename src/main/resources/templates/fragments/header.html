@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header">
+  <div class="nav">
+    <a class="brand" th:href="@{/}">SIGR</a>
+    <nav>
+      <a th:href="@{/}">Inicio</a>
+      <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/usuarios}">Usuarios</a>
+    </nav>
+    <div class="nav-user" sec:authorize="isAuthenticated()">
+      <span sec:authentication="name">usuario</span>
+      <span class="rol" sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')">[Administrador]</span>
+      <span class="rol" sec:authorize="hasAuthority('ROLE_MESERO')">[Mesero]</span>
+      <span class="rol" sec:authorize="hasAuthority('ROLE_CLIENTE')">[Cliente]</span>
+      <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit">Cerrar sesión</button>
+      </form>
+    </div>
+    <div sec:authorize="!isAuthenticated()">
+      <a th:href="@{/login}">Iniciar sesión</a>
+    </div>
+  </div>
+</header>
+</body>
+</html>

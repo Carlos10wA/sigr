@@ -10,3 +10,6 @@
 | CFG-06 | Pruebas | `src/test/java/...` | ídem | JUnit 5 | Revisado |
 | CFG-07 | Licencia | `LICENSE.txt` | ídem | Pendiente decisión autor | Pendiente |
 | CFG-08 | Repositorio GitHub | — | ídem | — | Pendiente URL real |
+| CFG-09 | Módulo usuarios (Etapa 2) | `model/`, `repository/`, `service/`, `controller/UsuarioController`, `security/DbUserDetailsService`, `config/DataInitializer` | ídem | 0.0.1-SNAPSHOT | Revisado Etapa 2 |
+| CFG-10 | Vistas usuarios | `templates/usuarios/`, `templates/fragments/` | ídem | Etapa 2 | Revisado |
+| CFG-11 | Clave admin inicial | variable de entorno `SIGR_ADMIN_PASSWORD` (no versionada) | ídem | — | Configurado vía PowerShell, no en Git |

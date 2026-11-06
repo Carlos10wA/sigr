@@ -15,6 +15,10 @@ java -version; javac -version; .\mvnw.cmd -v
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
-5. Abrir http://localhost:8080 — login demo: `admin` / `admin123`.
+5. Abrir http://localhost:8080 — el administrador ya existe si definió `SIGR_ADMIN_PASSWORD` antes; si no, defínala en esta terminal y reinicie:
+```powershell
+$env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
+.\mvnw.cmd spring-boot:run
+```
 6. Detener con Ctrl+C.
 BD local: `data/sigrdb.mv.db` (no versionar). Despliegue a producción: fuera de alcance de esta etapa.

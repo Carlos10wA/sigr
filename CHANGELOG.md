@@ -9,6 +9,19 @@
 - Git inicializado en `main`.
 
 ### Pendiente
-- Módulos Usuarios, Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
-- Entidades, servicios, repositorios y vistas de negocio.
+- Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
 - Documentación completa y aprobación de LB-SIGR-1.0.
+
+## [0.0.1-SNAPSHOT] — Etapa 2 (2026-11-05)
+### Agregado
+- Entidad `Usuario` JPA + `Rol` (ADMINISTRADOR/MESERO/CLIENTE), repositorio, servicio y DTOs con validación.
+- Autenticación desde BD (`DbUserDetailsService` + BCrypt); usuarios desactivados no ingresan.
+- CRUD de usuarios solo ADMINISTRADOR (listar/crear/editar/activar-desactivar), CSRF, logout POST, mensajes ES.
+- Protección del último administrador activo (desactivar / quitar rol/editar rechazado).
+- Administrador inicial vía variable de entorno `SIGR_ADMIN_PASSWORD` (`DataInitializer`); sin claves en código/docs/Git.
+- Pantallas responsive ES: `/usuarios`, `/usuarios/nuevo`, `/usuarios/{id}/editar`, fragmento nav con usuario/rol.
+- Tests `UsuarioIntegrationTest`: 12 totales (login OK/incorrecto, desactivado, duplicado, permisos rol, último admin, persistencia BCrypt).
+
+### Pendiente
+- Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
+- Aprobación de LB-SIGR-1.0 (sigue candidata).

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${titulo}">Usuario - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1 th:text="${titulo}">Usuario</h1>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:if="${usuarioId == null}" th:action="@{/usuarios/nuevo}" th:object="${form}" method="post">
+    <div>
+      <label for="nombreCompleto">Nombre completo</label>
+      <input id="nombreCompleto" th:field="*{nombreCompleto}" required/>
+      <span class="field-error" th:if="${#fields.hasErrors('nombreCompleto')}" th:errors="*{nombreCompleto}"></span>
+    </div>
+    <div>
+      <label for="usuario">Usuario</label>
+      <input id="usuario" th:field="*{usuario}" required/>
+      <span class="field-error" th:if="${#fields.hasErrors('usuario')}" th:errors="*{usuario}"></span>
+    </div>
+    <div>
+      <label for="contrasena">Contraseña (mín. 8 caracteres)</label>
+      <input id="contrasena" type="password" th:field="*{contrasena}" required/>
+      <span class="field-error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></span>
+    </div>
+    <div>
+      <label for="rol">Rol</label>
+      <select id="rol" th:field="*{rol}" required>
+        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"></span>
+    </div>
+    <div>
+      <label><input type="checkbox" th:field="*{activo}"/> Usuario activo</label>
+    </div>
+    <button type="submit">Guardar</button>
+    <a th:href="@{/usuarios}">Cancelar</a>
+  </form>
+
+  <form th:if="${usuarioId != null}" th:action="@{/usuarios/{id}/editar(id=${usuarioId})}" th:object="${form}" method="post">
+    <div>
+      <label for="nombreCompleto2">Nombre completo</label>
+      <input id="nombreCompleto2" th:field="*{nombreCompleto}" required/>
+      <span class="field-error" th:if="${#fields.hasErrors('nombreCompleto')}" th:errors="*{nombreCompleto}"></span>
+    </div>
+    <div>
+      <label for="usuario2">Usuario</label>
+      <input id="usuario2" th:field="*{usuario}" required/>
+      <span class="field-error" th:if="${#fields.hasErrors('usuario')}" th:errors="*{usuario}"></span>
+    </div>
+    <div>
+      <label for="contrasena2">Nueva contraseña (opcional)</label>
+      <input id="contrasena2" type="password" th:field="*{contrasena}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></span>
+      <small>Deje vacío para mantener la actual.</small>
+    </div>
+    <div>
+      <label for="rol2">Rol</label>
+      <select id="rol2" th:field="*{rol}" required>
+        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"></span>
+    </div>
+    <div>
+      <label><input type="checkbox" th:field="*{activo}"/> Usuario activo</label>
+    </div>
+    <button type="submit">Guardar cambios</button>
+    <a th:href="@{/usuarios}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>

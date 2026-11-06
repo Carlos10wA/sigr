@@ -1,15 +1,28 @@
-/* SIGR - estilos base (Etapa 1) */
+/* SIGR - estilos base responsive (Etapa 2) */
 * { box-sizing: border-box; }
 body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
-header { background: #1f3a2d; color: #fff; padding: 16px 24px; }
-header a { color: #fff; margin-right: 16px; }
-main { max-width: 960px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 8px; }
+header { background: #1f3a2d; color: #fff; padding: 12px 16px; }
+header a { color: #fff; margin-right: 14px; }
+.nav { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.nav .brand { font-size: 1.4rem; font-weight: bold; text-decoration: none; }
+.nav nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.nav button { margin: 0 0 0 8px; }
+.nav-user { font-size: .95rem; }
+main { max-width: 1100px; margin: 20px auto; background: #fff; padding: 24px; border-radius: 8px; }
 footer { text-align: center; padding: 16px; color: #666; }
 label { display: block; margin: 12px 0 4px; }
 input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-button { margin-top: 16px; padding: 10px 18px; background: #1f3a2d; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+input[type="checkbox"] { width: auto; }
+button { margin: 8px 4px 8px 0; padding: 10px 18px; background: #1f3a2d; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
 .alert { padding: 10px; border-radius: 4px; margin: 12px 0; background: #e8f5e9; }
 .alert.error { background: #ffebee; }
+.field-error { color: #b71c1c; font-size: .9rem; display: block; margin-top: 4px; }
+.table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; margin-top: 16px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 th { background: #eee; }
+@media (max-width: 600px) {
+  main { margin: 10px; padding: 16px; }
+  .nav { flex-direction: column; align-items: flex-start; }
+  th, td { padding: 6px; font-size: .9rem; }
+}
