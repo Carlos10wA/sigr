@@ -38,6 +38,16 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Selección de mesa por disponibilidad (2026-11-06)
+### Cambiado
+- El formulario pide fecha, horarios (24 h) y personas antes de elegir mesa; «Actualizar mesas disponibles» (GET) filtra solo mesas activas con capacidad suficiente y libres en todo el intervalo. Al cambiar datos, la opción inválida se limpia; sin disponibilidad se informa («No hay mesas disponibles…») y se puede cambiar horario/personas.
+- Servidor revalida al guardar con **bloqueo pesimista por mesa** (`PESSIMISTIC_WRITE`) para impedir cruces simultáneos; canceladas liberan horario y quedan en historial; nombres únicos y mesas/reservas existentes intactos.
+- Tests de cruces, horarios iguales/separados, fechas distintas, dos mesas a la misma hora, cancelada que libera, selección limpia y conservación de datos ante error. Total 39.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Claridad Reservas y Mesas (2026-11-06)
 ### Cambiado
 - Horarios con selección explícita 24 h (hora 00–23 + minutos 00–59 en listas identificadas, sin `type=time` del navegador); ayuda «12:00 = mediodía; 00:00 = medianoche»; sin precarga arbitraria (listas vacías). El servidor sigue validando fin>inicio y anti-superposición.

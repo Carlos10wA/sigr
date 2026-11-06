@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/reservas")
@@ -33,9 +34,22 @@ public class ReservaController {
     }
 
     @GetMapping("/nueva")
-    public String nueva(Model model) {
-        model.addAttribute("form", new ReservaForm());
-        model.addAttribute("mesas", reservas.listarMesasActivas());
+    public String nueva(@ModelAttribute("form") ReservaForm form, Model model) {
+        // La mesa se elige después de fecha, horarios y personas: filtrar la disponibilidad.
+        var inicio = reservas.resolverHora(form.getHoraInicioHora(), form.getHoraInicioMinuto());
+        var fin = reservas.resolverHora(form.getHoraFinHora(), form.getHoraFinMinuto());
+        boolean completo = form.getFecha() != null && inicio != null && fin != null && fin.isAfter(inicio)
+                && form.getCantidadPersonas() != null && form.getCantidadPersonas() >= 1;
+        List<co.edu.tecnologicaoriente.sigr.model.Mesa> disponibles = completo
+                ? reservas.listarDisponibles(form.getFecha(), inicio, fin, form.getCantidadPersonas())
+                : List.of();
+        // Limpiar una selección de mesa que ya no es válida para los datos actuales.
+        if (form.getMesaId() != null && disponibles.stream().noneMatch(m -> m.getId().equals(form.getMesaId()))) {
+            form.setMesaId(null);
+        }
+        model.addAttribute("mesas", disponibles);
+        model.addAttribute("hayBusqueda", completo);
+        model.addAttribute("sinDisponibles", completo && disponibles.isEmpty());
         model.addAttribute("titulo", "Nueva reserva");
         return "reservas/formulario";
     }
@@ -61,7 +75,17 @@ public class ReservaController {
                     "Seleccione la hora de fin (hora y minutos) en formato 24 horas.");
         }
         if (result.hasErrors()) {
-            model.addAttribute("mesas", reservas.listarMesasActivas());
+            var ini = reservas.resolverHora(form.getHoraInicioHora(), form.getHoraInicioMinuto());
+            var f = reservas.resolverHora(form.getHoraFinHora(), form.getHoraFinMinuto());
+            boolean completo = form.getFecha() != null && ini != null && f != null && f.isAfter(ini)
+                    && form.getCantidadPersonas() != null && form.getCantidadPersonas() >= 1;
+            var disponibles = completo ? reservas.listarDisponibles(form.getFecha(), ini, f, form.getCantidadPersonas()) : List.<co.edu.tecnologicaoriente.sigr.model.Mesa>of();
+            if (form.getMesaId() != null && disponibles.stream().noneMatch(m -> m.getId().equals(form.getMesaId()))) {
+                form.setMesaId(null);
+            }
+            model.addAttribute("mesas", disponibles);
+            model.addAttribute("hayBusqueda", completo);
+            model.addAttribute("sinDisponibles", completo && disponibles.isEmpty());
             model.addAttribute("titulo", "Nueva reserva");
             model.addAttribute("error", "Revise fecha, horarios (24 horas) y cantidad de personas.");
             return "reservas/formulario";
@@ -71,7 +95,17 @@ public class ReservaController {
             flash.addFlashAttribute("mensaje", "Reserva creada correctamente.");
             return "redirect:/reservas/" + creada.getId();
         } catch (ReservaService.ReservaInvalidaException | ReservaService.ReservaNoDisponibleException e) {
-            model.addAttribute("mesas", reservas.listarMesasActivas());
+            var ini = reservas.resolverHora(form.getHoraInicioHora(), form.getHoraInicioMinuto());
+            var f = reservas.resolverHora(form.getHoraFinHora(), form.getHoraFinMinuto());
+            boolean completo = form.getFecha() != null && ini != null && f != null && f.isAfter(ini)
+                    && form.getCantidadPersonas() != null && form.getCantidadPersonas() >= 1;
+            var disponibles = completo ? reservas.listarDisponibles(form.getFecha(), ini, f, form.getCantidadPersonas()) : List.<co.edu.tecnologicaoriente.sigr.model.Mesa>of();
+            if (form.getMesaId() != null && disponibles.stream().noneMatch(m -> m.getId().equals(form.getMesaId()))) {
+                form.setMesaId(null);
+            }
+            model.addAttribute("mesas", disponibles);
+            model.addAttribute("hayBusqueda", completo);
+            model.addAttribute("sinDisponibles", completo && disponibles.isEmpty());
             model.addAttribute("titulo", "Nueva reserva");
             model.addAttribute("error", e.getMessage());
             return "reservas/formulario";

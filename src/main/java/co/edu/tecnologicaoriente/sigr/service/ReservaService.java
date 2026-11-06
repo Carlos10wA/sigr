@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -54,6 +55,31 @@ public class ReservaService {
 
     @Transactional(readOnly = true)
     public List<Mesa> listarMesasActivas() { return mesas.findByActivaTrueOrderByNombreAsc(); }
+
+    /**
+     * Mesas activas, con capacidad suficiente y libres durante todo el intervalo.
+     * Las canceladas no bloquean. Sin datos completos devuelve vacío.
+     */
+    @Transactional(readOnly = true)
+    public List<Mesa> listarDisponibles(LocalDate fecha, LocalTime inicio, LocalTime fin, Integer personas) {
+        if (fecha == null || inicio == null || fin == null || personas == null
+                || !fin.isAfter(inicio) || personas < 1) {
+            return List.of();
+        }
+        return mesas.findByActivaTrueOrderByNombreAsc().stream()
+                .filter(m -> m.getCapacidad() >= personas)
+                .filter(m -> reservas.findByMesa_IdAndFechaAndEstado(m.getId(), fecha, EstadoReserva.CONFIRMADA).stream()
+                        .noneMatch(ex -> inicio.isBefore(ex.getHoraFin()) && fin.isAfter(ex.getHoraInicio())))
+                .toList();
+    }
+
+    /** Convierte los campos hora/minutos del formulario a LocalTime (o null si incompletos). */
+    public LocalTime resolverHora(Integer hora, Integer minuto) {
+        if (hora == null || minuto == null || hora < 0 || hora > 23 || minuto < 0 || minuto > 59) {
+            return null;
+        }
+        return LocalTime.of(hora, minuto);
+    }
 
     @Transactional(readOnly = true)
     public Mesa buscarMesa(Long id) {
@@ -119,7 +145,8 @@ public class ReservaService {
 
     @Transactional
     public Reserva crear(Usuario actor, ReservaForm form) {
-        Mesa mesa = mesas.findById(form.getMesaId())
+        // Bloqueo pesimista: serializa reservas sobre la misma mesa ante solicitudes simultáneas.
+        Mesa mesa = mesas.findByIdForUpdate(form.getMesaId())
                 .orElseThrow(() -> new ReservaInvalidaException("La mesa seleccionada no existe."));
         if (!mesa.isActiva()) {
             throw new ReservaInvalidaException("La mesa seleccionada está desactivada.");

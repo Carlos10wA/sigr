@@ -11,20 +11,8 @@
 <main>
   <h1 th:text="${titulo}">Nueva reserva</h1>
   <div th:if="${error}" class="alert error" th:text="${error}"></div>
-  <div th:if="${#lists.isEmpty(mesas)}" class="alert error">No hay mesas activas. Pida al administrador que cree mesas.</div>
+  <p>Primero seleccione fecha, horarios y cantidad de personas; después elija una mesa disponible.</p>
   <form th:action="@{/reservas/nueva}" th:object="${form}" method="post">
-    <div>
-      <label for="mesaId">Mesa</label>
-      <select id="mesaId" th:field="*{mesaId}">
-        <option value="">-- Seleccione --</option>
-        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre + ' — ' + m.capacidad + ' personas'}"></option>
-      </select>
-      <span class="field-error" th:if="${#fields.hasErrors('mesaId')}" th:errors="*{mesaId}"></span>
-    </div>
-    <div sec:authorize="hasAnyAuthority('ROLE_ADMINISTRADOR','ROLE_MESERO')">
-      <label for="clienteNombre">Nombre del titular</label>
-      <input id="clienteNombre" type="text" placeholder="Nombre del cliente" th:field="*{clienteNombre}"/>
-    </div>
     <div>
       <label for="fecha">Fecha</label>
       <input id="fecha" type="date" th:field="*{fecha}"/>
@@ -69,6 +57,23 @@
       <label for="cantidadPersonas">Cantidad de personas</label>
       <input id="cantidadPersonas" type="number" min="1" max="50" th:field="*{cantidadPersonas}"/>
       <span class="field-error" th:if="${#fields.hasErrors('cantidadPersonas')}" th:errors="*{cantidadPersonas}"></span>
+    </div>
+    <p><button type="submit" formaction="/reservas/nueva" formmethod="get">Actualizar mesas disponibles</button></p>
+    <p th:if="${!hayBusqueda}"><small>Seleccione fecha, horario de inicio, horario de fin y cantidad de personas para ver las mesas disponibles.</small></p>
+    <div th:if="${sinDisponibles}" class="alert error">
+      No hay mesas disponibles para ese horario. Cambie el horario o la cantidad de personas e intente de nuevo.
+    </div>
+    <div>
+      <label for="mesaId">Mesa disponible</label>
+      <select id="mesaId" th:field="*{mesaId}">
+        <option value="">-- Seleccione --</option>
+        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre + ' — ' + m.capacidad + ' personas'}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('mesaId')}" th:errors="*{mesaId}"></span>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMINISTRADOR','ROLE_MESERO')">
+      <label for="clienteNombre">Nombre del titular</label>
+      <input id="clienteNombre" type="text" placeholder="Nombre del cliente" th:field="*{clienteNombre}"/>
     </div>
     <button type="submit">Crear reserva</button>
     <a th:href="@{/reservas}">Cancelar</a>

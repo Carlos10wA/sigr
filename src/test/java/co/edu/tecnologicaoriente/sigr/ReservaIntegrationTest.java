@@ -89,6 +89,9 @@ class ReservaIntegrationTest {
 
         assertThatThrownBy(() -> reservas.crear(actor, form(m.getId(), "x", dia, "13:00", "15:00", 2)))
                 .isInstanceOf(ReservaService.ReservaNoDisponibleException.class);
+        // Horario idéntico (12:00-14:00) también se rechaza.
+        assertThatThrownBy(() -> reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "14:00", 2)))
+                .isInstanceOf(ReservaService.ReservaNoDisponibleException.class);
         // Sin superposición (colindante) sí permite
         reservas.crear(actor, form(m.getId(), "x", dia, "14:00", "15:00", 2));
         // Tras cancelar, el hueco queda libre
@@ -140,7 +143,11 @@ class ReservaIntegrationTest {
         var sMesero = mockMvc.perform(post("/login").with(csrf()).param("username", "mesero-res").param("password", PW))
                 .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
         var sesMesero = (org.springframework.mock.web.MockHttpSession) sMesero;
-        mockMvc.perform(get("/reservas/nueva").session(sesMesero))
+        mockMvc.perform(get("/reservas/nueva").session(sesMesero)
+                        .param("fecha", LocalDate.now(BOGOTA).plusDays(10).toString())
+                        .param("horaInicioHora", "10").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "11").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "2"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Nueva reserva")))
                 .andExpect(content().string(containsString("Mesa roles")));
@@ -170,6 +177,7 @@ class ReservaIntegrationTest {
         var ses = (org.springframework.mock.web.MockHttpSession) s;
 
         // Formulario: selección explícita 24 h, ayuda, sin precarga arbitraria, selector con capacidad.
+        // Sin fecha/horario aún: la mesa se pide después y no se precargan opciones.
         mockMvc.perform(get("/reservas/nueva").session(ses))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("12:00 = mediodía; 00:00 = medianoche")))
@@ -178,9 +186,16 @@ class ReservaIntegrationTest {
                 .andExpect(content().string(containsString("Hora de fin — hora (24 horas)")))
                 .andExpect(content().string(containsString("Hora de fin — minutos")))
                 .andExpect(content().string(not(containsString("type=\"time\""))))
-                .andExpect(content().string(containsString("Mesa claridad — 4 personas")))
                 .andExpect(content().string(containsString("-- Hora --")))
                 .andExpect(content().string(containsString("-- Minutos --")));
+        // Con fecha/horario/personas: solo mesas disponibles (capacidad + libres en todo el intervalo).
+        mockMvc.perform(get("/reservas/nueva").session(ses)
+                        .param("fecha", dia.plusDays(1).toString())
+                        .param("horaInicioHora", "12").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "13").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "2"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Mesa claridad — 4 personas")));
 
         // Listado: encabezado N.º, columna Mesa independiente, fecha dd/MM/yyyy y HH:mm.
         mockMvc.perform(get("/reservas").session(ses))
@@ -216,6 +231,106 @@ class ReservaIntegrationTest {
                         .param("cantidadPersonas", "2"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Nueva reserva")));
+    }
+
+    @Test
+    void disponibilidadFiltraCapacidadYCruces() throws Exception {
+        var m1 = mesa("Mesa filtro A", 4);
+        var m2 = mesa("Mesa filtro B", 2);
+        crearUsuario("cliente-filtro", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-filtro");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(6);
+        // 12:00-14:00 en A: bloquea cruces, no horarios separados/feliz de otra mesa/otra fecha.
+        reservas.crear(actor, form(m1.getId(), "x", dia, "12:00", "14:00", 2));
+
+        // Cruce: mismo mesa/fecha solapada no disponible.
+        assertThat(reservas.listarDisponibles(dia, LocalTime.parse("13:00"), LocalTime.parse("15:00"), 2))
+                .extracting(m -> m.getNombre()).contains("Mesa filtro B").doesNotContain("Mesa filtro A");
+        // Horario separado (colindante 14:00) sí disponible.
+        assertThat(reservas.listarDisponibles(dia, LocalTime.parse("14:00"), LocalTime.parse("15:00"), 2))
+                .extracting(m -> m.getNombre()).contains("Mesa filtro A");
+        // Fecha distinta sí disponible.
+        assertThat(reservas.listarDisponibles(dia.plusDays(1), LocalTime.parse("13:00"), LocalTime.parse("15:00"), 2))
+                .extracting(m -> m.getNombre()).contains("Mesa filtro A");
+        // Dos mesas diferentes a la misma hora: B libre a las 13:00.
+        assertThat(reservas.listarDisponibles(dia, LocalTime.parse("13:00"), LocalTime.parse("15:00"), 2))
+                .extracting(m -> m.getNombre()).contains("Mesa filtro B");
+        // Capacidad: mesa de 2 no sirve para 4.
+        assertThat(reservas.listarDisponibles(dia.plusDays(1), LocalTime.parse("12:00"), LocalTime.parse("13:00"), 4))
+                .extracting(m -> m.getNombre()).doesNotContain("Mesa filtro B");
+
+        // Cancelada libera el horario y permanece en el historial.
+        var segunda = reservas.crear(actor, form(m2.getId(), "x", dia, "10:00", "11:00", 2));
+        reservas.cancelar(actor, segunda.getId());
+        assertThat(reservas.listarDisponibles(dia, LocalTime.parse("10:30"), LocalTime.parse("11:30"), 2))
+                .extracting(m -> m.getNombre()).contains("Mesa filtro B");
+        assertThat(reservaRepo.findById(segunda.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CANCELADA);
+    }
+
+    @Test
+    void sinDisponiblesInformaYPermiteCambiar() throws Exception {
+        var m = mesa("Mesa llena", 2);
+        crearUsuario("cliente-llena", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-llena");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(7);
+        reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-llena").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+        mockMvc.perform(get("/reservas/nueva").session(ses)
+                        .param("fecha", dia.toString())
+                        .param("horaInicioHora", "12").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "13").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "50"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("No hay mesas disponibles para ese horario")))
+                .andExpect(content().string(not(containsString("Mesa llena"))));
+    }
+
+    @Test
+    void cambioDeHorarioLimpiaSeleccionInvalida() throws Exception {
+        var m = mesa("Mesa limpia", 4);
+        crearUsuario("cliente-limpia", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-limpia");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(8);
+        reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-limpia").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+        // Al pedir 12:30-13:30 (cruza) la mesa ocupada no aparece (selección limpia).
+        mockMvc.perform(get("/reservas/nueva").session(ses)
+                        .param("fecha", dia.toString())
+                        .param("horaInicioHora", "12").param("horaInicioMinuto", "30")
+                        .param("horaFinHora", "13").param("horaFinMinuto", "30")
+                        .param("cantidadPersonas", "2")
+                        .param("mesaId", m.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(not(containsString("Mesa limpia — 4 personas"))));
+    }
+
+    @Test
+    void errorConservaDatosIntroducidos() throws Exception {
+        var m = mesa("Mesa conserva", 4);
+        crearUsuario("cliente-conserva", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-conserva");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(9);
+        reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-conserva").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+        // POST cruzado (12:30-13:30 sobre 12:00-13:00): re-render con error y datos conservados.
+        mockMvc.perform(post("/reservas/nueva").with(csrf()).session(ses)
+                        .param("mesaId", m.getId().toString())
+                        .param("fecha", dia.toString())
+                        .param("horaInicioHora", "12").param("horaInicioMinuto", "30")
+                        .param("horaFinHora", "13").param("horaFinMinuto", "30")
+                        .param("cantidadPersonas", "3"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ya est")))
+                .andExpect(content().string(containsString(dia.toString())))
+                .andExpect(content().string(containsString("value=\"3\"")))
+                .andExpect(content().string(containsString("value=\"12\" selected")))
+                .andExpect(content().string(containsString("Actualizar mesas disponibles")));
     }
 
     @Test

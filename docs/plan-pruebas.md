@@ -95,6 +95,17 @@ Resumen: `Tests run: 33, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06).
 
 Resumen: `Tests run: 35, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Selección de mesa por disponibilidad (2026-11-06)
+| Prueba (`ReservaIntegrationTest`) | Resultado real |
+|---|---|
+| `disponibilidadFiltraCapacidadYCruces` — cruce bloquea, colindante/fechas/mesas distintas permiten, capacidad filtra, cancelada libera y queda en historial | OK |
+| `sinDisponiblesInformaYPermiteCambiar` — sin hueco avisa «No hay mesas disponibles…» | OK |
+| `cambioDeHorarioLimpiaSeleccionInvalida` — al cambiar a horario cruzado la mesa ocupada no aparece | OK |
+| `errorConservaDatosIntroducidos` — POST cruzado re-render con error + fecha/horas/personas conservadas | OK |
+| `previeneSuperposicionYPermiteCancelada` — incluye horario idéntico 12:00-14:00 rechazado | OK |
+
+Resumen: `Tests run: 39, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Bloqueo pesimista por mesa en el `crear` para solicitudes simultáneas.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).
