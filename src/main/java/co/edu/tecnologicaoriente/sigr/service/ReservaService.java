@@ -1,5 +1,6 @@
 package co.edu.tecnologicaoriente.sigr.service;
 
+import co.edu.tecnologicaoriente.sigr.dto.MesaConfiguracionForm;
 import co.edu.tecnologicaoriente.sigr.dto.MesaForm;
 import co.edu.tecnologicaoriente.sigr.dto.ReservaForm;
 import co.edu.tecnologicaoriente.sigr.model.*;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ReservaService {
@@ -81,6 +83,23 @@ public class ReservaService {
         return LocalTime.of(hora, minuto);
     }
 
+    /** Resumen calculado desde las mesas reales (sin contador independiente). */
+    public record ResumenMesas(long registradas, long activas, long inactivas, int capacidadTotalActiva) {}
+
+    @Transactional(readOnly = true)
+    public ResumenMesas resumenMesas() {
+        List<Mesa> todas = mesas.findAll();
+        long activas = todas.stream().filter(Mesa::isActiva).count();
+        int capacidad = todas.stream().filter(Mesa::isActiva).mapToInt(Mesa::getCapacidad).sum();
+        return new ResumenMesas(todas.size(), activas, todas.size() - activas, capacidad);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reserva> pendientesConfirmadas(Long mesaId) {
+        return reservas.findByMesa_IdAndEstadoAndFechaGreaterThanEqualOrderByFechaAsc(
+                mesaId, EstadoReserva.CONFIRMADA, LocalDate.now(BOGOTA));
+    }
+
     @Transactional(readOnly = true)
     public Mesa buscarMesa(Long id) {
         return mesas.findById(id).orElseThrow(() -> new ReservaInvalidaException("La mesa no existe."));
@@ -100,10 +119,107 @@ public class ReservaService {
         if (mesas.existsByNombreAndIdNot(form.getNombre().trim(), id)) {
             throw new MesaDuplicadaException("Ya existe otra mesa con ese nombre.");
         }
+        if (m.isActiva() && !form.isActiva()) {
+            var pendientes = pendientesConfirmadas(id);
+            if (!pendientes.isEmpty()) {
+                StringBuilder detalle = new StringBuilder();
+                for (Reserva r : pendientes) {
+                    detalle.append(" reserva ").append(r.getId()).append(" del ").append(r.getFecha()).append(";");
+                }
+                throw new ReservaInvalidaException(
+                        "No se puede desactivar " + m.getNombre() + " porque tiene " + pendientes.size()
+                                + " reserva(s) confirmada(s) pendiente(s):" + detalle
+                                + " Cancélelas o resuélvalas antes de desactivar.");
+            }
+        }
         m.setNombre(form.getNombre().trim());
         m.setCapacidad(form.getCapacidad());
         m.setActiva(form.isActiva());
         return mesas.save(m);
+    }
+
+    @Transactional
+    public Mesa cambiarEstadoMesa(Long id, boolean activa) {
+        Mesa m = buscarMesa(id);
+        if (m.isActiva() && !activa) {
+            var pendientes = pendientesConfirmadas(id);
+            if (!pendientes.isEmpty()) {
+                StringBuilder detalle = new StringBuilder();
+                for (Reserva r : pendientes) {
+                    detalle.append(" reserva ").append(r.getId()).append(" del ").append(r.getFecha()).append(";");
+                }
+                throw new ReservaInvalidaException(
+                        "No se puede desactivar " + m.getNombre() + " porque tiene " + pendientes.size()
+                                + " reserva(s) confirmada(s) pendiente(s):" + detalle
+                                + " Cancélelas o resuélvalas antes de desactivar.");
+            }
+        }
+        m.setActiva(activa);
+        return mesas.save(m);
+    }
+
+    /**
+     * Ajusta la cantidad total de mesas activas sin borrar ni renumerar:
+     * crea faltantes (Mesa N único) o desactiva las elegidas.
+     */
+    @Transactional
+    public String ajustarCantidadActivas(MesaConfiguracionForm form) {
+        int deseadas = form.getCantidadActivas();
+        int capacidadNuevas = form.getCapacidadNuevas();
+        List<Mesa> activas = mesas.findByActivaTrueOrderByNombreAsc();
+        int faltan = deseadas - activas.size();
+        if (faltan > 0) {
+            Set<String> usados = new java.util.HashSet<>();
+            mesas.findAll().forEach(m -> usados.add(m.getNombre()));
+            int siguientes = 1;
+            while (faltan > 0) {
+                String nombre = "Mesa " + siguientes++;
+                if (usados.contains(nombre)) continue;
+                mesas.save(new Mesa(nombre, capacidadNuevas, true));
+                usados.add(nombre);
+                faltan--;
+            }
+            return "Se crearon mesas hasta alcanzar " + deseadas + " activas.";
+        }
+        if (faltan == 0) {
+            return "La cantidad de mesas activas ya es " + deseadas + ".";
+        }
+        int aDesactivar = -faltan;
+        List<Long> elegidas = form.getMesasADesactivar() == null ? List.of() : form.getMesasADesactivar();
+        if (elegidas.size() != aDesactivar) {
+            throw new ReservaInvalidaException(
+                    "Para bajar a " + deseadas + " activas seleccione exactamente " + aDesactivar + " mesa(s) para desactivar.");
+        }
+        // Validez y protección de pendientes para cada elección.
+        List<Mesa> candidatas = new java.util.ArrayList<>();
+        for (Long id : elegidas) {
+            Mesa m = mesas.findById(id).orElseThrow(() -> new ReservaInvalidaException("Una mesa seleccionada no existe."));
+            if (!m.isActiva()) {
+                throw new ReservaInvalidaException("La mesa " + m.getNombre() + " ya está inactiva.");
+            }
+            candidatas.add(m);
+        }
+        StringBuilder bloqueadas = new StringBuilder();
+        for (Mesa m : candidatas) {
+            var pendientes = pendientesConfirmadas(m.getId());
+            if (!pendientes.isEmpty()) {
+                bloqueadas.append(m.getNombre()).append(" (").append(pendientes.size()).append(" pendiente(s):");
+                for (Reserva r : pendientes) {
+                    bloqueadas.append(" reserva ").append(r.getId()).append(" del ").append(r.getFecha()).append(";");
+                }
+                bloqueadas.append(") ");
+            }
+        }
+        if (bloqueadas.length() > 0) {
+            throw new ReservaInvalidaException(
+                    "No se puede desactivar: " + bloqueadas.toString().trim()
+                            + " Cancélelas o resuélvalas antes de desactivar.");
+        }
+        for (Mesa m : candidatas) {
+            m.setActiva(false);
+            mesas.save(m);
+        }
+        return "Se desactivaron " + aDesactivar + " mesa(s) hasta quedar " + deseadas + " activas. El historial se conserva.";
     }
 
     /** Mesas de demostración idempotentes (no duplican). */

@@ -38,6 +38,17 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Configuración de mesas y disponibilidad integrada (2026-11-06)
+### Cambiado
+- Solo ADMINISTRADOR ajusta la cantidad total de mesas activas (sin cantidad arbitraria ni creación automática al iniciar): al subir crea faltantes con numeración única y capacidad indicada; al bajar elige cuáles desactivar sin borrar/renumerar. Resumen calculado desde mesas reales (registradas/activas/inactivas + capacidad activa).
+- Desactivación protegida: no se desactiva mesa con confirmadas pendientes (se explican IDs/fechas a resolver primero); historial conservado y reactivación desde listado/edición.
+- Reservas consultan todas las activas con capacidad; solo excluyen las ocupadas en fecha/intervalo (Mesa 1 ocupada no bloquea Mesa 2/3); bloqueo pesimista conservado; mensajes distintos (sin mesas / capacidad / ocupadas) con enlace a Gestionar mesas para admin.
+- Tests: tres mesas cap 4, Tres 1 ocupada 12:00-16:42, búsqueda 13:00-14:00 para 4 ofrece Tres 2 y 3; ampliación, reducción protegida, reactivación, numeración única, permisos. Total 41.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Selección de mesa por disponibilidad (2026-11-06)
 ### Cambiado
 - El formulario pide fecha, horarios (24 h) y personas antes de elegir mesa; «Actualizar mesas disponibles» (GET) filtra solo mesas activas con capacidad suficiente y libres en todo el intervalo. Al cambiar datos, la opción inválida se limpia; sin disponibilidad se informa («No hay mesas disponibles…») y se puede cambiar horario/personas.

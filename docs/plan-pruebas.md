@@ -106,6 +106,14 @@ Resumen: `Tests run: 35, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 39, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06). Bloqueo pesimista por mesa en el `crear` para solicitudes simultáneas.
 
+## Configuración de mesas e integración (2026-11-06)
+| Prueba (`ReservaIntegrationTest`, BD aislada) | Resultado real |
+|---|---|
+| `tresMesasMesa1OcupadaOfrece2y3` — capacidad 4, Tres 1 ocupada 12:00-16:42, búsqueda 13:00-14:00 para 4 ofrece Tres 2 y 3 (servicio + HTTP) | OK |
+| `configuracionAmpliarReduceProtegeReactiva` — ampliar crea faltantes únicos, reducir protegida rechaza con explicación, cancela+reactiva conserva historial, listado con resumen, 403 mesero | OK |
+
+Resumen: `Tests run: 41, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

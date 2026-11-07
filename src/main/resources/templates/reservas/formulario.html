@@ -60,8 +60,14 @@
     </div>
     <p><button type="submit" formaction="/reservas/nueva" formmethod="get">Actualizar mesas disponibles</button></p>
     <p th:if="${!hayBusqueda}"><small>Seleccione fecha, horario de inicio, horario de fin y cantidad de personas para ver las mesas disponibles.</small></p>
+    <div th:if="${sinMesasConfiguradas}" class="alert error">
+      No hay mesas configuradas. <span sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')"><a th:href="@{/mesas}">Gestionar mesas</a> para configurar la cantidad de mesas.</span>
+    </div>
+    <div th:if="${sinCapacidad}" class="alert error">
+      Ninguna mesa activa admite esa cantidad de personas. Cambie la cantidad o, si es administrador, <a th:href="@{/mesas}">gestione las mesas</a>.
+    </div>
     <div th:if="${sinDisponibles}" class="alert error">
-      No hay mesas disponibles para ese horario. Cambie el horario o la cantidad de personas e intente de nuevo.
+      Todas las mesas con capacidad están ocupadas en ese horario. Cambie el horario o la cantidad de personas e intente de nuevo.
     </div>
     <div>
       <label for="mesaId">Mesa disponible</label>

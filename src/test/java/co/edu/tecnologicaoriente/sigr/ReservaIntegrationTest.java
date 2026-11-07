@@ -1,5 +1,6 @@
 package co.edu.tecnologicaoriente.sigr;
 
+import co.edu.tecnologicaoriente.sigr.dto.MesaConfiguracionForm;
 import co.edu.tecnologicaoriente.sigr.dto.MesaForm;
 import co.edu.tecnologicaoriente.sigr.dto.ReservaForm;
 import co.edu.tecnologicaoriente.sigr.model.EstadoReserva;
@@ -283,7 +284,7 @@ class ReservaIntegrationTest {
                         .param("horaFinHora", "13").param("horaFinMinuto", "0")
                         .param("cantidadPersonas", "50"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("No hay mesas disponibles para ese horario")))
+                .andExpect(content().string(containsString("Ninguna mesa activa admite esa cantidad")))
                 .andExpect(content().string(not(containsString("Mesa llena"))));
     }
 
@@ -355,5 +356,85 @@ class ReservaIntegrationTest {
         assertThat(n2).isEqualTo(0);
         assertThat(reservas.listarMesasActivas()).extracting(m -> m.getNombre())
                 .contains("Mesa 1", "Mesa 2", "Mesa 3", "Mesa 4", "Terraza 1");
+    }
+
+    @Test
+    void tresMesasMesa1OcupadaOfrece2y3() throws Exception {
+        var m1 = mesa("Tres 1", 4);
+        var m2 = mesa("Tres 2", 4);
+        var m3 = mesa("Tres 3", 4);
+        crearUsuario("cliente-tres", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-tres");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(11);
+        reservas.crear(actor, form(m1.getId(), "x", dia, "12:00", "16:42", 4));
+        var disp = reservas.listarDisponibles(dia, LocalTime.parse("13:00"), LocalTime.parse("14:00"), 4);
+        assertThat(disp).extracting(m -> m.getNombre()).contains("Tres 2", "Tres 3").doesNotContain("Tres 1");
+        // Vía HTTP: el formulario ofrece 2 y 3, no la 1.
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-tres").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+        mockMvc.perform(get("/reservas/nueva").session(ses)
+                        .param("fecha", dia.toString())
+                        .param("horaInicioHora", "13").param("horaInicioMinuto", "0")
+                        .param("horaFinHora", "14").param("horaFinMinuto", "0")
+                        .param("cantidadPersonas", "4"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Tres 2 — 4 personas")))
+                .andExpect(content().string(containsString("Tres 3 — 4 personas")))
+                .andExpect(content().string(not(containsString("Tres 1 — 4 personas"))));
+    }
+
+    @Test
+    void configuracionAmpliarReduceProtegeReactiva() throws Exception {
+        crearUsuario("mesero-cfg", Rol.MESERO);
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var sesAdmin = (org.springframework.mock.web.MockHttpSession) sAdmin;
+        var sMesero = mockMvc.perform(post("/login").with(csrf()).param("username", "mesero-cfg").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var sesMesero = (org.springframework.mock.web.MockHttpSession) sMesero;
+        mockMvc.perform(get("/mesas").session(sesMesero)).andExpect(status().isForbidden());
+
+        // Ampliar: 2 -> 5 activas con numeración única y capacidad indicada.
+        long activas0 = reservas.resumenMesas().activas();
+        var cfg = new MesaConfiguracionForm();
+        cfg.setCantidadActivas((int) activas0 + 3);
+        cfg.setCapacidadNuevas(4);
+        reservas.ajustarCantidadActivas(cfg);
+        assertThat(reservas.resumenMesas().activas()).isEqualTo(activas0 + 3);
+        assertThat(reservas.listarMesas()).extracting(m -> m.getNombre()).doesNotHaveDuplicates();
+        long capacidadAntes = reservas.resumenMesas().capacidadTotalActiva();
+        assertThat(capacidadAntes).isGreaterThan(0);
+
+        // Reducción protegida: mesa con pendiente no se desactiva.
+        var m = mesa("Mesa protegida", 4);
+        crearUsuario("cliente-prot", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-prot");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(12);
+        var r = reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        assertThatThrownBy(() -> reservas.cambiarEstadoMesa(m.getId(), false))
+                .isInstanceOf(ReservaService.ReservaInvalidaException.class)
+                .hasMessageContaining("reserva");
+        var cfg2 = new MesaConfiguracionForm();
+        cfg2.setCantidadActivas((int) reservas.resumenMesas().activas() - 1);
+        cfg2.setCapacidadNuevas(4);
+        cfg2.setMesasADesactivar(java.util.List.of(m.getId()));
+        assertThatThrownBy(() -> reservas.ajustarCantidadActivas(cfg2))
+                .isInstanceOf(ReservaService.ReservaInvalidaException.class);
+        // Historial conservado y reactivación posible sin borrar.
+        assertThat(reservaRepo.findById(r.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CONFIRMADA);
+        reservas.cancelar(actor, r.getId());
+        reservas.cambiarEstadoMesa(m.getId(), false);
+        assertThat(reservas.buscarMesa(m.getId()).isActiva()).isFalse();
+        reservas.cambiarEstadoMesa(m.getId(), true);
+        assertThat(reservas.buscarMesa(m.getId()).isActiva()).isTrue();
+        assertThat(reservaRepo.findById(r.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CANCELADA);
+        // Listado muestra resumen calculado.
+        mockMvc.perform(get("/mesas").session(sesAdmin))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Registradas")))
+                .andExpect(content().string(containsString("Activas")))
+                .andExpect(content().string(containsString("Inactivas")))
+                .andExpect(content().string(containsString("Capacidad total activa")));
     }
 }

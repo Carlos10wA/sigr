@@ -1,5 +1,6 @@
 package co.edu.tecnologicaoriente.sigr.controller;
 
+import co.edu.tecnologicaoriente.sigr.dto.MesaConfiguracionForm;
 import co.edu.tecnologicaoriente.sigr.dto.MesaForm;
 import co.edu.tecnologicaoriente.sigr.service.ReservaService;
 import jakarta.validation.Valid;
@@ -21,8 +22,46 @@ public class MesaController {
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("mesas", reservas.listarMesas());
+        var mesas = reservas.listarMesas();
+        model.addAttribute("mesas", mesas);
+        model.addAttribute("resumen", reservas.resumenMesas());
+        MesaConfiguracionForm config = new MesaConfiguracionForm();
+        config.setCantidadActivas((int) reservas.resumenMesas().activas());
+        config.setCapacidadNuevas(4);
+        model.addAttribute("config", config);
+        model.addAttribute("activas", reservas.listarMesasActivas());
         return "mesas/listado";
+    }
+
+    @PostMapping("/configuracion")
+    public String configuracion(@Valid @ModelAttribute("config") MesaConfiguracionForm form,
+                                BindingResult result, Model model, RedirectAttributes flash) {
+        if (result.hasErrors()) {
+            model.addAttribute("mesas", reservas.listarMesas());
+            model.addAttribute("resumen", reservas.resumenMesas());
+            model.addAttribute("activas", reservas.listarMesasActivas());
+            model.addAttribute("error", "Revise la cantidad y la capacidad.");
+            return "mesas/listado";
+        }
+        try {
+            String mensaje = reservas.ajustarCantidadActivas(form);
+            flash.addFlashAttribute("mensaje", mensaje);
+            return "redirect:/mesas";
+        } catch (ReservaService.ReservaInvalidaException e) {
+            flash.addFlashAttribute("error", e.getMessage());
+            return "redirect:/mesas";
+        }
+    }
+
+    @PostMapping("/{id}/cambiar-estado")
+    public String cambiarEstado(@PathVariable Long id, @RequestParam boolean activa, RedirectAttributes flash) {
+        try {
+            reservas.cambiarEstadoMesa(id, activa);
+            flash.addFlashAttribute("mensaje", activa ? "Mesa reactivada." : "Mesa desactivada.");
+        } catch (ReservaService.ReservaInvalidaException e) {
+            flash.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/mesas";
     }
 
     @GetMapping("/nueva")
@@ -75,7 +114,7 @@ public class MesaController {
             reservas.editarMesa(id, form);
             flash.addFlashAttribute("mensaje", "Mesa actualizada correctamente.");
             return "redirect:/mesas";
-        } catch (ReservaService.MesaDuplicadaException e) {
+        } catch (ReservaService.MesaDuplicadaException | ReservaService.ReservaInvalidaException e) {
             model.addAttribute("titulo", "Editar mesa");
             model.addAttribute("mesaId", id);
             model.addAttribute("error", e.getMessage());
