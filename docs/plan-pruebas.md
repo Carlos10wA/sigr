@@ -174,6 +174,13 @@ Resumen final: `Tests run: 63, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen final: `Tests run: 64, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verificación local con app en marcha no posible (bloqueo de archivo); migración se aplica al reiniciar y se verifica entonces.
 
+## Claridad de cierre de Caja (2026-11-07)
+| Prueba (`CajaIntegrationTest.cierreMuestraResumenCon166000YFaltante`) | Resultado real |
+|---|---|
+| Panel con base/efectivo/tarjeta/transferencia/esperado, etiqueta nueva, ayuda de conteo y diferencia estimada | OK |
+
+Resumen final: `Tests run: 65, Failures: 0, Errors: 0 — BUILD SUCCESS`. Caso base 100.000 + 66.000 = 166.000; 66.000 contado → faltante 100.000.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

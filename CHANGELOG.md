@@ -186,3 +186,14 @@
 ### Pendiente
 - Módulos Reportes (no implementados).
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
+## [0.0.1-SNAPSHOT] — Claridad de cierre de Caja (2026-11-07)
+### Cambiado
+- El panel muestra antes del cierre: base inicial, total en efectivo (cobrado, sin recibido antes del cambio), tarjeta y transferencia por separado y efectivo esperado = base + efectivo. Sin pedir pagos de nuevo; tarjeta/transferencia no suman al esperado.
+- «Dinero contado físicamente en caja (incluye la base inicial)», ayuda de conteo, diferencia estimada al escribir y recálculo/validación en el servidor de contado − esperado; observación obligatoria si difiere. Contado sin precarga.
+- Caso: base 100.000 + 66.000 = 166.000; contado 166.000 → 0, contado 66.000 → faltante 100.000.
+- Tests: `cierreMuestraResumenCon166000YFaltante` + suite 65.
+
+### Pendiente
+- Módulos Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).

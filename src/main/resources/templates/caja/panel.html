@@ -46,18 +46,46 @@
       </table>
     </div>
     <h2>Cierre de caja</h2>
+    <div class="leyenda-sit" id="resumen-cierre">
+      <p>Base inicial: <b th:text="${'$' + #numbers.formatDecimal(sesion.baseInicial, 1, 'POINT', 2, 'COMMA') + ' COP'}"></b></p>
+      <p>Total en efectivo: <b th:text="${'$' + #numbers.formatDecimal(cobrosEfectivo, 1, 'POINT', 2, 'COMMA') + ' COP'}"></b></p>
+      <p>Cobros por tarjeta: <b th:text="${'$' + #numbers.formatDecimal(cobrosTarjeta, 1, 'POINT', 2, 'COMMA') + ' COP'}"></b> ·
+         Cobros por transferencia: <b th:text="${'$' + #numbers.formatDecimal(cobrosTransferencia, 1, 'POINT', 2, 'COMMA') + ' COP'}"></b></p>
+      <p>Efectivo esperado (base + efectivo): <b th:text="${'$' + #numbers.formatDecimal(efectivoEsperado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></b></p>
+    </div>
     <form th:action="@{/caja/cerrar}" th:object="${cierreForm}" method="post">
       <div>
-        <label for="efectivoContado">Efectivo contado (COP)</label>
-        <input id="efectivoContado" type="number" min="0" step="0.01" th:field="*{efectivoContado}"/>
+        <label for="efectivoContado">Dinero contado físicamente en caja (incluye la base inicial)</label>
+        <input id="efectivoContado" type="number" min="0" step="0.01" placeholder="Ingrese el conteo" th:field="*{efectivoContado}"/>
         <span class="field-error" th:if="${#fields.hasErrors('efectivoContado')}" th:errors="*{efectivoContado}"></span>
       </div>
+      <p><small>Cuente todo el efectivo disponible, incluida la base. El sistema lo comparará con el efectivo esperado</small></p>
+      <p>Diferencia estimada: <span id="difEstimada">—</span></p>
       <div>
         <label for="observacion">Observación (si hay diferencia)</label>
         <input id="observacion" type="text" placeholder="Motivo de la diferencia" th:field="*{observacion}"/>
       </div>
       <button type="submit">Cerrar caja</button>
     </form>
+    <script>
+      (function() {
+        var input = document.getElementById('efectivoContado');
+        var dif = document.getElementById('difEstimada');
+        var esperado = 0;
+        var el = document.querySelector('#resumen-cierre p:last-child b');
+        // El esperado se lee del texto del resumen sin pedir pagos de nuevo.
+        var esperadoTexto = (document.getElementById('resumen-cierre') || {}).textContent || '';
+        var m = esperadoTexto.match(/Efectivo esperado[^\$]*\$([\d\.,]+)/);
+        if (m) { esperado = parseFloat(m[1].replace(/\./g, '').replace(',', '.')) || 0; }
+        function actualizar() {
+          if (!input || !dif) return;
+          var v = parseFloat(input.value);
+          dif.textContent = isNaN(v) ? '—' : (v - esperado).toFixed(2) + ' COP';
+        }
+        if (input) { input.addEventListener('input', actualizar); }
+        if (typeof window !== 'undefined' && window.location) { actualizar(); }
+      })();
+    </script>
   </section>
 
   <section th:if="${!#lists.isEmpty(cerradas)}">

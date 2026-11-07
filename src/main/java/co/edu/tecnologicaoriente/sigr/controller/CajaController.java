@@ -38,7 +38,24 @@ public class CajaController {
         model.addAttribute("cerradas", caja.listarSesiones().stream()
                 .filter(s -> s.getEstado() == co.edu.tecnologicaoriente.sigr.model.EstadoSesionCaja.CERRADA).toList());
         model.addAttribute("aperturaForm", new AperturaCajaForm());
-        model.addAttribute("cierreForm", new CierreCajaForm());
+        CierreCajaForm cierre = new CierreCajaForm();
+        // Sin precarga: el campo empieza vacío para reflejar el conteo real.
+        cierre.setEfectivoContado(null);
+        model.addAttribute("cierreForm", cierre);
+        if (abierta != null) {
+            java.math.BigDecimal ef = java.math.BigDecimal.ZERO, tar = java.math.BigDecimal.ZERO, tra = java.math.BigDecimal.ZERO;
+            for (var p : abierta.getPagos()) {
+                switch (p.getMetodo()) {
+                    case EFECTIVO -> ef = ef.add(p.getImporte());
+                    case TARJETA -> tar = tar.add(p.getImporte());
+                    case TRANSFERENCIA -> tra = tra.add(p.getImporte());
+                }
+            }
+            model.addAttribute("cobrosEfectivo", ef);
+            model.addAttribute("cobrosTarjeta", tar);
+            model.addAttribute("cobrosTransferencia", tra);
+            model.addAttribute("efectivoEsperado", abierta.getBaseInicial().add(ef));
+        }
         model.addAttribute("metodos", MetodoPago.values());
         model.addAttribute("actor", actual(principal));
         return "caja/panel";

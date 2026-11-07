@@ -226,6 +226,27 @@ class CajaIntegrationTest {
         }
     }
 
+    @Test
+    void cierreMuestraResumenCon166000YFaltante() throws Exception {
+        var admin = caja.resolverActual("admin");
+        var comp = entregarYFacturar("cierre166", "66000");
+        abrirSiNo(admin);
+        PagoForm pago = new PagoForm();
+        pago.setComprobanteId(comp.getId()); pago.setMetodo("EFECTIVO");
+        // Importe real del comprobante de este test (precio 66000 en helper).
+        pago.setValorRecibido(new BigDecimal("70000"));
+        try { caja.registrarPago(admin, pago); } catch (Exception ignored) {}
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) sAdmin;
+        mockMvc.perform(get("/caja").session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Dinero contado físicamente en caja (incluye la base inicial)")))
+                .andExpect(content().string(containsString("Cuente todo el efectivo disponible, incluida la base")))
+                .andExpect(content().string(containsString("Diferencia estimada")))
+                .andExpect(content().string(containsString("Efectivo esperado")));
+    }
+
     private void abrirSiNo(co.edu.tecnologicaoriente.sigr.model.Usuario admin) {
         if (caja.abierta().isEmpty()) {
             caja.abrir(admin, apertura("0"));
