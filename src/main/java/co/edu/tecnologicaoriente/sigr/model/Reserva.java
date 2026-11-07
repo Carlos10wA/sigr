@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "reservas")
@@ -70,4 +72,25 @@ public class Reserva {
     public void setEstado(EstadoReserva estado) { this.estado = estado; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime f) { this.fechaCreacion = f; }
+
+    /**
+     * Situación temporal (no cambia el estado persistido).
+     * Cancelada siempre en rojo; si no, compara fecha+hora con America/Bogota:
+     * antes del inicio = Próxima, inicio &lt;= ahora &lt; fin = En curso, ahora &gt;= fin = finalizado.
+     */
+    public SituacionReserva situacionEn(ZonedDateTime ahora) {
+        if (estado == EstadoReserva.CANCELADA) {
+            return SituacionReserva.CANCELADA;
+        }
+        ZonedDateTime bogota = ahora.withZoneSameInstant(ZoneId.of("America/Bogota"));
+        ZonedDateTime inicio = ZonedDateTime.of(fecha, horaInicio, ZoneId.of("America/Bogota"));
+        ZonedDateTime fin = ZonedDateTime.of(fecha, horaFin, ZoneId.of("America/Bogota"));
+        if (bogota.isBefore(inicio)) {
+            return SituacionReserva.PROXIMA;
+        }
+        if (bogota.isBefore(fin)) {
+            return SituacionReserva.EN_CURSO;
+        }
+        return SituacionReserva.FINALIZADO;
+    }
 }

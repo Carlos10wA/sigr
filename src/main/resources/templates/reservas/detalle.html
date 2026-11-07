@@ -18,6 +18,8 @@
   <p>Horario: <span th:text="${#temporals.format(reserva.horaInicio, 'HH:mm')}"></span> - <span th:text="${#temporals.format(reserva.horaFin, 'HH:mm')}"></span></p>
   <p>Personas: <span th:text="${reserva.cantidadPersonas}"></span></p>
   <p>Estado: <b th:text="${reserva.estado.nombreES()}"></b></p>
+  <p>Situación: <span class="situacion" th:classappend="${situacion.claseCss()}" th:text="${situacion.etiquetaES()}"></span></p>
+  <p class="leyenda-sit" th:if="${situacion.etiquetaES() == 'Horario finalizado'}"><small>«Horario finalizado» solo indica que pasó el horario; no comprueba la asistencia del cliente.</small></p>
   <form th:if="${reserva.estado.name() == 'CONFIRMADA'}" th:action="@{/reservas/{id}/cancelar(id=${reserva.id})}" method="post">
     <button type="submit" th:onsubmit="return confirm('¿Cancelar esta reserva?')">Cancelar reserva</button>
   </form>

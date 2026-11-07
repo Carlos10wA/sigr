@@ -38,6 +38,16 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Indicadores visuales de reservas (2026-11-06)
+### Cambiado
+- Situación temporal (America/Bogota, sin cambiar estado persistido): Cancelada roja, Próxima verde, En curso naranja (`inicio <= ahora < fin`), Horario finalizado gris. «Horario finalizado» solo indica que pasó el horario, no asistencia.
+- Badges con fondo suave, texto legible y etiqueta escrita siempre, en listado y detalle, con leyenda breve. Disponibilidad intacta.
+- Tests con reloj controlado (antes/inicio exacto/durante/fin exacto/cancelación) + render listado/detalle. Total 48.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Configuración de mesas y disponibilidad integrada (2026-11-06)
 ### Cambiado
 - Solo ADMINISTRADOR ajusta la cantidad total de mesas activas (sin cantidad arbitraria ni creación automática al iniciar): al subir crea faltantes con numeración única y capacidad indicada; al bajar elige cuáles desactivar sin borrar/renumerar. Resumen calculado desde mesas reales (registradas/activas/inactivas + capacidad activa).

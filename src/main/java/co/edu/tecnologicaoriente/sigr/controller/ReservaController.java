@@ -28,7 +28,9 @@ public class ReservaController {
 
     @GetMapping
     public String listar(Principal principal, Model model) {
-        model.addAttribute("reservas", reservas.listarPara(actual(principal)));
+        var lista = reservas.listarPara(actual(principal));
+        model.addAttribute("reservas", lista);
+        model.addAttribute("situaciones", reservas.situaciones(lista));
         model.addAttribute("actor", actual(principal));
         return "reservas/listado";
     }
@@ -103,7 +105,9 @@ public class ReservaController {
 
     @GetMapping("/{id}")
     public String detalle(Principal principal, @PathVariable Long id, Model model) {
-        model.addAttribute("reserva", reservas.buscarPara(actual(principal), id));
+        var reserva = reservas.buscarPara(actual(principal), id);
+        model.addAttribute("reserva", reserva);
+        model.addAttribute("situacion", reservas.situacion(reserva));
         model.addAttribute("actor", actual(principal));
         return "reservas/detalle";
     }

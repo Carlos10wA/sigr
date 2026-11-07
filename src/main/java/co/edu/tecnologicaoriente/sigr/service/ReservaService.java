@@ -105,6 +105,20 @@ public class ReservaService {
         return mesas.findById(id).orElseThrow(() -> new ReservaInvalidaException("La mesa no existe."));
     }
 
+    /** Situación temporal actual (America/Bogota), sin cambiar el estado persistido. */
+    @Transactional(readOnly = true)
+    public SituacionReserva situacion(Reserva r) {
+        return r.situacionEn(java.time.ZonedDateTime.now(BOGOTA));
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Map<Long, SituacionReserva> situaciones(Iterable<Reserva> reservas) {
+        var ahora = java.time.ZonedDateTime.now(BOGOTA);
+        java.util.Map<Long, SituacionReserva> mapa = new java.util.LinkedHashMap<>();
+        reservas.forEach(r -> mapa.put(r.getId(), r.situacionEn(ahora)));
+        return mapa;
+    }
+
     @Transactional
     public Mesa crearMesa(MesaForm form) {
         if (mesas.existsByNombre(form.getNombre().trim())) {

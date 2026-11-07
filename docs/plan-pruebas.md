@@ -114,6 +114,14 @@ Resumen: `Tests run: 39, Failures: 0, Errors: 0 — BUILD SUCCESS` (2026-11-06).
 
 Resumen: `Tests run: 41, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Indicadores de reservas (2026-11-06)
+| Prueba | Resultado real |
+|---|---|
+| `SituacionReservaTest` 6 — antes del inicio (Próxima), inicio exacto/durante (En curso), fin exacto/después (Finalizado), cancelada siempre en todos los momentos | OK |
+| `indicadoresTemporalesEnListadoYDetalle` — listado con Leyenda + Próxima y detalle Próxima→Cancelada tras cancelar, persistido intacto | OK |
+
+Resumen: `Tests run: 48, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

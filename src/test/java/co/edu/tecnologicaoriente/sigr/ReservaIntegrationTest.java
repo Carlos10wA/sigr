@@ -335,6 +335,34 @@ class ReservaIntegrationTest {
     }
 
     @Test
+    void indicadoresTemporalesEnListadoYDetalle() throws Exception {
+        var m = mesa("Mesa indicadores", 4);
+        crearUsuario("cliente-indicador", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-indicador");
+        LocalDate manana = LocalDate.now(BOGOTA).plusDays(1);
+        var futura = reservas.crear(actor, form(m.getId(), "x", manana, "12:00", "13:00", 2));
+        var s = mockMvc.perform(post("/login").with(csrf()).param("username", "cliente-indicador").param("password", PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var ses = (org.springframework.mock.web.MockHttpSession) s;
+        mockMvc.perform(get("/reservas").session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Próxima")))
+                .andExpect(content().string(containsString("Leyenda")))
+                .andExpect(content().string(containsString("situacion-proxima")));
+        mockMvc.perform(get("/reservas/{id}", futura.getId()).session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Próxima")))
+                .andExpect(content().string(containsString("situacion-proxima")));
+        reservas.cancelar(actor, futura.getId());
+        mockMvc.perform(get("/reservas/{id}", futura.getId()).session(ses))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Cancelada")))
+                .andExpect(content().string(containsString("situacion-cancelada")));
+        // Estado persistido intacto tras ver situación.
+        assertThat(reservaRepo.findById(futura.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CANCELADA);
+    }
+
+    @Test
     void mesasDemoRepetibleSinDuplicarPorHttp() throws Exception {
         var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
                 .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
