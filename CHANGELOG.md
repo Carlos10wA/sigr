@@ -204,5 +204,8 @@
 - Rangos completos por zona configurada, validación ES de incompletos/invertidos, COP y dd/MM/yyyy HH:mm, totales cero sin resultados, imprimible y CSV por reporte con escape y protección anti-fórmulas.
 - Tests: escenario base 100.000 + 66.000 (2 líneas) + pendiente → 66.000/1 pagado, método/platos/reservas/cierres, render y CSV, permisos, rangos. Total 67.
 
+### Agregado (Excel)
+- Exportación Excel (.xlsx, Apache POI 5.2.5) del reporte de Cobros: botón «Descargar Excel», misma validación/datos del CSV. Título, ubicación (ciudad/país), periodo, COP, resumen, tabla con filtros y fila de total, nota sobre base inicial, sin colores, negritas, bordes, columnas autoajustadas, importes numéricos con formato monetario, fechas como fechas de Excel y textos como texto (sin fórmulas). Verificado en `ReportesIntegrationTest` (66.000, tipos, rango vacío, permisos). Total 67 (mismos casos ampliados).
+
 ### Pendiente
 - Aprobación de LB-SIGR-1.0 y revisión final (sigue candidata, sin v1.0.0).

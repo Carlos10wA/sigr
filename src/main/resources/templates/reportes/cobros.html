@@ -22,6 +22,7 @@
     </div>
     <button type="submit">Consultar</button>
     <a th:if="${desde != null and hasta != null}" th:href="@{/reportes/cobros/csv(desde=${desde},hasta=${hasta})}"><button type="button">Exportar CSV</button></a>
+    <a th:if="${desde != null and hasta != null}" th:href="@{/reportes/cobros/xlsx(desde=${desde},hasta=${hasta})}"><button type="button">Descargar Excel</button></a>
     <button type="button" onclick="window.print()">Imprimir</button>
   </form>
   <div th:if="${resumen != null}">

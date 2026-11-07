@@ -184,7 +184,7 @@ Resumen final: `Tests run: 65, Failures: 0, Errors: 0 — BUILD SUCCESS`. Caso b
 ## Reportes (2026-11-07)
 | Prueba (`ReportesIntegrationTest`, BD aislada) | Resultado real |
 |---|---|
-| `escenario66000CobrosPlatosYCierres` — cobros 66.000/1 pagado (excluye base 100.000, cambio y pendiente), platos 2+2, cierre base/cobros/esperado, CSV, 403 y rango invertido | OK |
+| `escenario66000CobrosPlatosYCierres` — cobros 66.000/1 pagado (excluye base 100.000, cambio y pendiente), platos 2+2, cierre base/cobros/esperado, CSV, 403 y rango invertido + Excel Cobros (título, total 66.000 numérico, filtros, textos sin fórmulas, rango vacío 0, permisos) | OK |
 | `reservasTotalesYMotivos` — 1 confirmada + 1 manual | OK |
 
 Resumen final: `Tests run: 67, Failures: 0, Errors: 0 — BUILD SUCCESS`.

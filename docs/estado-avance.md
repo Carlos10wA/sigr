@@ -14,7 +14,7 @@ Línea base **LB-SIGR-1.0 candidata** — pendiente de validación/aprobación. 
 6. **Facturación académica** — Único comprobante por pedido ENTREGADO («Comprobante académico — sin validez fiscal», pendiente de pago, sin cobro): número FAC- estable, fecha Bogota, copia histórica y total BigDecimal servidor (2×28.000+2×5.000=66.000 COP en prueba). ADMINISTRADOR/MESERO emiten y ven todos; CLIENTE solo consulta los suyos y no emite. Anti-duplicado con bloqueo + única; sin editar/eliminar; pedido facturado no se cancela. Listado, detalle imprimible y enlace desde entregado.
 7. **Ubicación del restaurante** — Solo ADMINISTRADOR (`/configuracion`): país, ciudad del catálogo con su zona explícita (no deducida del país), dirección; inicial Colombia/Bogotá/America-Bogota, sin geolocalización. El comprobante muestra «Bogotá, Colombia» (sin «(America/Bogota)») y guarda copia de ubicación/zona al emitir; cambios responsables no alteran emitidos. Cambio de zona con confirmadas pendientes se bloquea explicando el motivo, sin reinterpretar horarios; las fechas futuras usan la zona configurada.
 8. **Caja y pagos** — Solo ADMINISTRADOR (`/caja`): sesión única abierta (responsable, fecha/zona histórica, base ≥ 0), pagos completos únicos por comprobante pendiente (efectivo con recibido/cambio, tarjeta/transferencia con referencia, sin abonos/mixtos/devoluciones, registro manual sin banco), importe servidor BigDecimal y PAGADO en una transacción con bloqueo + única; cierre con cobros por método, esperado = base + efectivo, diferencia con observación, resumen definitivo sin reabrir. MESERO sin Caja (403); CLIENTE solo consulta sus Pagados. Escenario: base 100.000 + 66.000 con 70.000 → cambio 4.000, esperado 166.000; tarjeta/transferencia no suben efectivo.
-9. **Reportes** — Solo ADMINISTRADOR (`/reportes`, CSV e impresión): Cobros por fecha de pago (66.000/1, excluye base/cambio/pendiente), Platos históricos por fecha de pago, Reservas por fecha/mesa con motivos (sin motivo para legacy) y Cierres por fecha de cierre; rangos completos por zona configurada con COP/dd/MM/HH:mm. Escenario verificado en BD aislada.
+9. **Reportes** — Solo ADMINISTRADOR (`/reportes`, CSV e impresión): Cobros por fecha de pago (66.000/1, excluye base/cambio/pendiente), Platos históricos por fecha de pago, Reservas por fecha/mesa con motivos (sin motivo para legacy) y Cierres por fecha de cierre; rangos completos por zona configurada con COP/dd/MM/HH:mm. Cobros además exportable a Excel (.xlsx Apache POI) con el botón «Descargar Excel». Escenario verificado en BD aislada.
 
 ### Reglas de permisos y propiedad (fuera de la vista, en el servidor)
 
@@ -45,8 +45,7 @@ ID ajeno manipulado (pedido/reserva de otro CLIENTE) devuelve **404** sin revela
   - `UbicacionIntegrationTest` 4 (Cali solo lectura) y `CajaIntegrationTest` 4 (escenario 66.000, permisos, tarjeta/transferencia, validaciones/cierre).
 - Tras migración ENUM: `Tests run: 64, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
 - Tras cierre claro: `Tests run: 65, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
-- Tras Reportes (final): `Tests run: 67, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
-  - `ReportesIntegrationTest` 2 (66.000/1, platos 2+2, cierre, CSV, 403, rango invertido, reservas 1+1).
+- Tras Reportes: `Tests run: 67, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS` (`ReportesIntegrationTest` 2, con Excel .xlsx). 
   - Comando: `.\mvnw.cmd test` con `JAVA_HOME=C:\Program Files\Java\jdk-21` (Java 21.0.2, Spring Boot 3.5.16). Probado 2026-11-06 con H2 en memoria (tests) — la BD archivo `data/sigrdb.mv.db` no se borró ni reinició.
 
 ## Commits (rama `main`, árbol limpio salvo este documento)

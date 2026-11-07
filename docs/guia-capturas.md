@@ -20,5 +20,6 @@
 | E-16 | Detalle comprobante imprimible | RQ-Facturación | Líneas históricas, total, botón Imprimir | Facturación |
 | E-17 | `/reportes/cobros` 66.000 | RQ-Reportes | Total, pagados y desglose por método con filtros | Reportes |
 | E-18 | `/reportes/cobros/csv` | RQ-Reportes | CSV con escape y protección anti-fórmulas | Reportes |
+| E-19 | `/reportes/cobros/xlsx` | RQ-Reportes | Excel «Descargar Excel»: título, resumen 66.000, tabla con total y nota | Excel |
 
 Todas deben tomarse de ejecución real en Windows.

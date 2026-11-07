@@ -70,7 +70,7 @@ data/ (H2 local, no versionar)
 ```
 
 ## Alcance (6 módulos)
-Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas ✅ — Facturación ✅ (académica, pendiente de pago) — Caja ✅ (apertura/pagos/cierre) — Reportes ✅ — Pendiente revisión final de línea base.
+Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas ✅ — Facturación ✅ (académica, pendiente de pago) — Caja ✅ (apertura/pagos/cierre) — Reportes ✅ (Cobros CSV + Excel .xlsx Apache POI 5.2.5 + imprimible) — Pendiente revisión final de línea base.
 
 ## Catálogo de demostración (Etapa 3)
 - Tras iniciar sesión como ADMINISTRADOR, abra `/platos` y pulse **Cargar datos de demostración**. Crea si faltan las 4 categorías y los 12 platos (3 por categoría), con fotografías reales locales CC (`docs/creditos-imagenes.md`); si ya existen, no duplica ni sobrescribe. Para revisar en vivo, reinicie con su `SIGR_ADMIN_PASSWORD` habitual y repita el botón; luego anote la captura.

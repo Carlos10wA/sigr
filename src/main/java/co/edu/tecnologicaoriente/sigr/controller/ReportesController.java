@@ -22,9 +22,13 @@ public class ReportesController {
 
     private final ReporteService reportes;
     private final ReservaService reservas;
+    private final co.edu.tecnologicaoriente.sigr.service.CobrosExcelService excel;
+    private final co.edu.tecnologicaoriente.sigr.service.ConfiguracionService configuracion;
 
-    public ReportesController(ReporteService reportes, ReservaService reservas) {
-        this.reportes = reportes; this.reservas = reservas;
+    public ReportesController(ReporteService reportes, ReservaService reservas,
+                              co.edu.tecnologicaoriente.sigr.service.CobrosExcelService excel,
+                              co.edu.tecnologicaoriente.sigr.service.ConfiguracionService configuracion) {
+        this.reportes = reportes; this.reservas = reservas; this.excel = excel; this.configuracion = configuracion;
     }
 
     @GetMapping
@@ -63,6 +67,18 @@ public class ReportesController {
               .append(p.getImporte().toPlainString()).append("\n");
         }
         return csv(sb.toString(), "cobros-" + desde + "-" + hasta + ".csv");
+    }
+
+    @GetMapping("/cobros/xlsx")
+    public ResponseEntity<byte[]> cobrosXlsx(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta) {
+        var resumen = reportes.cobros(desde, hasta);
+        var cfg = configuracion.actual();
+        byte[] datos = excel.generar(resumen, desde, hasta, cfg.getCiudad(), cfg.getPais(), reportes.zonaActual().getId());
+        HttpHeaders h = new HttpHeaders();
+        h.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        h.setContentDisposition(ContentDisposition.attachment().filename("cobros-" + desde + "-" + hasta + ".xlsx").build());
+        return ResponseEntity.ok().headers(h).body(datos);
     }
 
     @GetMapping("/platos")

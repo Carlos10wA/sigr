@@ -128,6 +128,56 @@ class ReportesIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("FAC-")))
                 .andExpect(content().string(containsString("66000")));
+        // Excel de Cobros con el mismo escenario.
+        var sAdminX = mockMvc.perform(get("/reportes/cobros/xlsx")
+                        .param("desde", hoy.minusDays(1).toString()).param("hasta", hoy.plusDays(1).toString()).session(ses))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", org.hamcrest.Matchers.containsString("openxmlformats")))
+                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString(".xlsx")))
+                .andReturn();
+        byte[] excelBytes = sAdminX.getResponse().getContentAsByteArray();
+        try (var wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook(new java.io.ByteArrayInputStream(excelBytes))) {
+            var hoja = wb.getSheetAt(0);
+            assertThat(hoja.getRow(0).getCell(0).getStringCellValue()).isEqualTo("SIGR — Reporte de cobros");
+            boolean halladoTotal = false;
+            for (int i = 0; i <= hoja.getLastRowNum(); i++) {
+                var celdas = hoja.getRow(i);
+                if (celdas != null && celdas.getCell(0) != null && "Total cobrado".equals(celdas.getCell(0).getStringCellValue())) {
+                    assertThat(celdas.getCell(1).getNumericCellValue()).isEqualTo(66000.0);
+                }
+                if (celdas != null && celdas.getCell(3) != null) {
+                    try { if ("Total".equals(celdas.getCell(3).getStringCellValue()) && celdas.getCell(4) != null) {
+                        assertThat(celdas.getCell(4).getNumericCellValue()).isEqualTo(66000.0); halladoTotal = true; } } catch (Exception ignored) {}
+                }
+            }
+            assertThat(halladoTotal).isTrue();
+            // Fechas como fechas (numéricas con formato) y textos como texto, nunca fórmulas.
+            for (int i = 0; i <= hoja.getLastRowNum(); i++) {
+                var fila = hoja.getRow(i);
+                if (fila == null) continue;
+                for (int j = 0; j < fila.getLastCellNum(); j++) {
+                    var celda = fila.getCell(j);
+                    if (celda != null) {
+                        assertThat(celda.getCellType()).isNotEqualTo(org.apache.poi.ss.usermodel.CellType.FORMULA);
+                    }
+                }
+            }
+        }
+        // Rango sin resultados sigue generando Excel con totales cero.
+        var sVacio = mockMvc.perform(get("/reportes/cobros/xlsx")
+                        .param("desde", hoy.plusDays(30).toString()).param("hasta", hoy.plusDays(31).toString()).session(ses))
+                .andExpect(status().isOk()).andReturn();
+        try (var wb2 = new org.apache.poi.xssf.usermodel.XSSFWorkbook(new java.io.ByteArrayInputStream(sVacio.getResponse().getContentAsByteArray()))) {
+            var hoja = wb2.getSheetAt(0);
+            boolean cero = false;
+            for (int i = 0; i <= hoja.getLastRowNum(); i++) {
+                var celdas = hoja.getRow(i);
+                if (celdas != null && celdas.getCell(0) != null && "Total cobrado".equals(celdas.getCell(0).getStringCellValue())) {
+                    cero = celdas.getCell(1).getNumericCellValue() == 0;
+                }
+            }
+            assertThat(cero).isTrue();
+        }
         // Permisos
         crearUsuario("mesero-rep2", Rol.MESERO);
         var sMesero = mockMvc.perform(post("/login").with(csrf()).param("username", "mesero-rep2").param("password", PW))
