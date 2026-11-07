@@ -167,6 +167,13 @@ Resumen final: `Tests run: 59, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen final: `Tests run: 63, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Migración ENUM (2026-11-07)
+| Prueba (`MigracionEstadoPagoTest`, BD aislada) | Resultado real |
+|---|---|
+| `migracionIdempotenteYRegresion66000` — migración sobre VARCHAR sin error, escenario 66.000/70.000/4.000, PAGADO, 1 pago, datos conservados | OK |
+
+Resumen final: `Tests run: 64, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verificación local con app en marcha no posible (bloqueo de archivo); migración se aplica al reiniciar y se verifica entonces.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

@@ -13,5 +13,6 @@
 | RQ-09 | Facturación académica (único por entregado, histórico, pendiente de pago, imprimible) | Comprobante/ComprobanteLinea/FacturacionService + bloqueo + única | FacturacionIntegrationTest 4 casos | `Tests run: 55` | ✅ Facturación |
 | RQ-10 | Ubicación del restaurante (ciudad única + solo lectura, copia en comprobante, bloqueo de zona) | ConfiguracionRestaurante/ConfiguracionService + snapshot en Comprobante | UbicacionIntegrationTest 4 casos | `Tests run: 59` | ✅ Ubicación + corrección Cali |
 | RQ-11 | Caja y pagos (sesión única, pago completo único, cierre con diferencia) | SesionCaja/Pago/CajaService + bloqueo + única | CajaIntegrationTest 4 casos | `Tests run: 63` | ✅ Caja y pagos |
-| RQ-12 | Reportes | — | — | — | ⏳ Pendiente (no implementado) |
-| RQ-13 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |
+| RQ-12 | Migración ENUM EstadoPago → VARCHAR (idempotente, sin borrado) | MigracionEstadoPago + columnDefinition VARCHAR(30) | MigracionEstadoPagoTest 1 caso | `Tests run: 64` | ✅ Migración |
+| RQ-13 | Reportes | — | — | — | ⏳ Pendiente (no implementado) |
+| RQ-14 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |

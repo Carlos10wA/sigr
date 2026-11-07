@@ -177,3 +177,12 @@
 ### Pendiente
 - Módulos Reportes (no implementados).
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
+## [0.0.1-SNAPSHOT] — Migración ENUMEstadoPago (2026-11-07)
+### Corregido
+- `comprobantes.estado` antiguo ENUM solo admitía PENDIENTE_DE_PAGO (error 22030 al pagar). Migración controlada idempotente al iniciar (`MigracionEstadoPago`, INFORMATION_SCHEMA): si es ENUM lo convierte a VARCHAR(30) con ALTER COLUMN conservando datos/relaciones/restricciones; `update` no lo corrige. Entidad con `columnDefinition=VARCHAR(30)` para BD nuevas. Sin borrado ni create-drop; pago solo vía transacción (intento fallido revierte pago+estado).
+- Verificación de solo lectura de la BD local pendiente por bloqueo de la app en ejecución: al reiniciar se aplica la migración y se verifica. Tests: `MigracionEstadoPagoTest` (66.000, cambio 4.000, PAGADO, 1 pago, idempotencia) + suite 64.
+
+### Pendiente
+- Módulos Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
