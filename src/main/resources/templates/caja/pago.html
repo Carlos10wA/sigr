@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Registrar pago - Caja</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Registrar pago</h1>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:action="@{/caja/pagos}" th:object="${form}" method="post">
+    <div>
+      <label for="comprobanteId">Comprobante (ID)</label>
+      <input id="comprobanteId" type="number" min="1" th:field="*{comprobanteId}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('comprobanteId')}" th:errors="*{comprobanteId}"></span>
+    </div>
+    <div>
+      <label for="metodo">Método</label>
+      <select id="metodo" th:field="*{metodo}">
+        <option value="">-- Seleccione --</option>
+        <option th:each="m : ${metodos}" th:value="${m}" th:text="${m.nombreES()}"></option>
+      </select>
+    </div>
+    <div>
+      <label for="valorRecibido">Valor recibido en efectivo (COP)</label>
+      <input id="valorRecibido" type="number" min="0" step="0.01" th:field="*{valorRecibido}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('valorRecibido')}" th:errors="*{valorRecibido}"></span>
+    </div>
+    <div>
+      <label for="referencia">Referencia (tarjeta/transferencia)</label>
+      <input id="referencia" type="text" placeholder="N.º de autorización o comprobante" th:field="*{referencia}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('referencia')}" th:errors="*{referencia}"></span>
+    </div>
+    <p><small>El importe se obtiene del comprobante en el servidor. El cambio se calcula y el ingreso registrado es el total, no el recibido.</small></p>
+    <button type="submit">Registrar pago</button>
+    <a th:href="@{/caja}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>

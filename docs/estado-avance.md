@@ -13,6 +13,7 @@ Línea base **LB-SIGR-1.0 candidata** — pendiente de validación/aprobación. 
 5. **Configuración de mesas** — Solo ADMINISTRADOR ajusta la cantidad total de activas (sin cantidad arbitraria ni auto-creación al iniciar): al subir crea faltantes únicos con la capacidad indicada; al bajar elige cuáles desactivar sin borrar/renumerar; no desactiva mesas con confirmadas pendientes (explica IDs/fechas); reactivación permitida; resumen calculado desde mesas reales. Reservas ofrecen Mesa 2/3 cuando Mesa 1 está ocupada y diferencian sin mesas/capacidad/ocupadas con enlace a Gestionar mesas para admin.
 6. **Facturación académica** — Único comprobante por pedido ENTREGADO («Comprobante académico — sin validez fiscal», pendiente de pago, sin cobro): número FAC- estable, fecha Bogota, copia histórica y total BigDecimal servidor (2×28.000+2×5.000=66.000 COP en prueba). ADMINISTRADOR/MESERO emiten y ven todos; CLIENTE solo consulta los suyos y no emite. Anti-duplicado con bloqueo + única; sin editar/eliminar; pedido facturado no se cancela. Listado, detalle imprimible y enlace desde entregado.
 7. **Ubicación del restaurante** — Solo ADMINISTRADOR (`/configuracion`): país, ciudad del catálogo con su zona explícita (no deducida del país), dirección; inicial Colombia/Bogotá/America-Bogota, sin geolocalización. El comprobante muestra «Bogotá, Colombia» (sin «(America/Bogota)») y guarda copia de ubicación/zona al emitir; cambios responsables no alteran emitidos. Cambio de zona con confirmadas pendientes se bloquea explicando el motivo, sin reinterpretar horarios; las fechas futuras usan la zona configurada.
+8. **Caja y pagos** — Solo ADMINISTRADOR (`/caja`): sesión única abierta (responsable, fecha/zona histórica, base ≥ 0), pagos completos únicos por comprobante pendiente (efectivo con recibido/cambio, tarjeta/transferencia con referencia, sin abonos/mixtos/devoluciones, registro manual sin banco), importe servidor BigDecimal y PAGADO en una transacción con bloqueo + única; cierre con cobros por método, esperado = base + efectivo, diferencia con observación, resumen definitivo sin reabrir. MESERO sin Caja (403); CLIENTE solo consulta sus Pagados. Escenario: base 100.000 + 66.000 con 70.000 → cambio 4.000, esperado 166.000; tarjeta/transferencia no suben efectivo.
 
 ### Reglas de permisos y propiedad (fuera de la vista, en el servidor)
 
@@ -37,8 +38,10 @@ ID ajeno manipulado (pedido/reserva de otro CLIENTE) devuelve **404** sin revela
 - Tras indicadores + vencimiento: `Tests run: 51, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
 - Tras Facturación: `Tests run: 55, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
   - `FacturacionIntegrationTest` 4 (emisión/rechazados, duplicado, histórico 66.000 COP + permisos/propiedad, cancelados).
-- Tras ubicación (final): `Tests run: 58, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+- Tras ubicación: `Tests run: 58, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
   - `UbicacionIntegrationTest` 3 (solo admin, ciudad exige su zona, copia inmutable en comprobante sin «(America/Bogota)», bloqueo de zona con pendientes).
+- Tras Cali + Caja (final): `Tests run: 63, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+  - `UbicacionIntegrationTest` 4 (Cali solo lectura) y `CajaIntegrationTest` 4 (escenario 66.000, permisos, tarjeta/transferencia, validaciones/cierre).
   - Comando: `.\mvnw.cmd test` con `JAVA_HOME=C:\Program Files\Java\jdk-21` (Java 21.0.2, Spring Boot 3.5.16). Probado 2026-11-06 con H2 en memoria (tests) — la BD archivo `data/sigrdb.mv.db` no se borró ni reinició.
 
 ## Commits (rama `main`, árbol limpio salvo este documento)
@@ -50,7 +53,7 @@ Historial previo conservado: `237f060`, `5285f29`, `b7d01b0`, `13430e9`, `3fc326
 
 ## Pendientes (no implementados)
 
-- **Caja y Reportes**: no implementados. No hay rutas `/caja` ni `/reportes`. Facturación y ubicación sí implementadas.
+- **Reportes**: no implementados. No hay rutas `/reportes`. Caja/pagos y Facturación sí implementados.
 - Aprobación de línea base LB-SIGR-1.0 y creación de `v1.0.0`: no aprobados ni creados.
 - Publicación en GitHub: no realizada (sin remoto).
 - Servicios de pago: ninguno instalado. Secretos: ninguno registrado (solo `SIGR_ADMIN_PASSWORD` local vía entorno).
@@ -71,3 +74,4 @@ $env:SIGR_ADMIN_PASSWORD="SuClaveLocal"
 4. **Mesas/Reservas**: como ADMINISTRADOR, `/mesas` → resumen + «Cantidad total de mesas activas» y capacidad → guardar (ampliar/reducir con elección) → `/reservas/nueva`: primero fecha/horarios/personas → «Actualizar mesas disponibles» → elegir mesa → crear → detalle `/reservas/{id}` → cancelar. Como CLIENTE, verificar que solo ve lo suyo y que un ID ajeno da 404.
 5. **Facturación**: pedido ENTREGADO → detalle `/pedidos/{id}` → «Emitir comprobante» (ADMIN/MESERO) → `/facturas/{id}` («Comprobante académico — sin validez fiscal», pendiente de pago) → Imprimir. CLIENTE solo consulta los suyos.
 6. **Ubicación**: como ADMINISTRADOR, `/configuracion` → país/ciudad/dirección/zona → guardar; comprobar que el detalle de comprobante muestra «Bogotá, Colombia» (o la ciudad configurada) sin texto técnico. Cambio de zona con pendientes debe bloquearse.
+7. **Caja**: como ADMINISTRADOR, `/caja` → abrir con base → registrar pago (efectivo con recibido/cambio o tarjeta/transferencia con referencia) desde `/caja/pagos/nuevo` o desde el comprobante → cerrar con efectivo contado (y observación si difiere). MESERO debe recibir 403 en `/caja`; CLIENTE solo ve sus comprobantes Pagados.

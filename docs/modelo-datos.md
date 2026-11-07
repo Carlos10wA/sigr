@@ -132,6 +132,37 @@ Columnas `pais`, `ciudad`, `direccion` y `zona_horaria` copiadas de `configuraci
 
 Reglas Ubicación: inicial Colombia/Bogotá/America-Bogota, sin geolocalización; cambio de zona con confirmadas pendientes se bloquea sin reinterpretar horarios.
 
+## Tablas Caja
+
+### `sesiones_caja`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| responsable_id | BIGINT FK → usuarios | Quien abrió. |
+| fecha_apertura | TIMESTAMP | Apertura (zona configurada). |
+| zona_horaria | VARCHAR(60) | Copia de la zona al abrir. |
+| base_inicial | DECIMAL(12,2) | ≥ 0 COP. |
+| estado | VARCHAR(20) | `ABIERTA`, `CERRADA` (una abierta). |
+| fecha_cierre / responsable_cierre / zona_cierre | TIMESTAMP/VARCHAR | Cierre (sin editar/reabrir). |
+| cobros_efectivo / cobros_tarjeta / cobros_transferencia / total_cobrado | DECIMAL(12,2) | Resumen al cierre. |
+| efectivo_esperado / efectivo_contado / diferencia | DECIMAL(12,2) | Esperado = base + efectivo; diferencia exige observación. |
+| observacion | VARCHAR(500) | Obligatoria si diferencia ≠ 0. |
+
+### `pagos`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| comprobante_id | BIGINT único FK → comprobantes | Un pago completo por comprobante. |
+| sesion_id | BIGINT FK → sesiones_caja | Sesión abierta al pagar. |
+| metodo | VARCHAR(20) | `EFECTIVO`, `TARJETA`, `TRANSFERENCIA`. |
+| importe | DECIMAL(12,2) | Total cobrado (desde servidor). |
+| valor_recibido / cambio | DECIMAL(12,2) | Solo efectivo (recibido ≥ total). |
+| referencia | VARCHAR(100) | Obligatoria tarjeta/transferencia (sin datos sensibles). |
+| responsable_id | BIGINT FK → usuarios | Quien registró. |
+| fecha_hora | TIMESTAMP | Registro (zona configurada). |
+
+Reglas Caja: solo ADMINISTRADOR (MESERO 403 en Caja, CLIENTE solo ve sus comprobantes Pagados); pago + PAGADO en una transacción con bloqueo de sesión; sin editar/eliminar; cierre valida observación.
+
 ## Relaciones y reglas (Etapa 3)
 - `platos.categoria_id` → `categorias.id` (N:1). Desactivar categoría/plato conserva referencias (no se elimina).
 - Desactivado (`activo=false`) ≠ no disponible (`disponible=false`): el primero oculta; el segundo avisa pero no se puede pedir.

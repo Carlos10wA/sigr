@@ -20,6 +20,14 @@
   <p>Ubicación del restaurante: <span th:text="${comprobante.ciudad + ', ' + comprobante.pais}"></span><span th:if="${comprobante.direccion != null and comprobante.direccion != ''}"> — <span th:text="${comprobante.direccion}"></span></span></p>
   <p>Fecha de emisión: <span th:text="${#temporals.format(comprobante.fechaEmision, 'dd/MM/yyyy HH:mm')}"></span> (<span th:text="${comprobante.ciudad}"></span>, <span th:text="${comprobante.pais}"></span>)</p>
   <p>Estado: <b th:text="${comprobante.estado.nombreES()}"></b></p>
+  <div th:if="${comprobante.pago != null}">
+    <p>Pago: <span th:text="${comprobante.pago.metodo.nombreES()}"></span> —
+       <span th:text="${'$' + #numbers.formatDecimal(comprobante.pago.importe, 1, 'POINT', 2, 'COMMA') + ' COP'}"></span> —
+       <span th:text="${#temporals.format(comprobante.pago.fechaHora, 'dd/MM/yyyy HH:mm')}"></span></p>
+  </div>
+  <div sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:if="${comprobante.estado.name() == 'PENDIENTE_DE_PAGO'}">
+    <p><a th:href="@{/caja/pagos/nuevo(comprobanteId=${comprobante.id})}"><button type="button">Registrar pago</button></a></p>
+  </div>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Plato</th><th>Precio unitario</th><th>Cantidad</th><th>Subtotal</th></tr></thead>

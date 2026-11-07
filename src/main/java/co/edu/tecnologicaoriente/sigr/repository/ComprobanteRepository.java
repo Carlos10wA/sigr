@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface ComprobanteRepository extends JpaRepository<Comprobante, Long> {
 
-    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas"})
+    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas", "pago", "pago.sesion", "pago.responsable"})
     Optional<Comprobante> findById(Long id);
 
-    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas"})
+    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas", "pago"})
     List<Comprobante> findAllByOrderByFechaEmisionDesc();
 
-    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas"})
+    @EntityGraph(attributePaths = {"pedido", "pedido.usuario", "lineas", "pago"})
     List<Comprobante> findByPedido_Usuario_IdOrderByFechaEmisionDesc(Long usuarioId);
 
     Optional<Comprobante> findByPedido_Id(Long pedidoId);

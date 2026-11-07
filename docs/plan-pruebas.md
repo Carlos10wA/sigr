@@ -157,6 +157,16 @@ Resumen: `Tests run: 58, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen final: `Tests run: 59, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Caja y pagos (2026-11-07)
+| Prueba (`CajaIntegrationTest`, BD aislada) | Resultado real |
+|---|---|
+| `escenario66000EfectivoYCierre` — base 100.000 + 66.000 con 70.000 → cambio 4.000, esperado 166.000, PAGADO y render con método | OK |
+| `permisosYAperturaUnicaYPagoSinCaja` — MESERO 403, pago sin caja y segunda apertura rechazados, duplicado rechazado | OK |
+| `tarjetaYTransferenciaNoAumentanEfectivo` — tarjeta/transferencia no suben efectivo esperado | OK |
+| `validacionesEfectivoReferenciaYCierreConDiferencia` — recibido bajo y referencia vacía rechazados, diferencia exige observación | OK |
+
+Resumen final: `Tests run: 63, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

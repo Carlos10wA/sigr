@@ -57,7 +57,7 @@ Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió 
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28`, Reservas `33/33`, claridad Reservas/Mesas `35/35`, selección de mesa `39/39`, configuración de mesas `41/41`, indicadores `48/48`, colores + vencimiento `51/51`, Facturación `55/55`, ubicación `58/58`, corrección Cali `59/59` (ciudad única, zona solo lectura). Ver `docs/plan-pruebas.md` y `docs/estado-avance.md`.
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28`, Reservas `33/33`, claridad Reservas/Mesas `35/35`, selección de mesa `39/39`, configuración de mesas `41/41`, indicadores `48/48`, colores + vencimiento `51/51`, Facturación `55/55`, ubicación `58/58`, Cali `59/59`, Caja y pagos `63/63` (base 100.000 + 66.000 efectivo = 166.000). Ver `docs/plan-pruebas.md` y `docs/estado-avance.md`.
 
 ## Estructura
 ```
@@ -70,7 +70,7 @@ data/ (H2 local, no versionar)
 ```
 
 ## Alcance (6 módulos)
-Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas ✅ — Facturación ✅ (académica, pendiente de pago) — Caja/Reportes pendientes (no implementados).
+Usuarios ✅ (Etapa 2) — Menús ✅ (Etapa 3) — Pedidos ✅ — Reservas ✅ — Facturación ✅ (académica, pendiente de pago) — Caja ✅ (apertura/pagos/cierre) — Reportes pendientes (no implementados).
 
 ## Catálogo de demostración (Etapa 3)
 - Tras iniciar sesión como ADMINISTRADOR, abra `/platos` y pulse **Cargar datos de demostración**. Crea si faltan las 4 categorías y los 12 platos (3 por categoría), con fotografías reales locales CC (`docs/creditos-imagenes.md`); si ya existen, no duplica ni sobrescribe. Para revisar en vivo, reinicie con su `SIGR_ADMIN_PASSWORD` habitual y repita el botón; luego anote la captura.

@@ -166,3 +166,14 @@
 ### Pendiente
 - Módulos Caja/Reportes (no implementados).
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
+## [0.0.1-SNAPSHOT] — Caja y pagos (2026-11-07)
+### Agregado
+- Sesión única abierta solo ADMINISTRADOR (`/caja`): responsable, fecha/hora configurada, base inicial ≥ 0, zona histórica; sin ingresos/egresos manuales. Sin editar/reabrir cerradas.
+- Pago completo único por comprobante pendiente (efectivo/tarjeta/transferencia, sin abonos/mixtos): importe desde servidor BigDecimal; efectivo valida recibido ≥ total con cambio e ingreso = total; tarjeta/transferencia con referencia obligatoria sin datos sensibles. Registro + PAGADO en una transacción, con bloqueo y restricción única; sin editar/eliminar.
+- Cierre con base + cobros por método, esperado = base + efectivo, diferencia con observación obligatoria y resumen definitivo. Tarjeta/transferencia no aumentan efectivo esperado.
+- MESERO sin Caja (403); CLIENTE solo ve sus comprobantes Pagados. Tests: base 100.000 + 66.000 en efectivo (70.000 → cambio 4.000, esperado 166.000), permisos, apertura única, sin caja, duplicados, validaciones, cierre. Total 63.
+
+### Pendiente
+- Módulos Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).

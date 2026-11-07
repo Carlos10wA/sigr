@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Caja - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Caja</h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+  <section th:if="${sesion == null}">
+    <h2>Apertura de caja</h2>
+    <form th:action="@{/caja/abrir}" th:object="${aperturaForm}" method="post">
+      <div>
+        <label for="baseInicial">Base inicial (COP)</label>
+        <input id="baseInicial" type="number" min="0" step="0.01" th:field="*{baseInicial}"/>
+        <span class="field-error" th:if="${#fields.hasErrors('baseInicial')}" th:errors="*{baseInicial}"></span>
+      </div>
+      <button type="submit">Abrir caja</button>
+    </form>
+  </section>
+
+  <section th:if="${sesion != null}">
+    <h2>Sesión actual</h2>
+    <p>Responsable: <span th:text="${sesion.responsable.nombreCompleto}"></span></p>
+    <p>Apertura: <span th:text="${#temporals.format(sesion.fechaApertura, 'dd/MM/yyyy HH:mm')}"></span></p>
+    <p>Base inicial: <span th:text="${'$' + #numbers.formatDecimal(sesion.baseInicial, 1, 'POINT', 2, 'COMMA') + ' COP'}"></span></p>
+    <p>Estado: <b th:text="${sesion.estado.nombreES()}"></b></p>
+    <p><a th:href="@{/caja/pagos/nuevo}"><button type="button">Registrar pago</button></a></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Comprobante</th><th>Método</th><th>Importe</th><th>Fecha</th></tr></thead>
+        <tbody>
+          <tr th:each="p : ${sesion.pagos}">
+            <td th:text="${p.comprobante.numero}"></td>
+            <td th:text="${p.metodo.nombreES()}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(p.importe, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${#temporals.format(p.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h2>Cierre de caja</h2>
+    <form th:action="@{/caja/cerrar}" th:object="${cierreForm}" method="post">
+      <div>
+        <label for="efectivoContado">Efectivo contado (COP)</label>
+        <input id="efectivoContado" type="number" min="0" step="0.01" th:field="*{efectivoContado}"/>
+        <span class="field-error" th:if="${#fields.hasErrors('efectivoContado')}" th:errors="*{efectivoContado}"></span>
+      </div>
+      <div>
+        <label for="observacion">Observación (si hay diferencia)</label>
+        <input id="observacion" type="text" placeholder="Motivo de la diferencia" th:field="*{observacion}"/>
+      </div>
+      <button type="submit">Cerrar caja</button>
+    </form>
+  </section>
+
+  <section th:if="${!#lists.isEmpty(cerradas)}">
+    <h2>Historial de cierres</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sesión</th><th>Apertura</th><th>Cierre</th><th>Base</th><th>Efectivo</th><th>Tarjeta</th><th>Transferencia</th><th>Total</th><th>Esperado</th><th>Contado</th><th>Diferencia</th></tr></thead>
+        <tbody>
+          <tr th:each="s : ${cerradas}">
+            <td th:text="${s.id}"></td>
+            <td th:text="${#temporals.format(s.fechaApertura, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(s.fechaCierre, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.baseInicial, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosEfectivo, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosTarjeta, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosTransferencia, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.totalCobrado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.efectivoEsperado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.efectivoContado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.diferencia, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

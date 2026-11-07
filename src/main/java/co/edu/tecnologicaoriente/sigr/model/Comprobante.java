@@ -53,6 +53,9 @@ public class Comprobante {
     @OneToMany(mappedBy = "comprobante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComprobanteLinea> lineas = new ArrayList<>();
 
+    @OneToOne(mappedBy = "comprobante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Pago pago;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -89,6 +92,8 @@ public class Comprobante {
     public void setEstado(EstadoPago estado) { this.estado = estado; }
     public List<ComprobanteLinea> getLineas() { return lineas; }
     public void setLineas(List<ComprobanteLinea> lineas) { this.lineas = lineas; }
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime f) { this.fechaCreacion = f; }
 }
