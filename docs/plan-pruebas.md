@@ -150,6 +150,13 @@ Resumen: `Tests run: 55, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 58, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Corrección /configuracion (Cali, 2026-11-07)
+| Prueba (`UbicacionIntegrationTest.caliMuestraSoloSuZonaSinOtraCiudad`) | Resultado real |
+|---|---|
+| POST Cali con país/zona manipulados → servidor deriva Colombia/America-Bogota; GET muestra solo lectura sin «Bucaramanga — America/Bogota» | OK |
+
+Resumen final: `Tests run: 59, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

@@ -71,22 +71,19 @@ public class ConfiguracionService {
 
     @Transactional
     public ConfiguracionRestaurante actualizar(UbicacionForm form) {
-        // La zona se asocia a la ciudad seleccionada, no se deduce solo del país.
-        boolean valida = CIUDADES.stream().anyMatch(c ->
-                c.pais().equalsIgnoreCase(form.getPais().trim())
-                        && c.ciudad().equalsIgnoreCase(form.getCiudad().trim())
-                        && c.zona().equals(form.getZonaHoraria().trim()));
-        if (!valida) {
-            throw new ConfiguracionInvalidaException(
-                    "Seleccione una ciudad del catálogo con su zona horaria correspondiente.");
-        }
+        // La ciudad es la única selección: país y zona se derivan del catálogo (no del navegador).
+        CiudadZona elegida = CIUDADES.stream()
+                .filter(c -> c.ciudad().equalsIgnoreCase(form.getCiudad().trim()))
+                .findFirst()
+                .orElseThrow(() -> new ConfiguracionInvalidaException(
+                        "Seleccione una ciudad del catálogo."));
         try {
-            ZoneId.of(form.getZonaHoraria().trim());
+            ZoneId.of(elegida.zona());
         } catch (Exception e) {
             throw new ConfiguracionInvalidaException("La zona horaria no es válida.");
         }
         ConfiguracionRestaurante c = obtener();
-        String nuevaZona = form.getZonaHoraria().trim();
+        String nuevaZona = elegida.zona();
         String zonaAnterior = c.getZonaHoraria();
         if (!nuevaZona.equals(zonaAnterior)) {
             // No reinterpretar reservas pendientes: si hay confirmadas futuras, bloquear.
@@ -102,8 +99,8 @@ public class ConfiguracionService {
                                 + "Los horarios ya registrados no se reinterpretan.");
             }
         }
-        c.setPais(form.getPais().trim());
-        c.setCiudad(form.getCiudad().trim());
+        c.setPais(elegida.pais());
+        c.setCiudad(elegida.ciudad());
         c.setDireccion(form.getDireccion() == null ? "" : form.getDireccion().trim());
         c.setZonaHoraria(nuevaZona);
         return repo.save(c);

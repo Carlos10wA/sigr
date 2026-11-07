@@ -12,20 +12,19 @@
   <h1 th:text="${titulo}">Configuración del restaurante</h1>
   <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
   <div th:if="${error}" class="alert error" th:text="${error}"></div>
-  <p><small>Ubicación del restaurante (no del dispositivo). La zona se asocia a la ciudad seleccionada.</small></p>
+  <p><small>Ubicación del restaurante (no del dispositivo). Seleccione solo la ciudad: el país y la zona se derivan de ella.</small></p>
   <form th:action="@{/configuracion}" th:object="${form}" method="post">
-    <div>
-      <label for="pais">País</label>
-      <input id="pais" type="text" placeholder="Colombia" th:field="*{pais}"/>
-      <span class="field-error" th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></span>
-    </div>
     <div>
       <label for="ciudad">Ciudad</label>
       <select id="ciudad" th:field="*{ciudad}">
         <option value="">-- Seleccione --</option>
-        <option th:each="c : ${ciudades}" th:value="${c.ciudad}" th:text="${c.ciudad + ' (' + c.pais + ')'}"></option>
+        <option th:each="c : ${ciudades}" th:value="${c.ciudad}" th:data-pais="${c.pais}" th:data-zona="${c.zona}" th:text="${c.ciudad + ' (' + c.pais + ')'}"></option>
       </select>
       <span class="field-error" th:if="${#fields.hasErrors('ciudad')}" th:errors="*{ciudad}"></span>
+    </div>
+    <div>
+      <label for="pais">País (según la ciudad)</label>
+      <input id="pais" type="text" readonly="readonly" th:value="${form.pais}" th:style="'background:#f5f5f5'"/>
     </div>
     <div>
       <label for="direccion">Dirección</label>
@@ -34,15 +33,25 @@
     </div>
     <div>
       <label for="zonaHoraria">Zona horaria (según la ciudad)</label>
-      <select id="zonaHoraria" th:field="*{zonaHoraria}">
-        <option value="">-- Seleccione --</option>
-        <option th:each="c : ${ciudades}" th:value="${c.zona}" th:text="${c.ciudad + ' — ' + c.zona}"></option>
-      </select>
-      <span class="field-error" th:if="${#fields.hasErrors('zonaHoraria')}" th:errors="*{zonaHoraria}"></span>
+      <input id="zonaHoraria" type="text" readonly="readonly" th:value="${form.zonaHoraria}" th:style="'background:#f5f5f5'"/>
     </div>
     <button type="submit">Guardar ubicación</button>
     <a th:href="@{/}">Cancelar</a>
   </form>
+  <script>
+    (function() {
+      var ciudad = document.getElementById('ciudad');
+      var pais = document.getElementById('pais');
+      var zona = document.getElementById('zonaHoraria');
+      function actualizar() {
+        if (!ciudad || ciudad.selectedIndex <= 0) { return; }
+        var opt = ciudad.options[ciudad.selectedIndex];
+        if (pais) pais.value = opt.getAttribute('data-pais') || '';
+        if (zona) zona.value = opt.getAttribute('data-zona') || '';
+      }
+      if (ciudad) ciudad.addEventListener('change', actualizar);
+    })();
+  </script>
 </main>
 </body>
 </html>

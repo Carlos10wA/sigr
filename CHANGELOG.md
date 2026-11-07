@@ -161,6 +161,7 @@
 - Comprobante muestra ciudad y país visibles (sin «(America/Bogota)» técnico) y guarda copia de ubicación/zona al emitir; cambios posteriores no alteran emitidos.
 - Cambio de zona bloqueado con reservas confirmadas pendientes (explica motivo) para no reinterpretar horarios.
 - Tests: solo admin, ciudad exige su zona, copia inmutable, bloqueo de zona. Total 58.
+- Corrección posterior (misma versión): la ciudad es la única selección; país/zona son solo lectura derivada por el servidor (Cali muestra solo «America/Bogota»); valores manipulados se ignoran. Total 59.
 
 ### Pendiente
 - Módulos Caja/Reportes (no implementados).

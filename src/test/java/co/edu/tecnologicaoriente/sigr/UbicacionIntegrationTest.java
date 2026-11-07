@@ -76,9 +76,33 @@ class UbicacionIntegrationTest {
         mockMvc.perform(get("/configuracion").session(sesAdmin))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Configuración del restaurante")));
-        // Ciudad sin su zona se rechaza (no se deduce solo del país).
-        assertThatThrownBy(() -> configuracion.actualizar(ubicacion("Colombia", "Bogotá", "America/Mexico_City")))
-                .isInstanceOf(ConfiguracionService.ConfiguracionInvalidaException.class);
+        // Zona manipulada se ignora: la ciudad única manda (Bogotá -> America/Bogota).
+        var f = ubicacion("Colombia", "Bogotá", "America/Mexico_City");
+        configuracion.actualizar(f);
+        assertThat(configuracion.actual().getCiudad()).isEqualTo("Bogotá");
+        assertThat(configuracion.actual().getZonaHoraria()).isEqualTo("America/Bogota");
+    }
+
+    @Test
+    void caliMuestraSoloSuZonaSinOtraCiudad() throws Exception {
+        var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
+                .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();
+        var sesAdmin = (org.springframework.mock.web.MockHttpSession) sAdmin;
+        // Se envían pais/zona manipulados: el servidor los ignora y deriva de Cali.
+        mockMvc.perform(post("/configuracion").with(csrf()).session(sesAdmin)
+                        .param("ciudad", "Cali").param("direccion", "Calle 1")
+                        .param("pais", "España").param("zonaHoraria", "Europe/Madrid"))
+                .andExpect(status().is3xxRedirection());
+        assertThat(configuracion.actual().getCiudad()).isEqualTo("Cali");
+        assertThat(configuracion.actual().getPais()).isEqualTo("Colombia");
+        assertThat(configuracion.actual().getZonaHoraria()).isEqualTo("America/Bogota");
+        assertThat(configuracion.actual().getDireccion()).isEqualTo("Calle 1");
+        mockMvc.perform(get("/configuracion").session(sesAdmin))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("readonly")))
+                .andExpect(content().string(containsString("America/Bogota")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("Bucaramanga — America/Bogota"))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("type=\"select\""))));
     }
 
     @Test

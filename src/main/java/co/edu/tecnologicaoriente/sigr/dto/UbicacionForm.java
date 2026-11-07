@@ -4,7 +4,8 @@ import jakarta.validation.constraints.*;
 
 public class UbicacionForm {
 
-    @NotBlank(message = "El país es obligatorio.")
+    // País y zona se derivan en el servidor desde la ciudad del catálogo;
+    // los valores del navegador se ignoran (solo lectura en pantalla).
     @Size(max = 60, message = "El país no puede superar 60 caracteres.")
     private String pais;
 
@@ -15,7 +16,6 @@ public class UbicacionForm {
     @Size(max = 200, message = "La dirección no puede superar 200 caracteres.")
     private String direccion;
 
-    @NotBlank(message = "La zona horaria es obligatoria.")
     private String zonaHoraria;
 
     public String getPais() { return pais; }
