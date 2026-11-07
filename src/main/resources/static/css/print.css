@@ -1,0 +1,5 @@
+@media print {
+  .no-print, header, button { display: none; }
+  main { box-shadow: none; max-width: none; margin: 0; padding: 0; border-radius: 0; }
+  .comprobante { border: 1px solid #999; border-radius: 4px; padding: 16px; }
+}

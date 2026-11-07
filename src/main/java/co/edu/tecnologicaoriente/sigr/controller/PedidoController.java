@@ -6,6 +6,7 @@ import co.edu.tecnologicaoriente.sigr.model.EstadoPedido;
 import co.edu.tecnologicaoriente.sigr.model.Usuario;
 import co.edu.tecnologicaoriente.sigr.service.MenuService;
 import co.edu.tecnologicaoriente.sigr.service.PedidoService;
+import co.edu.tecnologicaoriente.sigr.service.FacturacionService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +22,12 @@ public class PedidoController {
 
     private final PedidoService pedidos;
     private final MenuService menu;
+    private final FacturacionService facturas;
 
-    public PedidoController(PedidoService pedidos, MenuService menu) {
+    public PedidoController(PedidoService pedidos, MenuService menu, FacturacionService facturas) {
         this.pedidos = pedidos;
         this.menu = menu;
+        this.facturas = facturas;
     }
 
     private Usuario actual(Principal principal) {
@@ -74,8 +77,10 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     public String detalle(Principal principal, @PathVariable Long id, Model model) {
-        model.addAttribute("pedido", pedidos.buscarPara(actual(principal), id));
+        var pedido = pedidos.buscarPara(actual(principal), id);
+        model.addAttribute("pedido", pedido);
         model.addAttribute("estados", EstadoPedido.values());
+        model.addAttribute("comprobante", facturas.porPedido(id).orElse(null));
         model.addAttribute("actor", actual(principal));
         return "pedidos/detalle";
     }

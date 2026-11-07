@@ -131,6 +131,16 @@ Resumen: `Tests run: 48, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 51, Failures: 0, Errors: 0 — BUILD SUCCESS`. Programada cada 60 s + al iniciar (Bogota), bloqueo por mesa.
 
+## Facturación (2026-11-07)
+| Prueba (`FacturacionIntegrationTest`, BD aislada) | Resultado real |
+|---|---|
+| `emitirRequiereEntregadoYPendientePago` — pendiente/en preparación/listo rechazados; entregado emite con `Pendiente de pago` | OK |
+| `duplicadoSeImpideYReabreExistente` — 2ª emisión informa y redirige al existente sin crear otro | OK |
+| `precioHistoricoYTotal66Mil` — 2×28.000 + 2×5.000 = 66.000 COP, precio actual no altera histórico, cliente propio 200/ajeno 404/emitir 403, facturado no se cancela | OK |
+| `rechazaCanceladosYPendientes` — cancelado y pendiente rechazados | OK |
+
+Resumen: `Tests run: 55, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Comprobante académico - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+  <link rel="stylesheet" th:href="@{/css/print.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main class="comprobante">
+  <div class="no-print">
+    <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  </div>
+  <h1>Comprobante académico — sin validez fiscal</h1>
+  <p>N.º: <b th:text="${comprobante.numero}"></b> · Pedido: <b th:text="${comprobante.pedido.id}"></b></p>
+  <p>Cliente: <span th:text="${comprobante.clienteNombre}"></span> (<span th:text="${comprobante.clienteUsuario}"></span>)</p>
+  <p>Fecha de emisión: <span th:text="${#temporals.format(comprobante.fechaEmision, 'dd/MM/yyyy HH:mm')}"></span> (America/Bogota)</p>
+  <p>Estado: <b th:text="${comprobante.estado.nombreES()}"></b></p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Plato</th><th>Precio unitario</th><th>Cantidad</th><th>Subtotal</th></tr></thead>
+      <tbody>
+        <tr th:each="l : ${comprobante.lineas}">
+          <td th:text="${l.nombrePlato}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(l.precioUnitario, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          <td th:text="${l.cantidad}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(l.subtotal, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>Total: <span th:text="${'$' + #numbers.formatDecimal(comprobante.total, 1, 'POINT', 2, 'COMMA') + ' COP'}"></span></b></p>
+  <div class="no-print">
+    <p><button type="button" onclick="window.print()">Imprimir</button>
+       <a th:href="@{/facturas}">Volver a comprobantes</a></p>
+  </div>
+</main>
+</body>
+</html>

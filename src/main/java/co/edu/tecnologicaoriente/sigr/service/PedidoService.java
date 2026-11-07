@@ -42,11 +42,14 @@ public class PedidoService {
     private final PedidoRepository pedidos;
     private final PlatoRepository platos;
     private final UsuarioRepository usuarios;
+    private final co.edu.tecnologicaoriente.sigr.repository.ComprobanteRepository comprobantes;
 
-    public PedidoService(PedidoRepository pedidos, PlatoRepository platos, UsuarioRepository usuarios) {
+    public PedidoService(PedidoRepository pedidos, PlatoRepository platos, UsuarioRepository usuarios,
+                         co.edu.tecnologicaoriente.sigr.repository.ComprobanteRepository comprobantes) {
         this.pedidos = pedidos;
         this.platos = platos;
         this.usuarios = usuarios;
+        this.comprobantes = comprobantes;
     }
 
     public Usuario resolverActual(String username) {
@@ -121,6 +124,9 @@ public class PedidoService {
     @Transactional
     public Pedido cambiarEstado(Usuario actor, Long id, EstadoPedido nuevo) {
         Pedido pedido = buscarPara(actor, id);
+        if (comprobantes.existsByPedido_Id(id)) {
+            throw new TransicionInvalidaException("Un pedido facturado no puede editarse ni cancelarse.");
+        }
         // CLIENTE solo puede cancelar sus pedidos pendientes/en preparación.
         if (actor.getRol() == Rol.CLIENTE) {
             if (nuevo != EstadoPedido.CANCELADO) {

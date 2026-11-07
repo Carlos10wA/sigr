@@ -143,3 +143,14 @@
 ### Pendiente
 - Módulos Menús, Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata).
+
+## [0.0.1-SNAPSHOT] — Facturación académica (2026-11-07)
+### Agregado
+- Comprobante único por pedido ENTREGADO («Comprobante académico — sin validez fiscal», pendiente de pago, sin cobro): número FAC- estable, fecha Bogota, copia histórica de cliente/platos/precios/cantidades/subtotales/total BigDecimal servidor, sin impuestos ni propinas.
+- Anti-duplicado con bloqueo pesimista del pedido + restricción única; si ya existe informa y abre el existente. Sin editar/eliminar; pedido facturado no se cancela.
+- Permisos: ADMINISTRADOR/MESERO emiten y ven todos; CLIENTE solo consulta los suyos (ajeno 404, emitir 403). Listado, detalle imprimible (`print.css`) y enlace desde pedido entregado. ES COP dd/MM/yyyy HH:mm con CSRF.
+- Tests: emisión, rechazados, totales, histórico, permisos, duplicado y render; escenario solo de pruebas 2×28.000 + 2×5.000 = 66.000 COP. Total 55.
+
+### Pendiente
+- Módulos Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).

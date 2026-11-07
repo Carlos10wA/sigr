@@ -40,6 +40,18 @@
     <button type="submit">Actualizar estado</button>
   </form>
   <p sec:authorize="hasAuthority('ROLE_CLIENTE')"><small>Solo el personal del restaurante puede avanzar el estado; usted puede cancelar su pedido pendiente o en preparación.</small></p>
+  <section th:if="${pedido.estado.name() == 'ENTREGADO'}">
+    <h2>Facturación</h2>
+    <div th:if="${comprobante != null}">
+      <p>Comprobante <b th:text="${comprobante.numero}"></b> — Pendiente de pago.
+         <a th:href="@{/facturas/{id}(id=${comprobante.id})}">Ver comprobante</a></p>
+    </div>
+    <div th:if="${comprobante == null}" sec:authorize="hasAnyAuthority('ROLE_ADMINISTRADOR','ROLE_MESERO')">
+      <form th:action="@{/facturas/emitir/{pedidoId}(pedidoId=${pedido.id})}" method="post">
+        <button type="submit">Emitir comprobante</button>
+      </form>
+    </div>
+  </section>
   <p><a th:href="@{/pedidos}">Volver a pedidos</a></p>
 </main>
 </body>

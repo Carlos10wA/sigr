@@ -9,6 +9,7 @@
       <a sec:authorize="isAuthenticated()" th:href="@{/platos}">Catálogo</a>
       <a sec:authorize="isAuthenticated()" th:href="@{/pedidos}">Pedidos</a>
       <a sec:authorize="isAuthenticated()" th:href="@{/reservas}">Reservas</a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/facturas}">Facturas</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/usuarios}">Usuarios</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/categorias}">Categorías</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/mesas}">Mesas</a>

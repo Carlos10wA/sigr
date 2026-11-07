@@ -86,7 +86,34 @@ Reglas Pedidos: solo `ACTIVO+DISPONIBLE`; misma plato en dos líneas se fusiona 
 | estado | VARCHAR(20) | `CONFIRMADA`, `CANCELADA`. |
 | fecha_creacion | TIMESTAMP | Creación. |
 
-Reglas Reservas: superposición = misma mesa + misma fecha + `CONFIRMADA` con `inicio_nuevo < fin_existente && fin_nuevo > inicio_existente`; cancelada no bloquea. CLIENTE con ID ajeno recibe 404. Solo ADMINISTRADOR gestiona mesas.
+Reglas Reservas: superposición = misma mesa + misma fecha + `CONFIRMADA` con `inicio_nuevo < fin_existente && fin_nuevo > inicio_existente`; cancelada no bloquea. CLIENTE con ID ajeno recibe 404. Solo ADMINISTRADOR gestiona mesas. Columnas `motivo_cancelacion` (`MANUAL`/`VENCIMIENTO`) y `fecha_cancelacion` para distinguir «Cancelada» vs «Cancelada por vencimiento».
+
+## Tablas Facturación
+
+### `comprobantes`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| numero | VARCHAR único | `FAC-000001` estable, desde el id. |
+| pedido_id | BIGINT único FK → pedidos | Pedido ENTREGADO facturado (uno solo). |
+| cliente_nombre | VARCHAR(100) | Foto del cliente al emitir. |
+| cliente_usuario | VARCHAR(60) | Foto del usuario al emitir. |
+| fecha_emision | TIMESTAMP | Emisión America/Bogota. |
+| total | DECIMAL(12,2) | Suma BigDecimal servidor, sin impuestos/propinas/descuentos. |
+| estado | VARCHAR(30) | `PENDIENTE_DE_PAGO` (sin cobro). |
+| fecha_creacion | TIMESTAMP | Creación. |
+
+### `comprobante_lineas`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT AI PK | Identificador. |
+| comprobante_id | BIGINT FK → comprobantes | Comprobante padre (cascada). |
+| nombre_plato | VARCHAR(120) | Foto al facturar. |
+| precio_unitario | DECIMAL(10,2) | Foto COP al facturar. |
+| cantidad | INT | Cantidad del pedido. |
+| subtotal | DECIMAL(12,2) | `precio_unitario × cantidad`. |
+
+Reglas Facturación: solo ENTREGADO, sin editar/eliminar, pedido facturado no se cancela; duplicado con bloqueo pesimista + única en BD; «Comprobante académico — sin validez fiscal».
 
 ## Relaciones y reglas (Etapa 3)
 - `platos.categoria_id` → `categorias.id` (N:1). Desactivar categoría/plato conserva referencias (no se elimina).

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Comprobantes - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Comprobantes académicos</h1>
+  <p><small>Comprobante académico — sin validez fiscal. Pendiente de pago (sin cobro).</small></p>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p th:if="${#lists.isEmpty(comprobantes)}">No hay comprobantes emitidos.</p>
+  <div class="table-wrap" th:if="${!#lists.isEmpty(comprobantes)}">
+    <table>
+      <thead><tr><th>N.º</th><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Total</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="c : ${comprobantes}">
+          <td th:text="${c.numero}"></td>
+          <td th:text="${c.pedido.id}"></td>
+          <td th:text="${c.clienteNombre}"></td>
+          <td th:text="${#temporals.format(c.fechaEmision, 'dd/MM/yyyy HH:mm')}"></td>
+          <td th:text="${c.estado.nombreES()}"></td>
+          <td th:text="${'$' + #numbers.formatDecimal(c.total, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          <td><a th:href="@{/facturas/{id}(id=${c.id})}">Ver detalle</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

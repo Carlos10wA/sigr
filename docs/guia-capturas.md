@@ -16,5 +16,7 @@
 | E-12 | Detalle `/platos/{id}` y formulario admin | RQ-Menús | Editar/desactivar/no disponible diferenciados | Módulos / menús |
 | E-13 | `/categorias` como ADMINISTRADOR | RQ-Menús | 4 categorías activas | Módulos / menús |
 | E-14 | Error genérico (ruta inexistente) | RQ-Error | «Ocurrió un error…» con estado HTTP, sin Whitelabel | Errores |
+| E-15 | Pedido entregado → Emitir comprobante | RQ-Facturación | «Comprobante académico — sin validez fiscal», pendiente de pago, FAC- y total COP | Facturación |
+| E-16 | Detalle comprobante imprimible | RQ-Facturación | Líneas históricas, total, botón Imprimir | Facturación |
 
 Todas deben tomarse de ejecución real en Windows.

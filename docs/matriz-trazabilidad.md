@@ -10,5 +10,6 @@
 | RQ-06 | Menús + categorías + catálogo + demo idempotente + fotos locales | MenuService/DemoDataService/PlatoController/CategoriaController + @EntityGraph + error.html + fotos CC (`docs/creditos-imagenes.md`) | MenuIntegrationTest 9 casos | `Tests run: 23` | ✅ Etapa 3 + ajuste + fotos reales |
 | RQ-07 | Pedidos: disponibles, cantidades positivas, precio histórico, total servidor BigDecimal, transiciones | Pedido/DetallePedido/PedidoService + @EntityGraph + IDOR 404 | PedidoIntegrationTest 5 casos | `Tests run: 28` | ✅ Pedidos |
 | RQ-08 | Reservas + configuración + indicadores + colores + vencimiento | Mesa/Reserva/ReservaService + anti-superposición + IDOR 404 + listas horarias + `listarDisponibles` + bloqueo pesimista + `ajustarCantidadActivas` + `SituacionReserva` + scheduler Bogota | ReservaIntegrationTest 16 + SituacionReservaTest 7 | `Tests run: 51` | ✅ Reservas + claridad + disponibilidad + configuración + indicadores + vencimiento |
-| RQ-09 | Facturación/Caja/Reportes | — | — | — | ⏳ Pendiente (no implementado) |
-| RQ-10 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |
+| RQ-09 | Facturación académica (único por entregado, histórico, pendiente de pago, imprimible) | Comprobante/ComprobanteLinea/FacturacionService + bloqueo + única | FacturacionIntegrationTest 4 casos | `Tests run: 55` | ✅ Facturación |
+| RQ-10 | Caja/Reportes | — | — | — | ⏳ Pendiente (no implementado) |
+| RQ-11 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |
