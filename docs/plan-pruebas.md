@@ -141,6 +141,15 @@ Resumen: `Tests run: 51, Failures: 0, Errors: 0 — BUILD SUCCESS`. Programada c
 
 Resumen: `Tests run: 55, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Ubicación del restaurante (2026-11-07)
+| Prueba (`UbicacionIntegrationTest`, BD aislada) | Resultado real |
+|---|---|
+| `soloAdminConfiguraYCiudadExigeSuZona` — MESERO 403, ADMIN 200, Bogotá con zona México rechazada | OK |
+| `comprobanteGuardaCopiaYCambioNoAlteraEmitido` — Bogotá al emitir, cambio a Medellín no altera emitido, vista sin `(America/Bogota)` | OK |
+| `bloqueaCambioDeZonaConPendientes` — zona distinta con pendiente bloqueada explicada, misma zona permite | OK |
+
+Resumen: `Tests run: 58, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

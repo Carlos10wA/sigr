@@ -27,6 +27,19 @@ public class Comprobante {
     @Column(nullable = false, length = 60)
     private String clienteUsuario;
 
+    /** Copia de ubicación visible al emitir (cambios posteriores no alteran el comprobante). */
+    @Column(length = 60)
+    private String pais;
+
+    @Column(length = 60)
+    private String ciudad;
+
+    @Column(length = 200)
+    private String direccion;
+
+    @Column(length = 60)
+    private String zonaHoraria;
+
     @Column(nullable = false)
     private LocalDateTime fechaEmision;
 
@@ -60,6 +73,14 @@ public class Comprobante {
     public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }
     public String getClienteUsuario() { return clienteUsuario; }
     public void setClienteUsuario(String clienteUsuario) { this.clienteUsuario = clienteUsuario; }
+    public String getPais() { return pais; }
+    public void setPais(String pais) { this.pais = pais; }
+    public String getCiudad() { return ciudad; }
+    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public String getZonaHoraria() { return zonaHoraria; }
+    public void setZonaHoraria(String zonaHoraria) { this.zonaHoraria = zonaHoraria; }
     public LocalDateTime getFechaEmision() { return fechaEmision; }
     public void setFechaEmision(LocalDateTime fechaEmision) { this.fechaEmision = fechaEmision; }
     public BigDecimal getTotal() { return total; }

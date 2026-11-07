@@ -11,5 +11,6 @@
 | RQ-07 | Pedidos: disponibles, cantidades positivas, precio histórico, total servidor BigDecimal, transiciones | Pedido/DetallePedido/PedidoService + @EntityGraph + IDOR 404 | PedidoIntegrationTest 5 casos | `Tests run: 28` | ✅ Pedidos |
 | RQ-08 | Reservas + configuración + indicadores + colores + vencimiento | Mesa/Reserva/ReservaService + anti-superposición + IDOR 404 + listas horarias + `listarDisponibles` + bloqueo pesimista + `ajustarCantidadActivas` + `SituacionReserva` + scheduler Bogota | ReservaIntegrationTest 16 + SituacionReservaTest 7 | `Tests run: 51` | ✅ Reservas + claridad + disponibilidad + configuración + indicadores + vencimiento |
 | RQ-09 | Facturación académica (único por entregado, histórico, pendiente de pago, imprimible) | Comprobante/ComprobanteLinea/FacturacionService + bloqueo + única | FacturacionIntegrationTest 4 casos | `Tests run: 55` | ✅ Facturación |
-| RQ-10 | Caja/Reportes | — | — | — | ⏳ Pendiente (no implementado) |
-| RQ-11 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |
+| RQ-10 | Ubicación del restaurante (país/ciudad/dirección + zona por ciudad, copia en comprobante, bloqueo de zona) | ConfiguracionRestaurante/ConfiguracionService + snapshot en Comprobante | UbicacionIntegrationTest 3 casos | `Tests run: 58` | ✅ Ubicación |
+| RQ-11 | Caja/Reportes | — | — | — | ⏳ Pendiente (no implementado) |
+| RQ-12 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente aprobación |

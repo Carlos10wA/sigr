@@ -115,6 +115,23 @@ Reglas Reservas: superposición = misma mesa + misma fecha + `CONFIRMADA` con `i
 
 Reglas Facturación: solo ENTREGADO, sin editar/eliminar, pedido facturado no se cancela; duplicado con bloqueo pesimista + única en BD; «Comprobante académico — sin validez fiscal».
 
+### `comprobantes` (ubicación, snapshot)
+Columnas `pais`, `ciudad`, `direccion` y `zona_horaria` copiadas de `configuracion_restaurante` al emitir (vista: «Bogotá, Colombia»; sin texto técnico «(America/Bogota)»).
+
+## Tabla Configuración
+
+### `configuracion_restaurante`
+| Columna | Tipo | Descripción |
+|---|---|---|
+| id | BIGINT PK = 1 | Fila única. |
+| pais | VARCHAR(60) | País configurado por ADMINISTRADOR. |
+| ciudad | VARCHAR(60) | Ciudad del catálogo (con su zona). |
+| direccion | VARCHAR(200) | Dirección del restaurante. |
+| zona_horaria | VARCHAR(60) | ID interno (p. ej. `America/Bogota`) para fechas. |
+| fecha_actualizacion | TIMESTAMP | Último cambio. |
+
+Reglas Ubicación: inicial Colombia/Bogotá/America-Bogota, sin geolocalización; cambio de zona con confirmadas pendientes se bloquea sin reinterpretar horarios.
+
 ## Relaciones y reglas (Etapa 3)
 - `platos.categoria_id` → `categorias.id` (N:1). Desactivar categoría/plato conserva referencias (no se elimina).
 - Desactivado (`activo=false`) ≠ no disponible (`disponible=false`): el primero oculta; el segundo avisa pero no se puede pedir.

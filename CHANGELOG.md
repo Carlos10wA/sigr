@@ -154,3 +154,14 @@
 ### Pendiente
 - Módulos Caja/Reportes (no implementados).
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
+## [0.0.1-SNAPSHOT] — Ubicación del restaurante (2026-11-07)
+### Agregado
+- Configuración solo ADMINISTRADOR (`/configuracion`): país, ciudad (catálogo con zona explícita, no deducida del país), dirección y zona; inicial America/Bogota, sin geolocalización. Internamente se conserva la zona y calcula fechas (reservas, comprobantes, vencimiento).
+- Comprobante muestra ciudad y país visibles (sin «(America/Bogota)» técnico) y guarda copia de ubicación/zona al emitir; cambios posteriores no alteran emitidos.
+- Cambio de zona bloqueado con reservas confirmadas pendientes (explica motivo) para no reinterpretar horarios.
+- Tests: solo admin, ciudad exige su zona, copia inmutable, bloqueo de zona. Total 58.
+
+### Pendiente
+- Módulos Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).

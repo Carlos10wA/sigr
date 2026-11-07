@@ -42,13 +42,16 @@ public class ReservaService {
     private final ReservaRepository reservas;
     private final UsuarioRepository usuarios;
     private final java.time.Clock clock;
+    private final ConfiguracionService configuracion;
 
-    public ReservaService(MesaRepository mesas, ReservaRepository reservas, UsuarioRepository usuarios, java.time.Clock clock) {
+    public ReservaService(MesaRepository mesas, ReservaRepository reservas, UsuarioRepository usuarios,
+                          java.time.Clock clock, ConfiguracionService configuracion) {
         this.mesas = mesas; this.reservas = reservas; this.usuarios = usuarios; this.clock = clock;
+        this.configuracion = configuracion;
     }
 
-    private java.time.ZonedDateTime ahora() { return java.time.ZonedDateTime.now(clock).withZoneSameInstant(BOGOTA); }
-    private LocalDate hoy() { return LocalDate.now(clock); }
+    private java.time.ZonedDateTime ahora() { return java.time.ZonedDateTime.now(clock).withZoneSameInstant(configuracion.zonaActual()); }
+    private LocalDate hoy() { return java.time.LocalDate.now(clock.withZone(configuracion.zonaActual())); }
 
     public Usuario resolverActual(String username) {
         return usuarios.findByUsuario(username)
@@ -353,16 +356,17 @@ public class ReservaService {
 
     @Transactional
     public int vencerReservas(java.time.ZonedDateTime ahoraBogota) {
-        var ahora = ahoraBogota.withZoneSameInstant(BOGOTA);
+        ZoneId zona = configuracion.zonaActual();
+        var ahora = ahoraBogota.withZoneSameInstant(zona);
         int vencidas = 0;
         List<Reserva> candidatas = reservas.findByEstado(EstadoReserva.CONFIRMADA);
         for (Reserva r : candidatas) {
-            java.time.ZonedDateTime fin = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), BOGOTA);
+            java.time.ZonedDateTime fin = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), zona);
             if (!ahora.isBefore(fin)) {
                 // Bloqueo compatible con el de creación: serializa contra reservas simultáneas.
                 mesas.findByIdForUpdate(r.getMesa().getId());
                 if (r.getEstado() != EstadoReserva.CONFIRMADA) continue;
-                java.time.ZonedDateTime fin2 = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), BOGOTA);
+                java.time.ZonedDateTime fin2 = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), zona);
                 if (!ahora.isBefore(fin2)) {
                     r.setEstado(EstadoReserva.CANCELADA);
                     r.setMotivoCancelacion(MotivoCancelacion.VENCIMIENTO);

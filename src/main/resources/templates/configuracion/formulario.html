@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Configuración - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1 th:text="${titulo}">Configuración del restaurante</h1>
+  <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <p><small>Ubicación del restaurante (no del dispositivo). La zona se asocia a la ciudad seleccionada.</small></p>
+  <form th:action="@{/configuracion}" th:object="${form}" method="post">
+    <div>
+      <label for="pais">País</label>
+      <input id="pais" type="text" placeholder="Colombia" th:field="*{pais}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></span>
+    </div>
+    <div>
+      <label for="ciudad">Ciudad</label>
+      <select id="ciudad" th:field="*{ciudad}">
+        <option value="">-- Seleccione --</option>
+        <option th:each="c : ${ciudades}" th:value="${c.ciudad}" th:text="${c.ciudad + ' (' + c.pais + ')'}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('ciudad')}" th:errors="*{ciudad}"></span>
+    </div>
+    <div>
+      <label for="direccion">Dirección</label>
+      <input id="direccion" type="text" placeholder="Calle 10 # 5-20" th:field="*{direccion}"/>
+      <span class="field-error" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></span>
+    </div>
+    <div>
+      <label for="zonaHoraria">Zona horaria (según la ciudad)</label>
+      <select id="zonaHoraria" th:field="*{zonaHoraria}">
+        <option value="">-- Seleccione --</option>
+        <option th:each="c : ${ciudades}" th:value="${c.zona}" th:text="${c.ciudad + ' — ' + c.zona}"></option>
+      </select>
+      <span class="field-error" th:if="${#fields.hasErrors('zonaHoraria')}" th:errors="*{zonaHoraria}"></span>
+    </div>
+    <button type="submit">Guardar ubicación</button>
+    <a th:href="@{/}">Cancelar</a>
+  </form>
+</main>
+</body>
+</html>

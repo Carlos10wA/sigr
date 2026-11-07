@@ -17,7 +17,8 @@
   <h1>Comprobante académico — sin validez fiscal</h1>
   <p>N.º: <b th:text="${comprobante.numero}"></b> · Pedido: <b th:text="${comprobante.pedido.id}"></b></p>
   <p>Cliente: <span th:text="${comprobante.clienteNombre}"></span> (<span th:text="${comprobante.clienteUsuario}"></span>)</p>
-  <p>Fecha de emisión: <span th:text="${#temporals.format(comprobante.fechaEmision, 'dd/MM/yyyy HH:mm')}"></span> (America/Bogota)</p>
+  <p>Ubicación del restaurante: <span th:text="${comprobante.ciudad + ', ' + comprobante.pais}"></span><span th:if="${comprobante.direccion != null and comprobante.direccion != ''}"> — <span th:text="${comprobante.direccion}"></span></span></p>
+  <p>Fecha de emisión: <span th:text="${#temporals.format(comprobante.fechaEmision, 'dd/MM/yyyy HH:mm')}"></span> (<span th:text="${comprobante.ciudad}"></span>, <span th:text="${comprobante.pais}"></span>)</p>
   <p>Estado: <b th:text="${comprobante.estado.nombreES()}"></b></p>
   <div class="table-wrap">
     <table>

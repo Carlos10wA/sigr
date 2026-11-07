@@ -46,10 +46,12 @@ public class FacturacionService {
     private final PedidoRepository pedidos;
     private final UsuarioRepository usuarios;
     private final Clock clock;
+    private final ConfiguracionService configuracion;
 
     public FacturacionService(ComprobanteRepository comprobantes, PedidoRepository pedidos,
-                              UsuarioRepository usuarios, Clock clock) {
+                              UsuarioRepository usuarios, Clock clock, ConfiguracionService configuracion) {
         this.comprobantes = comprobantes; this.pedidos = pedidos; this.usuarios = usuarios; this.clock = clock;
+        this.configuracion = configuracion;
     }
 
     public Usuario resolverActual(String username) {
@@ -77,7 +79,13 @@ public class FacturacionService {
         c.setPedido(pedido);
         c.setClienteNombre(pedido.getUsuario().getNombreCompleto());
         c.setClienteUsuario(pedido.getUsuario().getUsuario());
-        c.setFechaEmision(java.time.ZonedDateTime.now(clock).withZoneSameInstant(BOGOTA).toLocalDateTime().withNano(0));
+        var cfg = configuracion.actual();
+        c.setPais(cfg.getPais());
+        c.setCiudad(cfg.getCiudad());
+        c.setDireccion(cfg.getDireccion());
+        c.setZonaHoraria(cfg.getZonaHoraria());
+        ZoneId zona = configuracion.zonaActual();
+        c.setFechaEmision(java.time.ZonedDateTime.now(clock).withZoneSameInstant(zona).toLocalDateTime().withNano(0));
         // Copia histórica desde el pedido; total calculado en el servidor, sin impuestos/propinas/descuentos.
         BigDecimal total = BigDecimal.ZERO;
         for (DetallePedido d : pedido.getDetalles()) {
