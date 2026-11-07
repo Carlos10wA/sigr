@@ -38,6 +38,16 @@
 - Módulos Pedidos, Reservas, Facturación, Caja/Reportes.
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
 
+## [0.0.1-SNAPSHOT] — Colores y vencimiento automático (2026-11-06)
+### Cambiado
+- Colores: En curso verde, Próxima naranja, Cancelada roja (listado, detalle y leyenda, etiquetas legibles). Finalizada sigue gris.
+- Vencimiento automático (America/Bogota, fecha+horaFin completa): CONFIRMADA con `ahora >= fin` → CANCELADA por vencimiento con motivo y fecha (idempotente, bloqueo por mesa, periódica cada 60 s y al iniciar; sin depender de abrir página). Cancelación manual registra MANUAL; ya canceladas intactas. Esquema sin borrar BD (`motivo_cancelacion`, `fecha_cancelacion` por `update`).
+- Tests con reloj controlado: antes del fin, fin exacto, después, fecha pasada/futura, manual previa y repetición idempotente. Total 51.
+
+### Pendiente
+- Módulos Facturación, Caja/Reportes (no implementados).
+- Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
 ## [0.0.1-SNAPSHOT] — Indicadores visuales de reservas (2026-11-06)
 ### Cambiado
 - Situación temporal (America/Bogota, sin cambiar estado persistido): Cancelada roja, Próxima verde, En curso naranja (`inicio <= ahora < fin`), Horario finalizado gris. «Horario finalizado» solo indica que pasó el horario, no asistencia.

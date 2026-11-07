@@ -42,6 +42,13 @@ public class Reserva {
     @Column(nullable = false, length = 20)
     private EstadoReserva estado = EstadoReserva.CONFIRMADA;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private MotivoCancelacion motivoCancelacion;
+
+    @Column
+    private LocalDateTime fechaCancelacion;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -70,6 +77,17 @@ public class Reserva {
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
     public EstadoReserva getEstado() { return estado; }
     public void setEstado(EstadoReserva estado) { this.estado = estado; }
+    public MotivoCancelacion getMotivoCancelacion() { return motivoCancelacion; }
+    public void setMotivoCancelacion(MotivoCancelacion motivoCancelacion) { this.motivoCancelacion = motivoCancelacion; }
+    public LocalDateTime getFechaCancelacion() { return fechaCancelacion; }
+    public void setFechaCancelacion(LocalDateTime fechaCancelacion) { this.fechaCancelacion = fechaCancelacion; }
+
+    public String getEstadoConMotivo() {
+        if (estado == EstadoReserva.CANCELADA && motivoCancelacion == MotivoCancelacion.VENCIMIENTO) {
+            return "Cancelada por vencimiento";
+        }
+        return estado.nombreES();
+    }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime f) { this.fechaCreacion = f; }
 
@@ -80,7 +98,8 @@ public class Reserva {
      */
     public SituacionReserva situacionEn(ZonedDateTime ahora) {
         if (estado == EstadoReserva.CANCELADA) {
-            return SituacionReserva.CANCELADA;
+            return motivoCancelacion == MotivoCancelacion.VENCIMIENTO
+                    ? SituacionReserva.CANCELADA_VENCIMIENTO : SituacionReserva.CANCELADA;
         }
         ZonedDateTime bogota = ahora.withZoneSameInstant(ZoneId.of("America/Bogota"));
         ZonedDateTime inicio = ZonedDateTime.of(fecha, horaInicio, ZoneId.of("America/Bogota"));

@@ -63,6 +63,19 @@ class SituacionReservaTest {
     }
 
     @Test
+    void canceladaPorVencimientoSeDistingue() {
+        var r = reserva("2026-11-20", "12:00", "13:00", EstadoReserva.CANCELADA);
+        r.setMotivoCancelacion(co.edu.tecnologicaoriente.sigr.model.MotivoCancelacion.VENCIMIENTO);
+        assertThat(r.situacionEn(zon("2026-11-20T11:00:00-05:00"))).isEqualTo(SituacionReserva.CANCELADA_VENCIMIENTO);
+        assertThat(r.getEstadoConMotivo()).isEqualTo("Cancelada por vencimiento");
+        assertThat(SituacionReserva.CANCELADA_VENCIMIENTO.claseCss()).isEqualTo("situacion-cancelada");
+        assertThat(SituacionReserva.CANCELADA_VENCIMIENTO.etiquetaES()).isEqualTo("Cancelada por vencimiento");
+        // Colores nuevos: En curso verde, Próxima naranja.
+        assertThat(SituacionReserva.EN_CURSO.claseCss()).isEqualTo("situacion-curso");
+        assertThat(SituacionReserva.PROXIMA.claseCss()).isEqualTo("situacion-proxima");
+    }
+
+    @Test
     void etiquetasYClases() {
         assertThat(SituacionReserva.PROXIMA.etiquetaES()).isEqualTo("Próxima");
         assertThat(SituacionReserva.EN_CURSO.etiquetaES()).isEqualTo("En curso");

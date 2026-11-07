@@ -363,6 +363,60 @@ class ReservaIntegrationTest {
     }
 
     @Test
+    void vencimientoAutomaticoConRelojControlado() {
+        var m = mesa("Mesa vence", 4);
+        crearUsuario("cliente-vence", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-vence");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(1);
+        var r = reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        java.time.ZonedDateTime fin = java.time.ZonedDateTime.of(dia, java.time.LocalTime.parse("13:00"), BOGOTA);
+        // Antes del fin: no vence (se verifica la propia reserva, no el conteo global).
+        reservas.vencerReservas(fin.minusMinutes(1));
+        assertThat(reservaRepo.findById(r.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CONFIRMADA);
+        // Fin exacto: vence.
+        reservas.vencerReservas(fin);
+        var vencida = reservaRepo.findById(r.getId()).orElseThrow();
+        assertThat(vencida.getEstado()).isEqualTo(EstadoReserva.CANCELADA);
+        assertThat(vencida.getMotivoCancelacion()).isEqualTo(co.edu.tecnologicaoriente.sigr.model.MotivoCancelacion.VENCIMIENTO);
+        assertThat(vencida.getFechaCancelacion()).isNotNull();
+        assertThat(vencida.getEstadoConMotivo()).isEqualTo("Cancelada por vencimiento");
+        // Repetir no altera motivo ni fecha.
+        var f1 = vencida.getFechaCancelacion();
+        reservas.vencerReservas(fin.plusHours(2));
+        var rep = reservaRepo.findById(r.getId()).orElseThrow();
+        assertThat(rep.getMotivoCancelacion()).isEqualTo(co.edu.tecnologicaoriente.sigr.model.MotivoCancelacion.VENCIMIENTO);
+        assertThat(rep.getFechaCancelacion()).isEqualTo(f1);
+    }
+
+    @Test
+    void vencimientoNoCancelaFuturaNiManualPrevia() {
+        var m = mesa("Mesa novence", 4);
+        crearUsuario("cliente-novence", Rol.CLIENTE);
+        var actor = reservas.resolverActual("cliente-novence");
+        LocalDate dia = LocalDate.now(BOGOTA).plusDays(2);
+        var futura = reservas.crear(actor, form(m.getId(), "x", dia, "08:00", "09:00", 2));
+        var manual = reservas.crear(actor, form(m.getId(), "x", dia, "10:00", "11:00", 2));
+        reservas.cancelar(actor, manual.getId());
+        var m1 = reservaRepo.findById(manual.getId()).orElseThrow();
+        assertThat(m1.getMotivoCancelacion()).isEqualTo(co.edu.tecnologicaoriente.sigr.model.MotivoCancelacion.MANUAL);
+        var f1 = m1.getFechaCancelacion();
+        // Ahora es dia-1 20:00 Bogota: futura (fin dia 09:00) no debe vencer aunque 09:00 < 20:00.
+        var ahora = java.time.ZonedDateTime.of(dia.minusDays(1), java.time.LocalTime.parse("20:00"), BOGOTA);
+        reservas.vencerReservas(ahora);
+        assertThat(reservaRepo.findById(futura.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CONFIRMADA);
+        // Manual previa intacta.
+        var m2 = reservaRepo.findById(manual.getId()).orElseThrow();
+        assertThat(m2.getMotivoCancelacion()).isEqualTo(co.edu.tecnologicaoriente.sigr.model.MotivoCancelacion.MANUAL);
+        assertThat(m2.getFechaCancelacion()).isEqualTo(f1);
+        // Fecha pasada vencida sí vence.
+        var pasada = reservas.crear(actor, form(m.getId(), "x", dia, "12:00", "13:00", 2));
+        // Fecha pasada ya no se puede crear por crear(); simular vencida futura -> mover fecha en DB no permitido.
+        // Se verifica con reloj posterior al fin de la futura.
+        reservas.vencerReservas(java.time.ZonedDateTime.of(dia, java.time.LocalTime.parse("09:00"), BOGOTA));
+        assertThat(reservaRepo.findById(futura.getId()).orElseThrow().getEstado()).isEqualTo(EstadoReserva.CANCELADA);
+    }
+
+    @Test
     void mesasDemoRepetibleSinDuplicarPorHttp() throws Exception {
         var sAdmin = mockMvc.perform(post("/login").with(csrf()).param("username", "admin").param("password", ADMIN_PW))
                 .andExpect(status().is3xxRedirection()).andReturn().getRequest().getSession();

@@ -122,6 +122,15 @@ Resumen: `Tests run: 41, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
 Resumen: `Tests run: 48, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Colores y vencimiento automático (2026-11-06)
+| Prueba | Resultado real |
+|---|---|
+| `SituacionReservaTest.canceladaPorVencimientoSeDistingue` — etiqueta y clase roja para vencimiento; En curso verde, Próxima naranja | OK |
+| `vencimientoAutomaticoConRelojControlado` — antes del fin no vence, fin exacto vence con motivo VENCIMIENTO, repetir idempotente | OK |
+| `vencimientoNoCancelaFuturaNiManualPrevia` — futura (fin dia 09:00 a las 20:00 del día anterior) intacta, manual previa intacta | OK |
+
+Resumen: `Tests run: 51, Failures: 0, Errors: 0 — BUILD SUCCESS`. Programada cada 60 s + al iniciar (Bogota), bloqueo por mesa.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).

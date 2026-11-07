@@ -22,4 +22,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByMesa_IdAndFechaAndEstado(Long mesaId, LocalDate fecha, EstadoReserva estado);
 
     List<Reserva> findByMesa_IdAndEstadoAndFechaGreaterThanEqualOrderByFechaAsc(Long mesaId, EstadoReserva estado, LocalDate desde);
+
+    List<Reserva> findByEstado(EstadoReserva estado);
 }

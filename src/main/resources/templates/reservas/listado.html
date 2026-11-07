@@ -22,7 +22,8 @@
   <p class="leyenda-sit">Leyenda: <span class="situacion situacion-proxima">Próxima</span> confirmada aún no iniciada ·
      <span class="situacion situacion-curso">En curso</span> dentro de su horario ·
      <span class="situacion situacion-finalizado">Horario finalizado</span> ya terminó (solo indicación temporal, no comprueba asistencia) ·
-     <span class="situacion situacion-cancelada">Cancelada</span> cancelada.</p>
+     <span class="situacion situacion-cancelada">Cancelada</span> cancelada ·
+     <span class="situacion situacion-cancelada">Cancelada por vencimiento</span> vencida sin aviso.</p>
   <p th:if="${#lists.isEmpty(reservas)}">No hay reservas registradas.</p>
   <div class="table-wrap" th:if="${!#lists.isEmpty(reservas)}">
     <table>

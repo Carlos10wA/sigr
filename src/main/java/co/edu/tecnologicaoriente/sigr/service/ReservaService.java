@@ -41,10 +41,14 @@ public class ReservaService {
     private final MesaRepository mesas;
     private final ReservaRepository reservas;
     private final UsuarioRepository usuarios;
+    private final java.time.Clock clock;
 
-    public ReservaService(MesaRepository mesas, ReservaRepository reservas, UsuarioRepository usuarios) {
-        this.mesas = mesas; this.reservas = reservas; this.usuarios = usuarios;
+    public ReservaService(MesaRepository mesas, ReservaRepository reservas, UsuarioRepository usuarios, java.time.Clock clock) {
+        this.mesas = mesas; this.reservas = reservas; this.usuarios = usuarios; this.clock = clock;
     }
+
+    private java.time.ZonedDateTime ahora() { return java.time.ZonedDateTime.now(clock).withZoneSameInstant(BOGOTA); }
+    private LocalDate hoy() { return LocalDate.now(clock); }
 
     public Usuario resolverActual(String username) {
         return usuarios.findByUsuario(username)
@@ -97,7 +101,7 @@ public class ReservaService {
     @Transactional(readOnly = true)
     public List<Reserva> pendientesConfirmadas(Long mesaId) {
         return reservas.findByMesa_IdAndEstadoAndFechaGreaterThanEqualOrderByFechaAsc(
-                mesaId, EstadoReserva.CONFIRMADA, LocalDate.now(BOGOTA));
+                mesaId, EstadoReserva.CONFIRMADA, hoy());
     }
 
     @Transactional(readOnly = true)
@@ -108,12 +112,12 @@ public class ReservaService {
     /** Situación temporal actual (America/Bogota), sin cambiar el estado persistido. */
     @Transactional(readOnly = true)
     public SituacionReserva situacion(Reserva r) {
-        return r.situacionEn(java.time.ZonedDateTime.now(BOGOTA));
+        return r.situacionEn(ahora());
     }
 
     @Transactional(readOnly = true)
     public java.util.Map<Long, SituacionReserva> situaciones(Iterable<Reserva> reservas) {
-        var ahora = java.time.ZonedDateTime.now(BOGOTA);
+        var ahora = ahora();
         java.util.Map<Long, SituacionReserva> mapa = new java.util.LinkedHashMap<>();
         reservas.forEach(r -> mapa.put(r.getId(), r.situacionEn(ahora)));
         return mapa;
@@ -284,7 +288,7 @@ public class ReservaService {
         if (form.getFecha() == null || form.getHoraInicio() == null || form.getHoraFin() == null) {
             throw new ReservaInvalidaException("Fecha y horarios son obligatorios.");
         }
-        if (form.getFecha().isBefore(LocalDate.now(BOGOTA))) {
+        if (form.getFecha().isBefore(hoy())) {
             throw new ReservaInvalidaException("La fecha no puede ser en el pasado.");
         }
         if (!form.getHoraFin().isAfter(form.getHoraInicio())) {
@@ -333,6 +337,41 @@ public class ReservaService {
             throw new ReservaInvalidaException("La reserva ya está cancelada.");
         }
         r.setEstado(EstadoReserva.CANCELADA);
+        r.setMotivoCancelacion(MotivoCancelacion.MANUAL);
+        r.setFechaCancelacion(ahora().toLocalDateTime());
         return reservas.save(r);
+    }
+
+    /**
+     * Vencimiento automático: CONFIRMADA con fecha+horaFin <= ahora -> CANCELADA por vencimiento.
+     * Idempotente y compatible con el bloqueo por mesa (bloquea la mesa de cada reserva).
+     */
+    @Transactional
+    public int vencerReservas() {
+        return vencerReservas(ahora());
+    }
+
+    @Transactional
+    public int vencerReservas(java.time.ZonedDateTime ahoraBogota) {
+        var ahora = ahoraBogota.withZoneSameInstant(BOGOTA);
+        int vencidas = 0;
+        List<Reserva> candidatas = reservas.findByEstado(EstadoReserva.CONFIRMADA);
+        for (Reserva r : candidatas) {
+            java.time.ZonedDateTime fin = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), BOGOTA);
+            if (!ahora.isBefore(fin)) {
+                // Bloqueo compatible con el de creación: serializa contra reservas simultáneas.
+                mesas.findByIdForUpdate(r.getMesa().getId());
+                if (r.getEstado() != EstadoReserva.CONFIRMADA) continue;
+                java.time.ZonedDateTime fin2 = java.time.ZonedDateTime.of(r.getFecha(), r.getHoraFin(), BOGOTA);
+                if (!ahora.isBefore(fin2)) {
+                    r.setEstado(EstadoReserva.CANCELADA);
+                    r.setMotivoCancelacion(MotivoCancelacion.VENCIMIENTO);
+                    r.setFechaCancelacion(ahora.toLocalDateTime());
+                    reservas.save(r);
+                    vencidas++;
+                }
+            }
+        }
+        return vencidas;
     }
 }

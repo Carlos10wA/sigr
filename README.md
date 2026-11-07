@@ -57,7 +57,7 @@ Abrir http://localhost:8080 — el administrador ya existe en BD si ya definió 
 ```powershell
 .\mvnw.cmd test
 ```
-Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28`, Reservas `33/33`, claridad Reservas/Mesas `35/35`, selección de mesa `39/39`, configuración de mesas `41/41`, indicadores `48/48` (Próxima/En curso/Finalizado/Cancelada con reloj controlado). Ver `docs/plan-pruebas.md` y `docs/estado-avance.md`.
+Resultados: Etapa 1 `4/4`, Etapa 2 `12/12`, 403 `14/14`, Etapa 3 `20/20`, ajuste catálogo `22/22`, fotografías reales `23/23`, Pedidos `28/28`, Reservas `33/33`, claridad Reservas/Mesas `35/35`, selección de mesa `39/39`, configuración de mesas `41/41`, indicadores `48/48`, colores + vencimiento `51/51` (En curso verde, Próxima naranja, vencimiento automático Bogota). Ver `docs/plan-pruebas.md` y `docs/estado-avance.md`.
 
 ## Estructura
 ```

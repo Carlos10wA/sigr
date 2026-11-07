@@ -4,7 +4,8 @@ public enum SituacionReserva {
     PROXIMA,
     EN_CURSO,
     FINALIZADO,
-    CANCELADA;
+    CANCELADA,
+    CANCELADA_VENCIMIENTO;
 
     public String etiquetaES() {
         return switch (this) {
@@ -12,6 +13,7 @@ public enum SituacionReserva {
             case EN_CURSO -> "En curso";
             case FINALIZADO -> "Horario finalizado";
             case CANCELADA -> "Cancelada";
+            case CANCELADA_VENCIMIENTO -> "Cancelada por vencimiento";
         };
     }
 
@@ -20,7 +22,7 @@ public enum SituacionReserva {
             case PROXIMA -> "situacion-proxima";
             case EN_CURSO -> "situacion-curso";
             case FINALIZADO -> "situacion-finalizado";
-            case CANCELADA -> "situacion-cancelada";
+            case CANCELADA, CANCELADA_VENCIMIENTO -> "situacion-cancelada";
         };
     }
 }
