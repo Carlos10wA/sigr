@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reportes - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Reportes</h1>
+  <p><small>Zona del restaurante: <span th:text="${zona}"></span></small></p>
+  <ul>
+    <li><a th:href="@{/reportes/cobros}">Cobros</a></li>
+    <li><a th:href="@{/reportes/platos}">Platos vendidos y cobrados</a></li>
+    <li><a th:href="@{/reportes/reservas}">Reservas</a></li>
+    <li><a th:href="@{/reportes/cierres}">Cierres de caja</a></li>
+  </ul>
+</main>
+</body>
+</html>

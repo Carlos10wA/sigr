@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Reservas - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+  <link rel="stylesheet" th:href="@{/css/print.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Reservas</h1>
+  <p><small>Zona: <span th:text="${zona}"></span></small></p>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:action="@{/reportes/reservas}" method="get">
+    <div>
+      <label for="desde">Fecha inicial</label>
+      <input id="desde" type="date" name="desde" th:value="${desde}"/>
+      <label for="hasta">Fecha final</label>
+      <input id="hasta" type="date" name="hasta" th:value="${hasta}"/>
+      <label for="mesaId">Mesa (opcional)</label>
+      <select id="mesaId" name="mesaId">
+        <option value="">Todas</option>
+        <option th:each="m : ${mesas}" th:value="${m.id}" th:text="${m.nombre}"></option>
+      </select>
+    </div>
+    <button type="submit">Consultar</button>
+    <a th:if="${desde != null and hasta != null}" th:href="@{/reportes/reservas/csv(desde=${desde},hasta=${hasta},mesaId=${mesaId})}"><button type="button">Exportar CSV</button></a>
+    <button type="button" onclick="window.print()">Imprimir</button>
+  </form>
+  <div th:if="${resumen != null}">
+    <p>Confirmadas: <b th:text="${resumen.confirmadas}"></b> · Canceladas manuales: <b th:text="${resumen.manuales}"></b> · Por vencimiento: <b th:text="${resumen.vencimiento}"></b> · Sin motivo: <b th:text="${resumen.sinMotivo}"></b></p>
+    <p th:if="${#lists.isEmpty(resumen.detalle)}">No hay reservas en ese rango.</p>
+    <div class="table-wrap" th:if="${!#lists.isEmpty(resumen.detalle)}">
+      <table>
+        <thead><tr><th>N.º</th><th>Titular</th><th>Mesa</th><th>Fecha</th><th>Horario</th><th>Estado</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr th:each="r : ${resumen.detalle}">
+            <td th:text="${r.id}"></td>
+            <td th:text="${r.clienteNombre}"></td>
+            <td th:text="${r.mesa.nombre}"></td>
+            <td th:text="${#temporals.format(r.fecha, 'dd/MM/yyyy')}"></td>
+            <td><span th:text="${#temporals.format(r.horaInicio, 'HH:mm')}"></span>-<span th:text="${#temporals.format(r.horaFin, 'HH:mm')}"></span></td>
+            <td th:text="${r.estado.nombreES()}"></td>
+            <td th:text="${r.estado.name() == 'CONFIRMADA' ? '—' : (r.motivoCancelacion != null ? r.motivoCancelacion.etiquetaES() : 'Sin motivo registrado')}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

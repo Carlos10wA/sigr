@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Platos - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+  <link rel="stylesheet" th:href="@{/css/print.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Platos vendidos y cobrados</h1>
+  <p><small>Zona: <span th:text="${zona}"></span></small></p>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:action="@{/reportes/platos}" method="get">
+    <div>
+      <label for="desde">Fecha inicial</label>
+      <input id="desde" type="date" name="desde" th:value="${desde}"/>
+      <label for="hasta">Fecha final</label>
+      <input id="hasta" type="date" name="hasta" th:value="${hasta}"/>
+    </div>
+    <button type="submit">Consultar</button>
+    <a th:if="${desde != null and hasta != null}" th:href="@{/reportes/platos/csv(desde=${desde},hasta=${hasta})}"><button type="button">Exportar CSV</button></a>
+    <button type="button" onclick="window.print()">Imprimir</button>
+  </form>
+  <div th:if="${platos != null}">
+    <p th:if="${#lists.isEmpty(platos)}">No hay platos cobrados en ese rango.</p>
+    <div class="table-wrap" th:if="${!#lists.isEmpty(platos)}">
+      <table>
+        <thead><tr><th>Plato</th><th>Cantidad</th><th>Importe</th></tr></thead>
+        <tbody>
+          <tr th:each="p : ${platos}">
+            <td th:text="${p.nombre}"></td>
+            <td th:text="${p.cantidad}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(p.importe, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

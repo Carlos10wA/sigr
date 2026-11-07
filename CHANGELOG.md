@@ -197,3 +197,12 @@
 ### Pendiente
 - Módulos Reportes (no implementados).
 - Aprobación de LB-SIGR-1.0 (sigue candidata, sin v1.0.0).
+
+## [0.0.1-SNAPSHOT] — Reportes (2026-11-07)
+### Agregado
+- Solo ADMINISTRADOR (`/reportes`, MESERO/CLIENTE 403): Cobros por fecha de pago (total, cantidad, desglose por método, detalle comprobante/pedido/fecha/método/importe; base/cambio/pendientes excluidos, sin duplicar líneas), Platos históricos por fecha de pago (cantidad/importe por plato, desde líneas de pagados, orden cantidad desc), Reservas por fecha/mesa (confirmadas/manuales/vencimiento/sin motivo, sin presentar confirmadas como asistencia) y Cierres por fecha de cierre (base/cobros/esperado/contado/diferencia, sin sumar base como venta).
+- Rangos completos por zona configurada, validación ES de incompletos/invertidos, COP y dd/MM/yyyy HH:mm, totales cero sin resultados, imprimible y CSV por reporte con escape y protección anti-fórmulas.
+- Tests: escenario base 100.000 + 66.000 (2 líneas) + pendiente → 66.000/1 pagado, método/platos/reservas/cierres, render y CSV, permisos, rangos. Total 67.
+
+### Pendiente
+- Aprobación de LB-SIGR-1.0 y revisión final (sigue candidata, sin v1.0.0).

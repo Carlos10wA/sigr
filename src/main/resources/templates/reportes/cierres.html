@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cierres - SIGR</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+  <link rel="stylesheet" th:href="@{/css/print.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+  <h1>Cierres de caja</h1>
+  <p><small>Zona: <span th:text="${zona}"></span></small></p>
+  <div th:if="${error}" class="alert error" th:text="${error}"></div>
+  <form th:action="@{/reportes/cierres}" method="get">
+    <div>
+      <label for="desde">Fecha inicial</label>
+      <input id="desde" type="date" name="desde" th:value="${desde}"/>
+      <label for="hasta">Fecha final</label>
+      <input id="hasta" type="date" name="hasta" th:value="${hasta}"/>
+    </div>
+    <button type="submit">Consultar</button>
+    <a th:if="${desde != null and hasta != null}" th:href="@{/reportes/cierres/csv(desde=${desde},hasta=${hasta})}"><button type="button">Exportar CSV</button></a>
+    <button type="button" onclick="window.print()">Imprimir</button>
+  </form>
+  <div th:if="${cierres != null}">
+    <p th:if="${#lists.isEmpty(cierres)}">No hay cierres en ese rango.</p>
+    <div class="table-wrap" th:if="${!#lists.isEmpty(cierres)}">
+      <table>
+        <thead><tr><th>Sesión</th><th>Cierre</th><th>Base</th><th>Efectivo</th><th>Tarjeta</th><th>Transferencia</th><th>Total</th><th>Esperado</th><th>Contado</th><th>Diferencia</th></tr></thead>
+        <tbody>
+          <tr th:each="s : ${cierres}">
+            <td th:text="${s.id}"></td>
+            <td th:text="${#temporals.format(s.fechaCierre, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.baseInicial, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosEfectivo, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosTarjeta, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.cobrosTransferencia, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.totalCobrado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.efectivoEsperado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.efectivoContado, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(s.diferencia, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

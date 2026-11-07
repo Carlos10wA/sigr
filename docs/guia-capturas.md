@@ -18,5 +18,7 @@
 | E-14 | Error genérico (ruta inexistente) | RQ-Error | «Ocurrió un error…» con estado HTTP, sin Whitelabel | Errores |
 | E-15 | Pedido entregado → Emitir comprobante | RQ-Facturación | «Comprobante académico — sin validez fiscal», pendiente de pago, FAC- y total COP | Facturación |
 | E-16 | Detalle comprobante imprimible | RQ-Facturación | Líneas históricas, total, botón Imprimir | Facturación |
+| E-17 | `/reportes/cobros` 66.000 | RQ-Reportes | Total, pagados y desglose por método con filtros | Reportes |
+| E-18 | `/reportes/cobros/csv` | RQ-Reportes | CSV con escape y protección anti-fórmulas | Reportes |
 
 Todas deben tomarse de ejecución real en Windows.

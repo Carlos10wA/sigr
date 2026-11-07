@@ -14,6 +14,7 @@ Línea base **LB-SIGR-1.0 candidata** — pendiente de validación/aprobación. 
 6. **Facturación académica** — Único comprobante por pedido ENTREGADO («Comprobante académico — sin validez fiscal», pendiente de pago, sin cobro): número FAC- estable, fecha Bogota, copia histórica y total BigDecimal servidor (2×28.000+2×5.000=66.000 COP en prueba). ADMINISTRADOR/MESERO emiten y ven todos; CLIENTE solo consulta los suyos y no emite. Anti-duplicado con bloqueo + única; sin editar/eliminar; pedido facturado no se cancela. Listado, detalle imprimible y enlace desde entregado.
 7. **Ubicación del restaurante** — Solo ADMINISTRADOR (`/configuracion`): país, ciudad del catálogo con su zona explícita (no deducida del país), dirección; inicial Colombia/Bogotá/America-Bogota, sin geolocalización. El comprobante muestra «Bogotá, Colombia» (sin «(America/Bogota)») y guarda copia de ubicación/zona al emitir; cambios responsables no alteran emitidos. Cambio de zona con confirmadas pendientes se bloquea explicando el motivo, sin reinterpretar horarios; las fechas futuras usan la zona configurada.
 8. **Caja y pagos** — Solo ADMINISTRADOR (`/caja`): sesión única abierta (responsable, fecha/zona histórica, base ≥ 0), pagos completos únicos por comprobante pendiente (efectivo con recibido/cambio, tarjeta/transferencia con referencia, sin abonos/mixtos/devoluciones, registro manual sin banco), importe servidor BigDecimal y PAGADO en una transacción con bloqueo + única; cierre con cobros por método, esperado = base + efectivo, diferencia con observación, resumen definitivo sin reabrir. MESERO sin Caja (403); CLIENTE solo consulta sus Pagados. Escenario: base 100.000 + 66.000 con 70.000 → cambio 4.000, esperado 166.000; tarjeta/transferencia no suben efectivo.
+9. **Reportes** — Solo ADMINISTRADOR (`/reportes`, CSV e impresión): Cobros por fecha de pago (66.000/1, excluye base/cambio/pendiente), Platos históricos por fecha de pago, Reservas por fecha/mesa con motivos (sin motivo para legacy) y Cierres por fecha de cierre; rangos completos por zona configurada con COP/dd/MM/HH:mm. Escenario verificado en BD aislada.
 
 ### Reglas de permisos y propiedad (fuera de la vista, en el servidor)
 
@@ -40,8 +41,12 @@ ID ajeno manipulado (pedido/reserva de otro CLIENTE) devuelve **404** sin revela
   - `FacturacionIntegrationTest` 4 (emisión/rechazados, duplicado, histórico 66.000 COP + permisos/propiedad, cancelados).
 - Tras ubicación: `Tests run: 58, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
   - `UbicacionIntegrationTest` 3 (solo admin, ciudad exige su zona, copia inmutable en comprobante sin «(America/Bogota)», bloqueo de zona con pendientes).
-- Tras Cali + Caja (final): `Tests run: 63, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+- Tras Cali + Caja: `Tests run: 63, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
   - `UbicacionIntegrationTest` 4 (Cali solo lectura) y `CajaIntegrationTest` 4 (escenario 66.000, permisos, tarjeta/transferencia, validaciones/cierre).
+- Tras migración ENUM: `Tests run: 64, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+- Tras cierre claro: `Tests run: 65, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+- Tras Reportes (final): `Tests run: 67, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
+  - `ReportesIntegrationTest` 2 (66.000/1, platos 2+2, cierre, CSV, 403, rango invertido, reservas 1+1).
   - Comando: `.\mvnw.cmd test` con `JAVA_HOME=C:\Program Files\Java\jdk-21` (Java 21.0.2, Spring Boot 3.5.16). Probado 2026-11-06 con H2 en memoria (tests) — la BD archivo `data/sigrdb.mv.db` no se borró ni reinició.
 
 ## Commits (rama `main`, árbol limpio salvo este documento)
@@ -53,7 +58,7 @@ Historial previo conservado: `237f060`, `5285f29`, `b7d01b0`, `13430e9`, `3fc326
 
 ## Pendientes (no implementados)
 
-- **Reportes**: no implementados. No hay rutas `/reportes`. Caja/pagos y Facturación sí implementados.
+- **Reportes**: implementados (`/reportes`, `/reportes/cobros`, `/platos`, `/reservas`, `/cierres` + CSV). Pendiente solo revisión final de línea base.
 - Aprobación de línea base LB-SIGR-1.0 y creación de `v1.0.0`: no aprobados ni creados.
 - Publicación en GitHub: no realizada (sin remoto).
 - Servicios de pago: ninguno instalado. Secretos: ninguno registrado (solo `SIGR_ADMIN_PASSWORD` local vía entorno).
@@ -75,3 +80,4 @@ $env:SIGR_ADMIN_PASSWORD="SuClaveLocal"
 5. **Facturación**: pedido ENTREGADO → detalle `/pedidos/{id}` → «Emitir comprobante» (ADMIN/MESERO) → `/facturas/{id}` («Comprobante académico — sin validez fiscal», pendiente de pago) → Imprimir. CLIENTE solo consulta los suyos.
 6. **Ubicación**: como ADMINISTRADOR, `/configuracion` → país/ciudad/dirección/zona → guardar; comprobar que el detalle de comprobante muestra «Bogotá, Colombia» (o la ciudad configurada) sin texto técnico. Cambio de zona con pendientes debe bloquearse.
 7. **Caja**: como ADMINISTRADOR, `/caja` → abrir con base → registrar pago (efectivo con recibido/cambio o tarjeta/transferencia con referencia) desde `/caja/pagos/nuevo` o desde el comprobante → cerrar con efectivo contado (y observación si difiere). MESERO debe recibir 403 en `/caja`; CLIENTE solo ve sus comprobantes Pagados.
+8. **Reportes**: como ADMINISTRADOR, `/reportes` → Cobros/Platos/Reservas/Cierres con rangos → Imprimir o Exportar CSV.

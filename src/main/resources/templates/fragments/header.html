@@ -15,6 +15,7 @@
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/mesas}">Mesas</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/configuracion}">Ubicación</a>
       <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/caja}">Caja</a>
+      <a sec:authorize="hasAuthority('ROLE_ADMINISTRADOR')" th:href="@{/reportes}">Reportes</a>
     </nav>
     <div class="nav-user" sec:authorize="isAuthenticated()">
       <span sec:authentication="name">usuario</span>

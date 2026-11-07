@@ -181,6 +181,14 @@ Resumen final: `Tests run: 64, Failures: 0, Errors: 0 — BUILD SUCCESS`. Verifi
 
 Resumen final: `Tests run: 65, Failures: 0, Errors: 0 — BUILD SUCCESS`. Caso base 100.000 + 66.000 = 166.000; 66.000 contado → faltante 100.000.
 
+## Reportes (2026-11-07)
+| Prueba (`ReportesIntegrationTest`, BD aislada) | Resultado real |
+|---|---|
+| `escenario66000CobrosPlatosYCierres` — cobros 66.000/1 pagado (excluye base 100.000, cambio y pendiente), platos 2+2, cierre base/cobros/esperado, CSV, 403 y rango invertido | OK |
+| `reservasTotalesYMotivos` — 1 confirmada + 1 manual | OK |
+
+Resumen final: `Tests run: 67, Failures: 0, Errors: 0 — BUILD SUCCESS`.
+
 ## Pendiente (próximas etapas)
 Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
 Estado: **pendiente de ejecución** (no inventado).
