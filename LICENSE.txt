@@ -1,9 +1,30 @@
-PENDIENTE DE DECISIÓN DEL AUTOR
------------------------------------
-El autor aún no ha confirmado la licencia definitiva para este proyecto académico.
-Mientras tanto, este archivo registra la decisión como pendiente y no otorga
-derechos de uso o redistribución sobre el código más allá del alcance académico
-definido por la institución.
+MIT License
 
-Estudiante: Carlos Alberto Ayala Larrahondo
-Asignatura: Gestión del Software — Tecnológica del Oriente
+Copyright (c) 2026 Carlos Alberto Ayala Larrahondo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Alcance: la licencia MIT aplica al código propio de este proyecto.
+No sustituye las licencias y créditos de las fotografías del catálogo
+(ver docs/creditos-imagenes.md) ni las condiciones de las dependencias
+(ver pom.xml). SIGR es un proyecto demostrativo; no está certificado ni
+validado para producción. Los comprobantes y pagos son académicos, sin
+validez fiscal, sin bancos ni pasarelas.

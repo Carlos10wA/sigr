@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.1-SNAPSHOT] — Línea base: seguimiento automático, Excel verificado, documentación (2026-11-08)
+
+### Agregado
+- **Seguimiento automático de pedidos:** `GET /pedidos/{id}/estado` JSON (autorización existente: CLIENTE solo propios → 404 ajenos, MESERO/ADMIN vigentes) + `static/js/actualizar-estado.js` con **sondeo cada 10 s** sin recargar: sin solicitudes superpuestas, pausado si la pestaña no está visible, conserva formularios/selecciones y mantiene el último estado ante errores de conexión. Marcado `data-estado-pedido` en listado y detalle. No usa WebSockets.
+- **Documentación de línea base:** `docs/manual-despliegue.md` (versiones, clonado pendiente, Java Windows, `SIGR_ADMIN_PASSWORD` seguro, primer admin vs. acceso, pruebas, inicio/parada, respaldo/restauración sin sobrescrituras, incidencias), `docs/verificacion-linea-base.md` (requisito→implementación→comprobación→resultado→pendientes; distingue automatizado de manual), `docs/seguimiento-incidencias.md` (incidencias reales I-01..I-04 + procedimiento futuro) y `docs/acta-linea-base.md` (LB-SIGR-1.0 CANDIDATA, inventario, criterios, verificables, limitaciones, campos pendientes, procedimiento de commit definitivo).
+- **Licencia MIT** en `LICENSE.txt` (código propio, autor 2026); fotos y dependencias conservan sus licencias.
+
+### Corregido
+- Verificación de reportes (límites, vacíos, uso de zona configurada, fecha pago/pago/reserva/cierre, base no sumada, tarjeta/transferencia sin aumentar efectivo): prueba `reportesSinResultadosYLimitesExactos` (rango futuro 0/[] y rango invertido ES). Sin cambios a la lógica existente.
+
+### Cambiado
+- Sanitización pública: sin institución, docente, asignatura ni datos personales en README, interfaz y documentación técnica (informe separado). `pom.xml` sin referencia a Unidad 2.
+- Tests: `Tests run: 69, Failures: 0, Errors: 0 — BUILD SUCCESS` (67 previos + 1 auto-estado + 1 rangos vacíos).
+
+### Pendiente
+- Verificación manual (recorrido completo, carga, concurrencia real).
+- Publicación en GitHub, Issues y etiqueta `v1.0.0`; aprobación de LB-SIGR-1.0.
+
 ## [0.0.1-SNAPSHOT] — Etapa 1 (2026-11-05)
 ### Agregado
 - Estructura inicial Spring Boot 3.5.16 / Java 21 con Maven Wrapper 3.9.11.

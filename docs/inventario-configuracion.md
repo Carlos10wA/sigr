@@ -2,18 +2,15 @@
 
 | ID | Componente | Ruta real | Responsable | Versión / ref | Estado |
 |---|---|---|---|---|---|
-| CFG-01 | pom.xml | `pom.xml` | Carlos Alberto Ayala Larrahondo | Spring Boot 3.5.16, Java 21 | Revisado Etapa 1 |
+| CFG-01 | pom.xml | `pom.xml` | Autor | Spring Boot 3.5.16, Java 21, H2 2.3.232, POI 5.2.5 | Revisado |
 | CFG-02 | Maven Wrapper | `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` | ídem | Maven 3.9.11 | Revisado |
 | CFG-03 | Config aplicación | `src/main/resources/application.properties` | ídem | H2 archivo, zona America/Bogota | Revisado |
 | CFG-04 | Código fuente | `src/main/java/...` | ídem | 0.0.1-SNAPSHOT | Revisado |
-| CFG-05 | Plantillas | `src/main/resources/templates/` | ídem | Etapa 1 | Revisado |
-| CFG-06 | Pruebas | `src/test/java/...` | ídem | JUnit 5 | Revisado |
-| CFG-07 | Licencia | `LICENSE.txt` | ídem | Pendiente decisión autor | Pendiente |
+| CFG-05 | Plantillas | `src/main/resources/templates/` | ídem | Usuarios, platos, pedidos, reservas, facturas, caja, reportes, configuracion | Revisado |
+| CFG-06 | Pruebas | `src/test/java/...` | ídem | JUnit 5 (BD aislada, 69 pruebas) | Revisado |
+| CFG-07 | Licencia | `LICENSE.txt` (MIT 2026) | ídem | Código propio; fotos/dependencias con sus licencias | Revisado |
 | CFG-08 | Repositorio GitHub | — | ídem | — | Pendiente URL real |
-| CFG-09 | Módulo usuarios (Etapa 2) | `model/`, `repository/`, `service/`, `controller/UsuarioController`, `security/DbUserDetailsService`, `config/DataInitializer` | ídem | 0.0.1-SNAPSHOT | Revisado Etapa 2 |
-| CFG-10 | Vistas usuarios | `templates/usuarios/`, `templates/fragments/` | ídem | Etapa 2 | Revisado |
-| CFG-11 | Clave admin inicial | variable de entorno `SIGR_ADMIN_PASSWORD` (no versionada) | ídem | — | Configurado vía PowerShell, no en Git |
-| CFG-12 | Módulo menús (Etapa 3) | `model/Categoria,Plato`, `MenuService`, `DemoDataService`, `CategoriaController`, `PlatoController` | ídem | 0.0.1-SNAPSHOT | Revisado Etapa 3 |
-| CFG-13 | Vistas menús | `templates/platos/`, `templates/categorias/`, `templates/error/403.html` | ídem | Etapa 3 | Revisado |
-| CFG-14 | Fotografías catálogo | `static/images/platos/*.jpg` (12 + `placeholder.jpg`), CC0 original (ver `docs/fotos-catalogo.md`) | ídem | — | Revisado Etapa 3 |
-| CFG-15 | Pruebas menú | `src/test/java/.../MenuIntegrationTest.java` | ídem | JUnit 5 | Revisado |
+| CFG-09 | Módulos negocio | pedidos, reservas, facturación, caja, reportes, Excel Cobros, seguimiento automático | ídem | 0.0.1-SNAPSHOT | Revisado (LB-SIGR-1.0 candidata) |
+| CFG-10 | Clave admin inicial | variable de entorno `SIGR_ADMIN_PASSWORD` (no versionada) | ídem | — | Configurado vía PowerShell, no en Git |
+| CFG-11 | Documentación LB-SIGR-1.0 | `docs/` (ver acta-linea-base) | ídem | — | Revisado |
+| CFG-12 | Fotografías catálogo | `static/images/platos/*.jpg` (12), creditos en `docs/creditos-imagenes.md` | ídem | — | Revisado |

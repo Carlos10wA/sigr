@@ -15,7 +15,7 @@
     <artifactId>sigr</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>SIGR - Sistema Integral de Gestión de Restaurante</name>
-    <description>Sistema Integral de Gestión de Restaurante (SIGR) - Unidad 2 Gestión del Software</description>
+    <description>Sistema Integral de Gestión de Restaurante (SIGR) - proyecto demostrativo de gestión de restaurantes</description>
 
     <properties>
         <java.version>21</java.version>

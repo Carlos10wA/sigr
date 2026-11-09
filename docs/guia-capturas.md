@@ -1,6 +1,8 @@
-# Guía de capturas — evidencias informe
+# Guía de capturas — evidencias
 
-| # | Captura | Requisito | Resultado a comprobar | Apartado informe |
+Todas deben tomarse de ejecución real en Windows. No se fabrican capturas ni resultados; evitar contraseñas y datos personales.
+
+| # | Captura | Requisito | Resultado a comprobar | Apartado para el informe |
 |---|---|---|---|---|
 | E-01 | Terminal `java -version` + `.\mvnw.cmd -v` | RQ-01/03 | Java 21.0.2, Maven 3.9.11 | Herramientas / validación |
 | E-02 | `.\mvnw.cmd test` BUILD SUCCESS | RQ-01/02 | Tests run 4, 0 fallos | Validación y pruebas |
@@ -21,5 +23,10 @@
 | E-17 | `/reportes/cobros` 66.000 | RQ-Reportes | Total, pagados y desglose por método con filtros | Reportes |
 | E-18 | `/reportes/cobros/csv` | RQ-Reportes | CSV con escape y protección anti-fórmulas | Reportes |
 | E-19 | `/reportes/cobros/xlsx` | RQ-Reportes | Excel «Descargar Excel»: título, resumen 66.000, tabla con total y nota | Excel |
+| E-20 | `/pedidos` y `/pedidos/{id}` con script `actualizar-estado.js` | RQ-Pedidos | Estado se actualiza por sondeo 10 s sin recargar; sin formularios tocados | Pedidos |
+| E-21 | `git log --oneline` (≥3 commits reales) | RQ-Git | Historial con 3+ commits descriptivos | Repositorio |
+| E-22 | Tras publicar: repositorio e Issues | RQ-GitHub | Pendiente (aún sin publicar) | Repositorio |
 
-Todas deben tomarse de ejecución real en Windows.
+## Informe separado
+
+El informe académico se elaborará **fuera del repositorio público** (sin portada con datos de institución/docente en la documentación técnica pública). Fuentes técnicas dentro del repo: README, `docs/verificacion-linea-base.md`, `docs/plan-pruebas.md`, `docs/matriz-trazabilidad.md`, `docs/modelo-datos.md` y `docs/acta-linea-base.md`. Borradores académicos, si existieran, se conservan separados de los archivos de publicación sin moverlos fuera del proyecto sin informar. El PDF final se preparará después como `Taller_LineaBase_SIGR.pdf` (máximo 20 páginas, sin portada).

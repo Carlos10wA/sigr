@@ -185,10 +185,17 @@ Resumen final: `Tests run: 65, Failures: 0, Errors: 0 — BUILD SUCCESS`. Caso b
 | Prueba (`ReportesIntegrationTest`, BD aislada) | Resultado real |
 |---|---|
 | `escenario66000CobrosPlatosYCierres` — cobros 66.000/1 pagado (excluye base 100.000, cambio y pendiente), platos 2+2, cierre base/cobros/esperado, CSV, 403 y rango invertido + Excel Cobros (título, total 66.000 numérico, filtros, textos sin fórmulas, rango vacío 0, permisos) | OK |
+| `reportesSinResultadosYLimitesExactos` — rango futuro sin datos (0, listas vacías) y rango invertido con mensaje ES | OK |
 | `reservasTotalesYMotivos` — 1 confirmada + 1 manual | OK |
 
 Resumen final: `Tests run: 67, Failures: 0, Errors: 0 — BUILD SUCCESS`.
 
+## Seguimiento automático de pedidos + línea base (2026-11-08)
+| Prueba (BD aislada) | Resultado real |
+|---|---|
+| `PedidoAutoEstadoTest.estadoAutomaticoRespetaPropiedadYPermisos` — `GET /pedidos/{id}/estado` JSON: propietario 200 PENDIENTE, cliente ajeno 404, mesero/admin 200, listado con script y marca `data-estado-pedido` | OK |
+
+Resumen final: `Tests run: 69, Failures: 0, Errors: 0 — BUILD SUCCESS` (ver suite completa tras este ajuste). Ver `docs/verificacion-linea-base.md`.
+
 ## Pendiente (próximas etapas)
-Pedidos, reservas, facturación duplicada, caja/reportes, recorrido completo. Ver matriz de trazabilidad.
-Estado: **pendiente de ejecución** (no inventado).
+Pendientes de verificación manual: eficiencia con carga, concurrencia real de reservas/caja, publicación en GitHub y aprobación de LB-SIGR-1.0. Estado: **pendiente de ejecución** (no inventado).

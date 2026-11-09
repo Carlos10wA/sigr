@@ -17,3 +17,5 @@
 | RQ-13 | Claridad de cierre de Caja (resumen automático, diferencia estimada, sin precarga) | CajaController resumen + JS diferencia | CajaIntegrationTest 5 casos | `Tests run: 65` | ✅ Cierre claro |
 | RQ-14 | Reportes (cobros, platos, reservas, cierres, CSV, imprimible, Excel Cobros .xlsx) | ReporteService/ReportesController/CobrosExcelService + CsvUtil | ReportesIntegrationTest 2 casos | `Tests run: 67` | ✅ Reportes + Excel |
 | RQ-15 | Línea base LB-SIGR-1.0 aprobada | Registro candidato (Etapa 1 verificada) | — | commits `c9e286d`, `0ec61b3` + 5º por Etapa 3 | ⏳ Pendiente revisión final |
+| RQ-16 | Seguimiento automático de pedidos (sondeo 10 s, sin recarga) | PedidoController `/estado` + `actualizar-estado.js` | PedidoAutoEstadoTest | Suite (69 pruebas) | ✅ Automático |
+| RQ-17 | Documentación línea base: verificación, manual, acta, incidencias, licencia | docs/* + LICENSE.txt MIT | Revisión de archivos | — | ✅ Documentado |

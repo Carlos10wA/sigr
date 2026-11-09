@@ -1,8 +1,6 @@
-# Estado de avance — SIGR (2026-11-06)
+# Estado de avance — SIGR (2026-11-08)
 
-Proyecto académico SIGR (Sistema Integral de Gestión de Restaurante), Gestión del Software Unidad 2, Tecnológica del Oriente.
-Estudiante: Carlos Alberto Ayala Larrahondo. Docente: Carlos Carrascal Avendaño.
-Línea base **LB-SIGR-1.0 candidata** — pendiente de validación/aprobación. Sin etiqueta `v1.0.0`. GitHub: sin remoto (no se publicó).
+Proyecto SIGR (Sistema Integral de Gestión de Restaurante): demostrativo, con línea base **LB-SIGR-1.0 candidata** — pendiente de validación/aprobación. Sin etiqueta `v1.0.0`. GitHub: sin remoto (no se publicó).
 
 ## Implementado en esta sesión
 
@@ -45,7 +43,8 @@ ID ajeno manipulado (pedido/reserva de otro CLIENTE) devuelve **404** sin revela
   - `UbicacionIntegrationTest` 4 (Cali solo lectura) y `CajaIntegrationTest` 4 (escenario 66.000, permisos, tarjeta/transferencia, validaciones/cierre).
 - Tras migración ENUM: `Tests run: 64, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
 - Tras cierre claro: `Tests run: 65, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS`
-- Tras Reportes: `Tests run: 67, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS` (`ReportesIntegrationTest` 2, con Excel .xlsx). 
+- Tras Reportes: `Tests run: 67, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS` (`ReportesIntegrationTest` 2, con Excel .xlsx).
+- Tras seguimiento automático + línea base (2026-11-08): `Tests run: 69, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS` (`PedidoAutoEstadoTest` 1 + `reportesSinResultadosYLimitesExactos` 1, en BD aislada).
   - Comando: `.\mvnw.cmd test` con `JAVA_HOME=C:\Program Files\Java\jdk-21` (Java 21.0.2, Spring Boot 3.5.16). Probado 2026-11-06 con H2 en memoria (tests) — la BD archivo `data/sigrdb.mv.db` no se borró ni reinició.
 
 ## Commits (rama `main`, árbol limpio salvo este documento)
@@ -57,10 +56,11 @@ Historial previo conservado: `237f060`, `5285f29`, `b7d01b0`, `13430e9`, `3fc326
 
 ## Pendientes (no implementados)
 
-- **Reportes**: implementados (`/reportes`, `/reportes/cobros`, `/platos`, `/reservas`, `/cierres` + CSV). Pendiente solo revisión final de línea base.
+- **Reportes**: implementados (`/reportes`, `/reportes/cobros`, `/platos`, `/reservas`, `/cierres` + CSV y Excel de Cobros). Pendiente solo revisión final de línea base y verificación manual (carga, concurrencia real, recorrido completo).
 - Aprobación de línea base LB-SIGR-1.0 y creación de `v1.0.0`: no aprobados ni creados.
-- Publicación en GitHub: no realizada (sin remoto).
+- Publicación en GitHub: no realizada (sin remoto; URL oficial pendiente).
 - Servicios de pago: ninguno instalado. Secretos: ninguno registrado (solo `SIGR_ADMIN_PASSWORD` local vía entorno).
+- Licencia MIT aplicada (`LICENSE.txt`); sin datos de institución/docente en presentación pública (informe separado).
 
 ## Pasos para iniciar y revisar
 
