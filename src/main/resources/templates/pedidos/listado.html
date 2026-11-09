@@ -22,7 +22,7 @@
           <td th:text="${p.id}"></td>
           <td th:text="${#temporals.format(p.fechaCreacion, 'yyyy-MM-dd HH:mm')}"></td>
           <td th:text="${p.usuario.nombreCompleto}"></td>
-          <td th:text="${p.estado.nombreES()}"></td>
+          <td th:attr="data-estado-pedido=${p.id}" th:text="${p.estado.nombreES()}"></td>
           <td th:text="${'$' + #numbers.formatDecimal(p.total, 1, 'POINT', 2, 'COMMA') + ' COP'}"></td>
           <td><a th:href="@{/pedidos/{id}(id=${p.id})}">Ver detalle</a></td>
         </tr>
@@ -30,5 +30,6 @@
     </table>
   </div>
 </main>
+<script th:src="@{/js/actualizar-estado.js}"></script>
 </body>
 </html>

@@ -85,6 +85,15 @@ public class PedidoController {
         return "pedidos/detalle";
     }
 
+    /** Solo el estado en texto para polleo automático del listado/detalle (sin recargar la página). */
+    @GetMapping("/{id}/estado")
+    @ResponseBody
+    public java.util.Map<String, Object> estado(Principal principal, @PathVariable Long id) {
+        var pedido = pedidos.buscarPara(actual(principal), id);
+        return java.util.Map.of("id", pedido.getId(), "estado", pedido.getEstado().name(),
+                "nombre", pedido.getEstado().nombreES());
+    }
+
     @PostMapping("/{id}/cambiar-estado")
     public String cambiarEstado(Principal principal, @PathVariable Long id,
                                 @RequestParam EstadoPedido estado, RedirectAttributes flash) {

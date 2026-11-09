@@ -194,6 +194,29 @@ class ReportesIntegrationTest {
     }
 
     @Test
+    void reportesSinResultadosYLimitesExactos() {
+        LocalDate hoy = LocalDate.now(BOGOTA);
+        // Rango futuro sin datos: totales en cero y listas vacías.
+        var cobros = reportes.cobros(hoy.plusDays(60), hoy.plusDays(61));
+        assertThat(cobros.cantidad()).isEqualTo(0);
+        assertThat(cobros.total()).isEqualByComparingTo(BigDecimal.ZERO.setScale(2));
+        assertThat(cobros.detalle()).isEmpty();
+        assertThat(reportes.platosVendidos(hoy.plusDays(60), hoy.plusDays(61))).isEmpty();
+        assertThat(reportes.cierres(hoy.plusDays(60), hoy.plusDays(61))).isEmpty();
+        var reservas = reportes.reservas(hoy.plusDays(60), hoy.plusDays(61), null);
+        assertThat(reservas.confirmadas()).isEqualTo(0);
+        assertThat(reservas.manuales()).isEqualTo(0);
+        assertThat(reservas.detalle()).isEmpty();
+        // Rango invertido: excepción con mensaje en español.
+        try {
+            reportes.cobros(hoy, hoy.minusDays(1));
+            throw new AssertionError("Debió fallar el rango invertido");
+        } catch (ReporteService.RangoInvalidoException e) {
+            assertThat(e.getMessage()).contains("anterior");
+        }
+    }
+
+    @Test
     void reservasTotalesYMotivos() {
         var mf = new MesaForm();
         mf.setNombre("Mesa rep"); mf.setCapacidad(4); mf.setActiva(true);

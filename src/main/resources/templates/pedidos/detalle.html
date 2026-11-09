@@ -14,7 +14,7 @@
   <div th:if="${error}" class="alert error" th:text="${error}"></div>
   <p>Cliente: <span th:text="${pedido.usuario.nombreCompleto}"></span>
      (<span th:text="${pedido.usuario.usuario}"></span>)</p>
-  <p>Estado: <b th:text="${pedido.estado.nombreES()}"></b></p>
+  <p>Estado: <b th:attr="data-estado-pedido=${pedido.id}" th:text="${pedido.estado.nombreES()}"></b></p>
   <p>Creado: <span th:text="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd HH:mm')}"></span></p>
   <div class="table-wrap">
     <table>
@@ -54,5 +54,6 @@
   </section>
   <p><a th:href="@{/pedidos}">Volver a pedidos</a></p>
 </main>
+<script th:src="@{/js/actualizar-estado.js}"></script>
 </body>
 </html>
