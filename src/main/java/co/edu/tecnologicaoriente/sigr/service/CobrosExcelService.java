@@ -3,13 +3,13 @@ package co.edu.tecnologicaoriente.sigr.service;
 import co.edu.tecnologicaoriente.sigr.service.ReporteService.ResumenCobros;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Service
 public class CobrosExcelService {
@@ -41,24 +41,30 @@ public class CobrosExcelService {
             CellStyle totalStyle = wb.createCellStyle();
             totalStyle.cloneStyleFrom(dineroStyle);
             totalStyle.setFont(bold(wb, 11));
+            CellStyle etiquetaStyle = wb.createCellStyle();
+            etiquetaStyle.setFont(bold(wb, 11));
+            CellStyle notaStyle = wb.createCellStyle();
+            notaStyle.setWrapText(true);
 
             DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             int r = 0;
-            var titulo = hoja.createRow(r++).createCell(0);
+            // Título combinado fuera de la tabla para que no ensanche la columna Comprobante.
+            var tituloRow = hoja.createRow(r++);
+            var titulo = tituloRow.createCell(0);
             titulo.setCellValue("SIGR — Reporte de cobros");
-            titulo.setCellType(CellType.STRING);
             titulo.setCellStyle(tituloStyle);
-            fila(hoja, r++, "Ubicación", ciudad + ", " + pais);
-            fila(hoja, r++, "Periodo consultado", desde.format(fechaFmt) + " a " + hasta.format(fechaFmt));
-            fila(hoja, r++, "Moneda", "COP");
-            fila(hoja, r++, "Zona horaria", zona);
+            hoja.addMergedRegion(new CellRangeAddress(r - 1, r - 1, 0, 4));
+            fila(hoja, r++, "Ubicación", ciudad + ", " + pais, etiquetaStyle, textoStyle, null);
+            fila(hoja, r++, "Periodo consultado", desde.format(fechaFmt) + " a " + hasta.format(fechaFmt), etiquetaStyle, textoStyle, null);
+            fila(hoja, r++, "Moneda", "COP", etiquetaStyle, textoStyle, null);
+            fila(hoja, r++, "Zona horaria", zona, etiquetaStyle, textoStyle, null);
             r++; // blanco
-            fila(hoja, r++, "Total cobrado", resumen.total());
-            fila(hoja, r++, "Comprobantes pagados", resumen.cantidad());
-            fila(hoja, r++, "Cobros en efectivo", resumen.efectivo());
-            fila(hoja, r++, "Cobros por tarjeta", resumen.tarjeta());
-            fila(hoja, r++, "Cobros por transferencia", resumen.transferencia());
+            filaDinero(hoja, r++, "Total cobrado", resumen.total(), etiquetaStyle, dineroStyle);
+            filaDinero(hoja, r++, "Efectivo", resumen.efectivo(), etiquetaStyle, dineroStyle);
+            filaDinero(hoja, r++, "Tarjeta", resumen.tarjeta(), etiquetaStyle, dineroStyle);
+            filaDinero(hoja, r++, "Transferencia", resumen.transferencia(), etiquetaStyle, dineroStyle);
+            filaNumero(hoja, r++, "Comprobantes pagados", resumen.cantidad(), etiquetaStyle, textoStyle);
             r++;
             int cabeceraFila = r;
             String[] cabeceras = {"Comprobante", "Pedido", "Fecha de pago", "Método", "Importe"};
@@ -66,14 +72,13 @@ public class CobrosExcelService {
             for (int i = 0; i < cabeceras.length; i++) {
                 var c = filaCab.createCell(i);
                 c.setCellValue(cabeceras[i]);
-                c.setCellType(CellType.STRING);
                 c.setCellStyle(cabeceraStyle);
             }
-            hoja.setAutoFilter(new org.apache.poi.ss.util.CellRangeAddress(cabeceraFila, cabeceraFila, 0, 4));
+            hoja.setAutoFilter(new CellRangeAddress(cabeceraFila, cabeceraFila, 0, 4));
             for (var p : resumen.detalle()) {
                 var f = hoja.createRow(r++);
                 var c0 = f.createCell(0); c0.setCellValue(p.getComprobante().getNumero()); c0.setCellType(CellType.STRING); c0.setCellStyle(textoStyle);
-                var c1 = f.createCell(1); c1.setCellValue(p.getComprobante().getPedido().getId()); c1.setCellType(CellType.STRING); c1.setCellStyle(textoStyle);
+                var c1 = f.createCell(1); c1.setCellValue(p.getComprobante().getPedido().getId()); c1.setCellType(CellType.NUMERIC); c1.setCellStyle(textoStyle);
                 var c2 = f.createCell(2);
                 c2.setCellValue(java.sql.Timestamp.valueOf(p.getFechaHora()));
                 c2.setCellType(CellType.NUMERIC);
@@ -83,23 +88,26 @@ public class CobrosExcelService {
             }
             var filaTotal = hoja.createRow(r++);
             var et = filaTotal.createCell(3);
-            et.setCellValue("Total");
-            et.setCellType(CellType.STRING);
-            et.setCellStyle(totalStyle);
             var val = filaTotal.createCell(4);
-            val.setCellValue(resumen.total().doubleValue());
-            val.setCellType(CellType.NUMERIC);
-            val.setCellStyle(totalStyle);
+            val.setCellValue(resumen.total().doubleValue()); val.setCellType(CellType.NUMERIC); val.setCellStyle(totalStyle);
+            et.setCellValue("Total"); et.setCellType(CellType.STRING); et.setCellStyle(totalStyle);
             r++;
-            var nota = hoja.createRow(r++).createCell(0);
+            // Nota combinada fuera de la tabla (no ensancha la columna Comprobante).
+            var notaRow = hoja.createRow(r++);
+            var nota = notaRow.createCell(0);
             nota.setCellValue("Incluye pagos registrados durante el periodo consultado. La base inicial de caja no forma parte de los cobros");
             nota.setCellType(CellType.STRING);
-
-            for (int i = 0; i < 5; i++) {
-                hoja.autoSizeColumn(i);
-            }
-            // Columnas ajustadas para que la impresión no corte columnas.
-
+            nota.setCellStyle(notaStyle);
+            hoja.addMergedRegion(new CellRangeAddress(r - 1, r - 1, 0, 4));
+            // Anchors legibles: anchos fijos según encabezados.
+            hoja.setColumnWidth(0, 22 * 256);
+            hoja.setColumnWidth(1, 12 * 256);
+            hoja.setColumnWidth(2, 20 * 256);
+            hoja.setColumnWidth(3, 16 * 256);
+            hoja.setColumnWidth(4, 16 * 256);
+            // Configuración de impresión legible.
+            hoja.getPrintSetup().setLandscape(true);
+            hoja.setAutobreaks(true);
             try (var out = new ByteArrayOutputStream()) {
                 wb.write(out);
                 return out.toByteArray();
@@ -109,22 +117,43 @@ public class CobrosExcelService {
         }
     }
 
-    private void fila(Sheet hoja, int n, String etiqueta, Object valor) {
+    private void fila(Sheet hoja, int n, String etiqueta, String valor,
+                      CellStyle etiquetaStyle, CellStyle valorStyle, CellStyle unused) {
         var f = hoja.createRow(n);
         var a = f.createCell(0);
         a.setCellValue(etiqueta);
         a.setCellType(CellType.STRING);
+        a.setCellStyle(etiquetaStyle);
         var b = f.createCell(1);
-        if (valor instanceof BigDecimal bd) {
-            b.setCellValue(bd.doubleValue());
-            b.setCellType(CellType.NUMERIC);
-        } else if (valor instanceof Number num) {
-            b.setCellValue(num.longValue());
-            b.setCellType(CellType.NUMERIC);
-        } else {
-            b.setCellValue(String.valueOf(valor));
-            b.setCellType(CellType.STRING);
-        }
+        b.setCellValue(valor);
+        b.setCellType(CellType.STRING);
+        b.setCellStyle(valorStyle);
+    }
+
+    private void filaDinero(Sheet hoja, int n, String etiqueta, BigDecimal valor,
+                            CellStyle etiquetaStyle, CellStyle valorStyle) {
+        var f = hoja.createRow(n);
+        var a = f.createCell(0);
+        a.setCellValue(etiqueta);
+        a.setCellType(CellType.STRING);
+        a.setCellStyle(etiquetaStyle);
+        var b = f.createCell(1);
+        b.setCellValue(valor.doubleValue());
+        b.setCellType(CellType.NUMERIC);
+        b.setCellStyle(valorStyle);
+    }
+
+    private void filaNumero(Sheet hoja, int n, String etiqueta, long valor,
+                            CellStyle etiquetaStyle, CellStyle valorStyle) {
+        var f = hoja.createRow(n);
+        var a = f.createCell(0);
+        a.setCellValue(etiqueta);
+        a.setCellType(CellType.STRING);
+        a.setCellStyle(etiquetaStyle);
+        var b = f.createCell(1);
+        b.setCellValue(valor);
+        b.setCellType(CellType.NUMERIC);
+        b.setCellStyle(valorStyle);
     }
 
     private Font bold(Workbook wb, int size) {
