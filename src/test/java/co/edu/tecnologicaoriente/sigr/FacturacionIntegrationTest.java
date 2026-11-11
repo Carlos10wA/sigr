@@ -158,7 +158,7 @@ class FacturacionIntegrationTest {
         var sesCliente = (org.springframework.mock.web.MockHttpSession) sCliente;
         mockMvc.perform(get("/facturas/{id}", c.getId()).session(sesCliente))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Comprobante académico — sin validez fiscal")))
+                .andExpect(content().string(containsString("Comprobante de venta — Sin validez fiscal")))
                 .andExpect(content().string(containsString("$66.000,00 COP")))
                 .andExpect(content().string(containsString("Bandejas paisas")))
                 .andExpect(content().string(containsString("Pendiente de pago")));

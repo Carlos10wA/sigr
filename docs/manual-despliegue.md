@@ -1,6 +1,6 @@
 # Manual de despliegue local — SIGR
 
-Guía operativa para instalar, ejecutar, respaldar y recuperar el proyecto en Windows. La línea base está **sin publicar** (URL de repositorio pendiente) y **sin etiqueta `v1.0.0`**; estos pasos son para desarrollo local, no despliegue en producción.
+Guía operativa para instalar, ejecutar, respaldar y recuperar el proyecto en Windows. La línea base está en estado CANDIDATA (aprobación pendiente) y no se ha creado la etiqueta `v1.0.0`; estos pasos son para desarrollo local, no despliegue en producción.
 
 ## Versiones reales y requisitos
 
@@ -21,14 +21,12 @@ Guía operativa para instalar, ejecutar, respaldar y recuperar el proyecto en Wi
 
 ## Clonado
 
-URL oficial del repositorio: **pendiente**. Cuando se conozca, el clonado será:
-
 ```powershell
-git clone <URL-oficial>
-cd SIGR
+git clone https://github.com/Carlos10wA/sigr
+cd sigr
 ```
 
-Hasta entonces, trabaje desde la copia local existente sin inventar un remoto.
+La URL oficial del repositorio es https://github.com/Carlos10wA/sigr.
 
 ## Configuración de Java en Windows + Maven Wrapper
 
@@ -93,6 +91,6 @@ Las pruebas usan H2 en memoria (`src/test/resources/application.properties`) y *
 | Whitelabel / error 500 | Revisar registro y `docs/seguimiento-incidencias.md` | Diagnóstico y corrección versionada (no edición en caliente) |
 | Página de error sin permisos | Ruta protegida | Controle el rol; la seguridad es de servidor, no por interfaz |
 
-## Publicación futura (pendiente)
+## Publicación
 
-Publicar el historial completo en GitHub quedará pendiente hasta conocer la URL oficial. No afirmar despliegues, certificaciones ni URLs no realizadas.
+El repositorio está disponible en https://github.com/Carlos10wA/sigr. La publicación del historial completo y la aprobación de la línea base son acontecimientos distintos: la línea base LB-SIGR-1.0 sigue CANDIDATA y no se ha creado `v1.0.0`.

@@ -9,8 +9,8 @@
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <main>
-  <h1>Comprobantes académicos</h1>
-  <p><small>Comprobante académico — sin validez fiscal. Pendiente de pago (sin cobro).</small></p>
+  <h1>Comprobantes de venta</h1>
+  <p><small>Comprobante de venta — Sin validez fiscal.</small></p>
   <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
   <div th:if="${error}" class="alert error" th:text="${error}"></div>
   <p th:if="${#lists.isEmpty(comprobantes)}">No hay comprobantes emitidos.</p>

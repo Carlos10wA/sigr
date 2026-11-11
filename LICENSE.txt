@@ -26,5 +26,4 @@ Alcance: la licencia MIT aplica al código propio de este proyecto.
 No sustituye las licencias y créditos de las fotografías del catálogo
 (ver docs/creditos-imagenes.md) ni las condiciones de las dependencias
 (ver pom.xml). SIGR es un proyecto demostrativo; no está certificado ni
-validado para producción. Los comprobantes y pagos son académicos, sin
-validez fiscal, sin bancos ni pasarelas.
+validado para producción. Los comprobantes no tienen validez fiscal; los pagos se registran manualmente.

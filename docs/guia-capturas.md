@@ -18,14 +18,14 @@ Todas deben tomarse de ejecución real en Windows. No se fabrican capturas ni re
 | E-12 | Detalle `/platos/{id}` y formulario admin | RQ-Menús | Editar/desactivar/no disponible diferenciados | Módulos / menús |
 | E-13 | `/categorias` como ADMINISTRADOR | RQ-Menús | 4 categorías activas | Módulos / menús |
 | E-14 | Error genérico (ruta inexistente) | RQ-Error | «Ocurrió un error…» con estado HTTP, sin Whitelabel | Errores |
-| E-15 | Pedido entregado → Emitir comprobante | RQ-Facturación | «Comprobante académico — sin validez fiscal», pendiente de pago, FAC- y total COP | Facturación |
+| E-15 | Pedido entregado → Emitir comprobante | RQ-Facturación | «Comprobante de venta — Sin validez fiscal», pendiente de pago, FAC- y total COP | Facturación |
 | E-16 | Detalle comprobante imprimible | RQ-Facturación | Líneas históricas, total, botón Imprimir | Facturación |
 | E-17 | `/reportes/cobros` 66.000 | RQ-Reportes | Total, pagados y desglose por método con filtros | Reportes |
 | E-18 | `/reportes/cobros/csv` | RQ-Reportes | CSV con escape y protección anti-fórmulas | Reportes |
 | E-19 | `/reportes/cobros/xlsx` | RQ-Reportes | Excel «Descargar Excel»: título, resumen 66.000, tabla con total y nota | Excel |
 | E-20 | `/pedidos` y `/pedidos/{id}` con script `actualizar-estado.js` | RQ-Pedidos | Estado se actualiza por sondeo 10 s sin recargar; sin formularios tocados | Pedidos |
 | E-21 | `git log --oneline` (≥3 commits reales) | RQ-Git | Historial con 3+ commits descriptivos | Repositorio |
-| E-22 | Tras publicar: repositorio e Issues | RQ-GitHub | Pendiente (aún sin publicar) | Repositorio |
+| E-22 | Repositorio e Issues (tras publicar) | RQ-GitHub | Pendiente de publicación (URL: https://github.com/Carlos10wA/sigr) | Repositorio |
 
 ## Informe separado
 

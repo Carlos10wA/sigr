@@ -113,7 +113,7 @@ Reglas Reservas: superposición = misma mesa + misma fecha + `CONFIRMADA` con `i
 | cantidad | INT | Cantidad del pedido. |
 | subtotal | DECIMAL(12,2) | `precio_unitario × cantidad`. |
 
-Reglas Facturación: solo ENTREGADO, sin editar/eliminar, pedido facturado no se cancela; duplicado con bloqueo pesimista + única en BD; «Comprobante académico — sin validez fiscal».
+Reglas Facturación: solo ENTREGADO, sin editar/eliminar, pedido facturado no se cancela; duplicado con bloqueo pesimista + única en BD; «Comprobante de venta — Sin validez fiscal».
 
 ### `comprobantes` (ubicación, snapshot)
 Columnas `pais`, `ciudad`, `direccion` y `zona_horaria` copiadas de `configuracion_restaurante` al emitir (vista: «Bogotá, Colombia»; sin texto técnico «(America/Bogota)»).

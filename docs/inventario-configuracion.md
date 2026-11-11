@@ -9,7 +9,7 @@
 | CFG-05 | Plantillas | `src/main/resources/templates/` | ídem | Usuarios, platos, pedidos, reservas, facturas, caja, reportes, configuracion | Revisado |
 | CFG-06 | Pruebas | `src/test/java/...` | ídem | JUnit 5 (BD aislada, 69 pruebas) | Revisado |
 | CFG-07 | Licencia | `LICENSE.txt` (MIT 2026) | ídem | Código propio; fotos/dependencias con sus licencias | Revisado |
-| CFG-08 | Repositorio GitHub | — | ídem | — | Pendiente URL real |
+| CFG-08 | Repositorio GitHub | https://github.com/Carlos10wA/sigr | ídem | — | Publicación pendiente de revisión |
 | CFG-09 | Módulos negocio | pedidos, reservas, facturación, caja, reportes, Excel Cobros, seguimiento automático | ídem | 0.0.1-SNAPSHOT | Revisado (LB-SIGR-1.0 candidata) |
 | CFG-10 | Clave admin inicial | variable de entorno `SIGR_ADMIN_PASSWORD` (no versionada) | ídem | — | Configurado vía PowerShell, no en Git |
 | CFG-11 | Documentación LB-SIGR-1.0 | `docs/` (ver acta-linea-base) | ídem | — | Revisado |

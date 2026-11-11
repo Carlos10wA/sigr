@@ -1,25 +1,28 @@
 # SIGR — Sistema Integral de Gestión de Restaurante
 
-Proyecto demostrativo de gestión de restaurantes que puede utilizarse como referencia de desarrollo. No constituye un sistema certificado ni validado para producción. Los comprobantes y pagos son únicamente académicos: sin validez fiscal, sin bancos ni pasarelas de pago.
+SIGR — Sistema Integral de Gestión de Restaurante.
+Aplicación web demostrativa para gestionar usuarios, menú, pedidos, reservas, comprobantes de venta, caja y reportes.
+
+Proyecto demostrativo de gestión de restaurantes que puede utilizarse como referencia de desarrollo. No constituye un sistema certificado ni validado para producción. Los comprobantes no tienen validez fiscal; los pagos se registran manualmente y no hay integración con bancos ni pasarelas de pago.
 
 ## Propósito
 
-Gestionar el flujo operativo de un restaurante: autenticación por roles, catálogo de platos, pedidos, reservas de mesa, comprobantes académicos, caja y reportes con exportación (CSV, Excel e impresión).
+Gestionar el flujo operativo de un restaurante: autenticación por roles, catálogo de platos, pedidos, reservas de mesa, comprobantes de venta, caja y reportes con exportación (CSV, Excel e impresión).
 
 ## Alcance y módulos
 
-Usuarios ✅ — Menús ✅ — Pedidos ✅ (con seguimiento automático del estado) — Reservas ✅ — Facturación ✅ (académica, pendiente de pago) — Caja ✅ (apertura/pagos/cierre) — Reportes ✅ (Cobros CSV + Excel .xlsx Apache POI 5.2.5 + imprimible).
+Usuarios ✅ — Menús ✅ — Pedidos ✅ (con seguimiento automático del estado) — Reservas ✅ — Facturación ✅ (emisión de comprobantes de venta y consulta de su estado de pago) — Caja ✅ (apertura/pagos/cierre) — Reportes ✅ (Cobros CSV + Excel .xlsx Apache POI 5.2.5 + imprimible).
 
-## Tecnologías y versiones
+## Tecnologías y versiones utilizadas
 
-- Java **21.0.2 LTS** (`C:\Program Files\Java\jdk-21`), proyecto compilado para Java 21.
-- Spring Boot **3.5.16** (última estable 3.5.x verificada en Maven Central, sin SNAPSHOT/RC).
-- Spring MVC + Thymeleaf (HTML5, CSS3 responsive), Spring Security + BCrypt/CSRF, Spring Data JPA, Bean Validation.
-- H2 **2.3.232** en archivo: `jdbc:h2:file:./data/sigrdb`.
-- Maven **3.9.11** + Maven Wrapper (`mvnw.cmd`) para Windows.
-- Apache POI **5.2.5** (exportación Excel de Cobros).
+- Java 21.0.2 (LTS). Ruta de ejemplo adaptable: `C:\Program Files\Java\jdk-21`.
+- Spring Boot 3.5.16.
+- Spring MVC + Thymeleaf (HTML5, CSS3 responsive), Spring Security, Spring Data JPA, Bean Validation.
+- H2 2.3.232 en archivo: `jdbc:h2:file:./data/sigrdb`.
+- Maven 3.9.11 + Maven Wrapper (`mvnw.cmd`) para Windows.
+- Apache POI 5.2.5 (exportación Excel de Cobros).
 - JUnit 5 / Spring Boot Test / Spring Security Test.
-- Git rama `main`. Repositorio remoto: **pendiente de URL oficial**.
+- Git rama `main`. Repositorio: https://github.com/Carlos10wA/sigr
 
 ## Requisitos
 
@@ -36,7 +39,7 @@ javac -version
 .\mvnw.cmd -v
 ```
 
-> Sin esto, `java` puede resolver a otra versión según el PATH del sistema.
+> Ajuste la ruta del JDK si su instalación está en otra ubicación.
 
 ## Instalación y ejecución local
 
@@ -50,19 +53,33 @@ $env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
 
 Abrir http://localhost:8080.
 
+## Clonado del repositorio
+
+```powershell
+git clone https://github.com/Carlos10wA/sigr
+cd sigr
+```
+
 ## Administrador inicial (seguro)
 
-La contraseña inicial del administrador **no está en el código, la documentación, los registros ni Git**. Es usted quien define una contraseña local en la terminal donde ejecutará la aplicación (nunca use una contraseña compartida):
+La contraseña inicial del administrador no está en el código, la documentación, los registros ni Git. Es usted quien define una contraseña local en la terminal donde ejecutará la aplicación (nunca use una contraseña compartida):
 
 ```powershell
 $env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
 .\mvnw.cmd spring-boot:run
 ```
 
-- Al arrancar con la tabla `usuarios` vacía, se crea el usuario `admin` (rol ADMINISTRADOR, activo) con la contraseña cifrada BCrypt.
+- Al arrancar con la tabla `usuarios` vacía, se crea el usuario `admin` (rol ADMINISTRADOR, activo) con la contraseña cifrada con BCrypt.
 - Si la variable no está definida, no se crea ningún usuario y la aplicación indica que la defina y reinicie.
 - La variable vive solo en la sesión de PowerShell; al cerrar la terminal desaparece. Para cambiarla entre reinicios, vuelva a definirla antes de `spring-boot:run`.
-- **Primer administrador vs. acceso posterior:** el valor de `SIGR_ADMIN_PASSWORD` solo se usa cuando la tabla está vacía (creando el primer administrador). En arranques posteriores la variable no altera los usuarios existentes: inicie sesión con el usuario/clave ya persistidos en la BD.
+- Primer administrador vs. acceso posterior: el valor de `SIGR_ADMIN_PASSWORD` solo se usa cuando la tabla está vacía (creando el primer administrador). En arranques posteriores la variable no altera los usuarios existentes: inicie sesión con el usuario y la clave ya persistidos en la base de datos.
+
+## Seguridad
+
+- Autenticación: formulario de login con Spring Security.
+- Autorización: por rol (ADMINISTRADOR, MESERO, CLIENTE) aplicada en el servidor; rutas protegidas exigen autenticación.
+- Protección CSRF habilitada en formularios.
+- Contraseñas cifradas con BCrypt (unidireccional).
 
 ## Roles y permisos
 
@@ -72,19 +89,17 @@ $env:SIGR_ADMIN_PASSWORD="CambieEstoPorSuClaveLocal"
 | MESERO | Pedidos y comprobantes de todos los clientes. Caja y reportes: 403. |
 | CLIENTE | Solo sus propios pedidos (IDOR 404 ajenos), reservas y comprobantes pagados propios. Caja y reportes: 403. |
 
-Permisos aplicados en el servidor (no por interfaz). Las rutas protegidas exigen autenticación (CSRF, BCrypt).
-
 ## Pruebas
 
 ```powershell
 .\mvnw.cmd test
 ```
 
-La suite usa una **base de datos H2 en memoria aislada** (no toca `data/sigrdb.mv.db`). Ver `docs/plan-pruebas.md` para el detalle. Ver `docs/verificacion-linea-base.md` para la verificación de requisitos.
+La suite usa una base de datos H2 en memoria aislada (no toca `data/sigrdb.mv.db`). Ver `docs/plan-pruebas.md` para el detalle. Ver `docs/verificacion-linea-base.md` para la verificación de requisitos.
 
 ## Seguimiento automático de pedidos
 
-El estado se actualiza por **sondeo periódico cada 10 s** desde el navegador, sin recargar la página: el JS consume `GET /pedidos/{id}/estado` (JSON) y solo toca el texto de estado. No usa WebSockets ni tiempo real. Detalles: sin solicitudes superpuestas, pausado si la pestaña no está visible, conserva formularios/selecciones y mantiene el último estado si falla la conexión. Autorización en servidor: CLIENTE solo sus pedidos, MESERO/ADMINISTRADOR según sus permisos vigentes.
+El estado se actualiza por sondeo periódico cada 10 s desde el navegador, sin recargar la página: el JS consume `GET /pedidos/{id}/estado` (JSON) y solo toca el texto de estado. No usa WebSockets ni tiempo real. Detalles: sin solicitudes superpuestas, pausado si la pestaña no está visible, conserva formularios y selecciones y mantiene el último estado si falla la conexión. Autorización en servidor: CLIENTE solo sus pedidos, MESERO y ADMINISTRADOR según sus permisos vigentes.
 
 ## Estructura
 
@@ -123,9 +138,9 @@ Desactivado ≠ no disponible: desactivar oculta del catálogo (conserva histori
 ## Limitaciones
 
 - Eficiencia de consultas y prueba de concurrencia bajo carga: pendientes de verificación manual.
-- URL de GitHub pendiente; no se publica ni se crea etiqueta `v1.0.0` sin aprobación.
-- No validado para producción, ni certificado.
+- No validado para producción. No implementa facturación electrónica fiscal ni integración con bancos o pasarelas de pago. Los pagos se registran manualmente y los comprobantes no tienen validez fiscal.
+- Línea base LB-SIGR-1.0 en estado CANDIDATA; aprobación pendiente. No se ha creado la etiqueta `v1.0.0`.
 
 ## Licencia
 
-Licencia **MIT** (`LICENSE.txt`) aplicada al código propio. Las fotografías del catálogo conservan sus licencias originales y créditos (`docs/creditos-imagenes.md`); las dependencias conservan las suyas.
+Licencia MIT (`LICENSE.txt`) aplicada al código propio. Las fotografías del catálogo conservan sus licencias originales y créditos (`docs/creditos-imagenes.md`); las dependencias conservan las suyas.

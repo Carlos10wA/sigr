@@ -8,13 +8,13 @@
 - **Rama:** `main`
 - **Commit definitivo:** por identificar tras la aprobación (ver procedimiento al final).
 - **Aprobación/firma:** pendiente de la persona responsable. Sin firmas ni fechas inventadas.
-- **Etiqueta `v1.0.0`:** no creada. **Publicación en GitHub:** pendiente de URL oficial.
+- **Etiqueta `v1.0.0`:** no creada. **Repositorio:** https://github.com/Carlos10wA/sigr (publicación pendiente de revisión).
 
-SIGR es un proyecto demostrativo de gestión de restaurantes, usable como referencia de desarrollo. **No está certificado ni validado para producción.** Los comprobantes son académicos, sin validez fiscal; los pagos son registros internos, sin bancos ni pasarelas.
+SIGR es un proyecto demostrativo de gestión de restaurantes, usable como referencia de desarrollo. **No está certificado ni validado para producción.** Los comprobantes no tienen validez fiscal; los pagos son registros internos, sin bancos ni pasarelas.
 
 ## Alcance
 
-Usuarios con roles, catálogo de platos/categorías, pedidos con seguimiento automático, reservas sin cruces, comprobantes académicos, caja (apertura/pagos/cierre) y reportes (cobros, platos, reservas, cierres) con CSV, Excel de Cobros e impresión. Ver `docs/verificacion-linea-base.md`.
+Usuarios con roles, catálogo de platos/categorías, pedidos con seguimiento automático, reservas sin cruces, comprobantes de venta, caja (apertura/pagos/cierre) y reportes (cobros, platos, reservas, cierres) con CSV, Excel de Cobros e impresión. Ver `docs/verificacion-linea-base.md`.
 
 ## Inventario de elementos de configuración
 
@@ -63,4 +63,4 @@ Usuarios con roles, catálogo de platos/categorías, pedidos con seguimiento aut
 1. Tras la aprobación, fijar en `main` el commit verificado: `git rev-parse HEAD`.
 2. Registrar el hash completo en `docs/registro-linea-base.md` y aquí.
 3. Crear la etiqueta `v1.0.0` sobre ese commit solo tras la aprobación.
-4. Publicar el historial completo en GitHub según `docs/manual-despliegue.md` (URL pendiente).
+4. Publicar el historial completo en GitHub según `docs/manual-despliegue.md` (https://github.com/Carlos10wA/sigr).

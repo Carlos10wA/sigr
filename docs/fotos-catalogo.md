@@ -6,7 +6,7 @@ Las 13 imágenes están en `src/main/resources/static/images/platos/` y se sirve
 
 | Archivo | Plato | Procedencia | Licencia |
 |---|---|---|---|
-| empanadas.jpg | Empanadas | Generadas originalmente para SIGR (programa Java BufferedImage) | CC0 — dominio público, uso libre académico |
+| empanadas.jpg | Empanadas | Generadas originalmente para SIGR (programa Java BufferedImage) | CC0 - dominio público, uso libre |
 | ceviche.jpg | Ceviche | ídem | CC0 |
 | arepas.jpg | Arepas rellenas | ídem | CC0 |
 | bandeja-paisa.jpg | Bandeja paisa | ídem | CC0 |

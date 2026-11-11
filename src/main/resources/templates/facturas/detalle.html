@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Comprobante académico - SIGR</title>
+  <title>Comprobante de venta - SIGR</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
   <link rel="stylesheet" th:href="@{/css/print.css}"/>
 </head>
@@ -14,7 +14,7 @@
     <div th:if="${mensaje}" class="alert" th:text="${mensaje}"></div>
     <div th:if="${error}" class="alert error" th:text="${error}"></div>
   </div>
-  <h1>Comprobante académico — sin validez fiscal</h1>
+  <h1>Comprobante de venta — Sin validez fiscal</h1>
   <p>N.º: <b th:text="${comprobante.numero}"></b> · Pedido: <b th:text="${comprobante.pedido.id}"></b></p>
   <p>Cliente: <span th:text="${comprobante.clienteNombre}"></span> (<span th:text="${comprobante.clienteUsuario}"></span>)</p>
   <p>Ubicación del restaurante: <span th:text="${comprobante.ciudad + ', ' + comprobante.pais}"></span><span th:if="${comprobante.direccion != null and comprobante.direccion != ''}"> — <span th:text="${comprobante.direccion}"></span></span></p>

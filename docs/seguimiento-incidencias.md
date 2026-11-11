@@ -1,6 +1,6 @@
 # Seguimiento de incidencias — SIGR
 
-Solo incidencias reales con solución y/o commit relacionado. No se han creado GitHub Issues (repositorio aún sin publicar); la gestión futura se describe al final.
+Solo incidencias reales con solución y/o commit relacionado. Repositorio: https://github.com/Carlos10wA/sigr (la gestión de Issues se realizará allí).
 
 ## Incidencias históricas resueltas
 
