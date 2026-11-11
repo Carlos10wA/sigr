@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.1-SNAPSHOT] — Cierre: incidencia I-05 y documentación (2026-11-11)
+
+### Corregido
+- **I-05 (Listo→Entregado mostraba "Ocurrió un error"):** `PedidoController.actual(principal)` ahora tolera sesión nula y excepciones al resolver el usuario (redirige a `/login` en lugar de 500); `cambiarEstado` captura `RuntimeException` además de `TransicionInvalidaException`, registra el error con SLF4J y muestra mensaje controlado; el sondeo `/pedidos/{id}/estado` devuelve 401 en lugar de 500. Prueba de regresión `PedidoCambioEstadoRegresionTest` (sin sesión no produce 500; Listo→Entregado renderiza y sondea). Suite 71/0/0.
+
+### Cambiado
+- Documentación: repositorio publicado en https://github.com/Carlos10wA/sigr; presentación del Excel revisada visualmente; seguimiento automático entre ventanas sigue pendiente de comprobación; incidencia I-05 registrada en `docs/seguimiento-incidencias.md`.
+
 ## [0.0.1-SNAPSHOT] — Línea base: seguimiento automático, Excel verificado, documentación (2026-11-08)
 
 ### Agregado

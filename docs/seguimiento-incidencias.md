@@ -11,7 +11,7 @@ Solo incidencias reales con solución y/o commit relacionado. Repositorio: https
 | I-03 | Cali mostraba zona duplicada/incorrecta al elegir ciudad | Resuelta | Ciudad como única selección; país y zona solo lectura derivados en servidor desde catálogo; cambio de zona bloqueado si hay confirmadas futuras | `7ac3239`, `441949e` |
 | I-04 | Clave demo obsoleta de Etapa 1 en el working tree | Resuelta | Eliminada; admin inicial solo vía `SIGR_ADMIN_PASSWORD` | (Etapa 2) |
 
-## Mejoras pendientes (no incidencias)
+| I-05 | Al cambiar un pedido de Listo a Entregado se mostraba la página genérica «Ocurrió un error» (500) en algunos casos (sesión caducada / excepción no controlada) | Resuelta | `PedidoController`: `actual(principal)` ahora tolera sesión nula y excepciones al resolver el usuario (redirige a `/login`); `cambiarEstado` captura `RuntimeException` además de `TransicionInvalidaException`, registra el error y muestra mensaje controlado; el sondeo `/pedidos/{id}/estado` devuelve 401 en lugar de 500. Prueba de regresión `PedidoCambioEstadoRegresionTest` (sin sesión no produce 500; Listo→Entregado renderiza y sondea). | (este commit) |
 
 - Verificación manual con carga y concurrencia real (reservas/caja).
 - Publicación en GitHub y etiqueta `v1.0.0` (pendientes).
