@@ -3,12 +3,13 @@
 ## Identificador y estado
 
 - **Identificador:** LB-SIGR-1.0
-- **Estado:** **CANDIDATA** — pendiente de validación y aprobación.
-- **Fecha de registro:** pendiente (se registrará al aprobar).
+- **Estado:** **APROBADA para alcance demostrativo** (11/11/2026). Sin etiqueta `v1.0.0`.
+- **Fecha de aprobación:** 11/11/2026.
 - **Rama:** `main`
-- **Commit definitivo:** por identificar tras la aprobación (ver procedimiento al final).
-- **Aprobación/firma:** pendiente de la persona responsable. Sin firmas ni fechas inventadas.
-- **Etiqueta `v1.0.0`:** no creada. **Repositorio:** https://github.com/Carlos10wA/sigr (publicación pendiente de revisión).
+- **Commit de código aprobado:** `45cca343f34f2e55f5da86dfacfd0fe278534381`
+- **Commit documental de cierre:** posterior a la aprobación (este commit).
+- **Responsable de validación y aprobación:** autor del proyecto (titular de la licencia MIT en `LICENSE.txt`).
+- **Etiqueta `v1.0.0`:** no creada. **Repositorio:** https://github.com/Carlos10wA/sigr (publicado).
 
 SIGR es un proyecto demostrativo de gestión de restaurantes, usable como referencia de desarrollo. **No está certificado ni validado para producción.** Los comprobantes no tienen validez fiscal; los pagos son registros internos, sin bancos ni pasarelas.
 
@@ -23,7 +24,7 @@ Usuarios con roles, catálogo de platos/categorías, pedidos con seguimiento aut
 | Código | `src/main/java/.../model, repository, service, controller, dto, security, config` |
 | Configuración | `pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn/wrapper/`, `src/main/resources/application.properties` |
 | Dependencias | Spring Boot 3.5.16, Java 21, H2 2.3.232, Apache POI 5.2.5, Maven 3.9.11 |
-| Recursos | `src/main/resources/templates/` (usuarios, platos, categorias, pedidos, reservas, facturas, caja, reportes, configuracion, fragments, error), `static/css`, `static/js`, `static/images/platos/` (12 fotos con licencia, creditos en `docs/creditos-imagenes.md`) |
+| Recursos | `src/main/resources/templates/` (usuarios, platos, categorias, pedidos, reservas, facturas, caja, reportes, configuracion, fragments, error), `static/css`, `static/js`, `static/images/platos/` (12 fotos con licencia, créditos en `docs/creditos-imagenes.md`) |
 | Pruebas | `src/test/java/...` (JUnit 5, BD H2 en memoria aislada) |
 | Documentación | `README.md`, `CHANGELOG.md`, `docs/` (modelo-datos, plan-pruebas, matriz-trazabilidad, guia-capturas, estado-avance, manual-despliegue, verificacion-linea-base, seguimiento-incidencias, acta-linea-base, creditos-imagenes, inventario-configuracion, registro-linea-base, notas-avance) |
 
@@ -39,28 +40,29 @@ Usuarios con roles, catálogo de platos/categorías, pedidos con seguimiento aut
 
 ## Resultados verificables
 
-- Suite: **69 pruebas, 0 fallos, 0 errores, 0 omitidas** (`.\mvnw.cmd test`, ver `docs/plan-pruebas.md`).
-- Historial con **23 commits** reales (ver `docs/estado-avance.md`): 3 seleccionados —
-  - `eb3261b` — Reportes (cobros/platos/reservas/cierres, CSV, imprimible, 67/67): aporta los 4 reportes con rangos y permisos.
-  - `4b92d4f` — Excel de Cobros (.xlsx Apache POI, 67/67): aporta la exportación profesional con resumen, filtros y total.
-  - `8d7a6b5` — Migración ENUM→VARCHAR de estado de pago (64/64): aporta la corrección sin borrado que desbloqueó los pagos.
-- Recursos verificados: .gitignore, licencia, importación histórica (ver `docs/verificacion-linea-base.md`).
+- Suite: **71 pruebas, 0 fallos, 0 errores, 0 omitidas** (`.\mvnw.cmd test`, ver `docs/plan-pruebas.md`). Referencia histórica: 69 pruebas antes de la corrección I-05.
+- Historial con commits reales; tres seleccionados:
+  - `eb3261b` — Reportes (cobros/platos/reservas/cierres, CSV, imprimible).
+  - `4b92d4f` — Excel de Cobros (.xlsx Apache POI).
+  - `8d7a6b5` — Migración ENUM→VARCHAR de estado de pago.
+- Comprobación manual: el pedido 34 cambió de Listo a Entregado y la segunda pestaña actualizó su estado sin recargar manualmente (sondeo verificado el 11/11/2026).
+- Revisión visual del Excel de Cobros realizada y aprobada.
+- Repositorio publicado: https://github.com/Carlos10wA/sigr
 
-## Limitaciones y pendientes
+## Limitaciones aceptadas
 
-- Verificación manual con carga/concurrencia real y recorrido completo en navegador.
-- Publicación en GitHub y etiqueta `v1.0.0` (pendientes).
 - No validado para producción ni certificado.
+- Limitaciones documentadas de carga, concurrencia e impresión aceptadas por el responsable de validación (11/11/2026).
+- Sin facturación electrónica fiscal ni integración con bancos o pasarelas de pago; pagos registrados manualmente; comprobantes sin validez fiscal.
 
 ## Campos pendientes (no inventar)
 
-- Fecha de aprobación: pendiente.
-- Verificador/aprobador: pendiente de la persona responsable.
-- Hash del commit definitivo: se identificará tras la aprobación (procedimiento abajo).
+- Etiqueta `v1.0.0`: no creada (decisión pendiente posterior a la aprobación).
+- Aprobación de línea base: registrada el 11/11/2026 para alcance demostrativo.
 
 ## Procedimiento para identificar el commit definitivo
 
-1. Tras la aprobación, fijar en `main` el commit verificado: `git rev-parse HEAD`.
+1. Tras la aprobación, fijar en `main` el commit verificado: `git rev-parse HEAD` (código aprobado: `45cca343f34f2e55f5da86dfacfd0fe278534381`).
 2. Registrar el hash completo en `docs/registro-linea-base.md` y aquí.
-3. Crear la etiqueta `v1.0.0` sobre ese commit solo tras la aprobación.
-4. Publicar el historial completo en GitHub según `docs/manual-despliegue.md` (https://github.com/Carlos10wA/sigr).
+3. Crear la etiqueta `v1.0.0` sobre ese commit solo tras una decisión posterior.
+4. El repositorio está publicado en https://github.com/Carlos10wA/sigr.

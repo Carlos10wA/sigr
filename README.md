@@ -139,7 +139,7 @@ Desactivado ≠ no disponible: desactivar oculta del catálogo (conserva histori
 
 - Eficiencia de consultas y prueba de concurrencia bajo carga: pendientes de verificación manual.
 - No validado para producción. No implementa facturación electrónica fiscal ni integración con bancos o pasarelas de pago. Los pagos se registran manualmente y los comprobantes no tienen validez fiscal.
-- Línea base LB-SIGR-1.0 en estado CANDIDATA; aprobación pendiente. No se ha creado la etiqueta `v1.0.0`.
+- Línea base LB-SIGR-1.0 APROBADA para alcance demostrativo (11/11/2026). No se ha creado la etiqueta `v1.0.0`.
 
 ## Licencia
 

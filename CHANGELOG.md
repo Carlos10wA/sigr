@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.1-SNAPSHOT] — Cierre documental y aprobación de LB-SIGR-1.0 (11/11/2026)
+
+### Aprobado
+- LB-SIGR-1.0 **APROBADA para alcance demostrativo** el 11/11/2026 por el autor del proyecto (responsable de validación y aprobación, titular de la licencia MIT).
+- Commit de código aprobado: `45cca343f34f2e55f5da86dfacfd0fe278534381`.
+- Resultado de pruebas (previamente reportado, no nueva ejecución): 71 ejecutadas, 0 fallos, 0 errores, 0 omitidas.
+- Comprobación manual: pedido 34 Listo→Entregado actualizó la segunda pestaña sin recarga; presentación del Excel revisada visualmente.
+- Repositorio publicado: https://github.com/Carlos10wA/sigr. Etiqueta `v1.0.0` no creada.
+
+### Limitaciones aceptadas
+- Carga, concurrencia e impresión; no certificado para producción; sin facturación electrónica fiscal ni integración con bancos o pasarelas.
+
 ## [0.0.1-SNAPSHOT] — Cierre: incidencia I-05 y documentación (2026-11-11)
 
 ### Corregido

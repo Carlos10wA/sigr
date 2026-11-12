@@ -19,7 +19,14 @@ Matriz requisito → implementación → método de comprobación → resultado 
 | `.gitignore` excluye BD/logs/secretos/target | `.gitignore` raíz | Revisión de `git ls-files` (152 archivos versionados) | ✅ Verificado | — |
 | Licencia MIT y créditos | `LICENSE.txt` (MIT 2026, titular del autor), `docs/creditos-imagenes.md` | Revisión de archivos | ✅ Verificado | — |
 
-## 2. Alcance no verificado/pendiente (manual)
+## 3. Aprobación (11/11/2026)
+
+- Línea base **LB-SIGR-1.0** aprobada para alcance demostrativo por el autor del proyecto (titular de la licencia MIT).
+- Commit de código aprobado: `45cca343f34f2e55f5da86dfacfd0fe278534381`.
+- Resultado de pruebas (previamente reportado): 71 ejecutadas, 0 fallos, 0 errores, 0 omitidas.
+- Comprobación manual: pedido 34 Listo→Entregado con actualización automática en segunda pestaña sin recarga; presentación del Excel revisada visualmente.
+- Repositorio publicado: https://github.com/Carlos10wA/sigr. Etiqueta `v1.0.0` no creada.
+- Limitaciones aceptadas: carga, concurrencia e impresión. No certificado para producción.
 
 - Recorrido completo manual con navegador y datos de demo (ver `docs/guia-capturas.md`).
 - Concurrencia real bajo doble envío (reservas/caja) y eficiencia con carga.
