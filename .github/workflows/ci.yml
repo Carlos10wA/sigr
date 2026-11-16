@@ -1,0 +1,59 @@
+name: SIGR - Integracion Continua
+
+on:
+  push:
+    branches:
+      - main
+      - "mejora/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Compilar, probar y empaquetar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Habilitar Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Compilar desde cero
+        run: ./mvnw -B clean compile
+
+      - name: Ejecutar pruebas
+        run: ./mvnw -B test
+
+      - name: Empaquetar aplicacion validada
+        run: ./mvnw -B -DskipTests package
+
+      - name: Conservar reportes de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pruebas-sigr-${{ github.sha }}
+          path: target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Conservar aplicacion empaquetada
+        uses: actions/upload-artifact@v4
+        with:
+          name: aplicacion-sigr-${{ github.sha }}
+          path: target/sigr-0.0.1-SNAPSHOT.jar
+          if-no-files-found: error
+          retention-days: 14
