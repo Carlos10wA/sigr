@@ -105,7 +105,7 @@ class ReportesIntegrationTest {
         LocalDate hoy = LocalDate.now(BOGOTA);
         var cobros = reportes.cobros(hoy.minusDays(1), hoy.plusDays(1));
         assertThat(cobros.cantidad()).isEqualTo(1);
-        assertThat(cobros.total()).isEqualByComparingTo(new BigDecimal("166000.00"));
+        assertThat(cobros.total()).isEqualByComparingTo(new BigDecimal("66000.00"));
         assertThat(cobros.efectivo()).isEqualByComparingTo(new BigDecimal("66000.00"));
         assertThat(cobros.tarjeta()).isEqualByComparingTo(new BigDecimal("0.00"));
         var platos = reportes.platosVendidos(hoy.minusDays(1), hoy.plusDays(1));
