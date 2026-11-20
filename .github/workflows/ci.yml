@@ -57,3 +57,88 @@ jobs:
           path: target/sigr-0.0.1-SNAPSHOT.jar
           if-no-files-found: error
           retention-days: 14
+
+
+      - name: Construir imagen Docker
+        run: docker build -t sigr:${{ github.sha }} .
+
+      - name: Desplegar en entorno temporal de pruebas
+        shell: bash
+        run: |
+          SIGR_ADMIN_PASSWORD="$(openssl rand -hex 24)" \
+          docker run -d --name sigr-staging \
+            -p 127.0.0.1:8081:8080 \
+            -e SIGR_ADMIN_PASSWORD \
+            -e SPRING_H2_CONSOLE_ENABLED=false \
+            -e SPRING_JPA_SHOW_SQL=false \
+            sigr:${{ github.sha }}
+
+      - name: Esperar disponibilidad de SIGR
+        shell: bash
+        run: |
+          for intento in $(seq 1 30); do
+            estado=$(curl --max-time 3 -s -o /dev/null \
+              -w "%{http_code}" http://localhost:8081/ || true)
+            if [ "$estado" = "200" ]; then
+              echo "SIGR disponible: HTTP 200"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "SIGR no estuvo disponible dentro del plazo"
+          exit 1
+
+      - name: Verificar despliegue y controles de seguridad
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/evidencias
+          {
+            uid=$(docker exec sigr-staging id -u)
+            echo "Usuario del contenedor: $uid"
+            test "$uid" = "10001"
+
+            for ruta in / /login; do
+              estado=$(curl --max-time 10 -s -o /dev/null \
+                -w "%{http_code}" "http://localhost:8081$ruta")
+              echo "$ruta HTTP: $estado"
+              test "$estado" = "200"
+            done
+
+            curl --max-time 10 -s -D target/evidencias/usuarios.headers \
+              -o /dev/null http://localhost:8081/usuarios
+            tr -d '\r' < target/evidencias/usuarios.headers \
+              > target/evidencias/usuarios-normalizado.headers
+            grep -Eq '^HTTP/[^ ]+ 302' \
+              target/evidencias/usuarios-normalizado.headers
+            grep -Eiq '^Location: http://localhost:8081/login$' \
+              target/evidencias/usuarios-normalizado.headers
+            echo "Acceso anonimo a usuarios: 302 hacia login"
+
+            estado=$(curl --max-time 10 -s -o /dev/null \
+              -w "%{http_code}" -X POST http://localhost:8081/usuarios)
+            echo "POST sin token CSRF: $estado"
+            test "$estado" = "403"
+
+            echo "Verificaciones satisfactorias"
+          } 2>&1 | tee target/evidencias/verificacion.txt
+
+      - name: Recopilar registros del despliegue
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p target/evidencias
+          docker logs sigr-staging \
+            > target/evidencias/arranque.log 2>&1 || true
+
+      - name: Conservar evidencias del despliegue
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: despliegue-sigr-${{ github.sha }}
+          path: target/evidencias/
+          retention-days: 14
+
+      - name: Retirar entorno temporal
+        if: always()
+        run: docker rm -f sigr-staging || true
