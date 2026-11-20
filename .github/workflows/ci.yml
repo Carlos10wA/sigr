@@ -123,6 +123,20 @@ jobs:
             echo "Verificaciones satisfactorias"
           } 2>&1 | tee target/evidencias/verificacion.txt
 
+      - name: Validar rendimiento con k6
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/evidencias
+          docker run --rm -i \
+            --network container:sigr-staging \
+            grafana/k6:latest run - \
+            < tools/carga.js 2>&1 \
+            | tee target/evidencias/carga.txt
+          docker image inspect grafana/k6:latest \
+            --format '{{index .RepoDigests 0}}' \
+            > target/evidencias/imagen-k6.txt
+
       - name: Recopilar registros del despliegue
         if: always()
         shell: bash
